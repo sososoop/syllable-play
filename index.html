@@ -1139,7 +1139,7 @@ function resultToHandwriting(){
 function openHandwriting(words){
   // 문장부호 제거, 낱말만 — 글씨연습장 words 파라미터로 전달
   const clean=words.map(w=>w.replace(/[.,?!]/g,'').trim()).filter(Boolean).slice(0,60);
-  const url='https://slp-irudassam.github.io/korean-handwriting/?words='+encodeURIComponent(clean.join(','));
+  const url='https://sososoop.github.io/korean-handwriting/?words='+encodeURIComponent(clean.join(','));
   window.open(url,'_blank');
 }
 
