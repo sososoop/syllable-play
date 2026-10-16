@@ -14,11 +14,6 @@ cd "$(dirname "$0")"
 SITE_FILES=(
   index.html
   hangul-words.json
-  hangul-words-std.json
-  hangul-sent-1.json
-  hangul-sent-2.json
-  hangul-sent-3.json
-  hangul-sent-0.json
   manual.html
   manual-img
   .nojekyll
@@ -28,7 +23,14 @@ rm -rf dist && mkdir -p dist
 for f in "${SITE_FILES[@]}"; do
   [ -e "$f" ] && cp -R "$f" dist/ && echo "  + $f"
 done
-echo "dist/ 준비 완료 — 파일 $(find dist -type f | wc -l | tr -d ' ')개"
+# 단독판(hangul.sososoop.com)은 체험판 — 정식판 전용 데이터(표준국어대사전 목록·예문 파일)는 올리지 않고,
+# 앱에 체험판 표시를 넣는다. 정식판은 소소숲(/hangul/app)에서 원본 index.html을 그대로 쓴다.
+python3 - <<'PY'
+p='dist/index.html'; s=open(p).read()
+assert s.count('<head>')==1
+open(p,'w').write(s.replace('<head>','<head><script>window.__TRIAL__=true</script>',1))
+PY
+echo "dist/ 준비 완료(체험판) — 파일 $(find dist -type f | wc -l | tr -d ' ')개"
 
 if [ "${1:-}" = "--deploy" ]; then
   for project in hangul-blending-board hangul-free; do

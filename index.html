@@ -41,6 +41,8 @@
   .brand .dotmark{width:16px;height:16px;background:var(--ink);border-radius:50%;display:inline-block}
   .topbar .right{display:flex;align-items:center;gap:8px}
   .hw-badge{display:none;background:var(--ink);color:var(--lime);font-size:13px;font-weight:900;padding:8px 14px;border-radius:2px}
+  .trial-badge{display:none;background:var(--blue);color:#fff;font-size:13px;font-weight:900;padding:8px 14px;border:2px solid var(--ink);text-decoration:none;box-shadow:3px 3px 0 var(--ink)}
+  .locked-feat{opacity:.55}
   .top-link{border:2px solid var(--ink);background:#fff;color:var(--ink);text-decoration:none;font-size:13px;font-weight:800;padding:8px 14px;box-shadow:3px 3px 0 var(--ink)}
 
   .modeswitch{
@@ -257,6 +259,7 @@
   <div class="brand"><span class="dotmark"></span><span id="brandName">한글놀이</span></div>
   <div class="right">
     <span class="hw-badge" id="hwBadge">🏠 오늘의 연습</span>
+    <a class="trial-badge" id="trialBadge" href="https://sososoop.com/hangul" target="_blank" rel="noopener">체험판 · 정식판 보기 →</a>
     <a href="manual.html" class="top-link" id="manualLink">❓ 사용법</a>
   </div>
 </div>
@@ -279,7 +282,7 @@
         <button class="mini-btn" onclick="renameProfile()">✏️ 이름변경</button>
         <button class="mini-btn warn" onclick="deleteProfile()">🗑 삭제</button>
         <button class="mini-btn" onclick="exportProfiles()">⭳ 내보내기</button>
-        <button class="mini-btn" onclick="document.getElementById('importFile').click()">⭱ 가져오기</button>
+        <button class="mini-btn" onclick="if(TRIAL){trialLock('프로필 가져오기');return;} document.getElementById('importFile').click()">⭱ 가져오기</button>
         <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importProfiles(this.files[0])">
       </div>
     </div>
@@ -499,7 +502,7 @@
     <div class="card">
       <h2 id="resultHead">📋 결과</h2>
       <div class="result-list" id="resultList"><div class="result-empty">조건을 정하고 “생성”을 눌러주세요.</div></div>
-      <p id="printSrc" style="display:none;font-size:11px;color:#666;margin:10px 0 0">의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR · creativecommons.org/licenses/by-sa/2.0/kr) · 소소숲 : 지혜의 기록소 「한글놀이」로 만듦</p>
+      <p id="printSrc" style="display:none;font-size:11px;color:#666;margin:10px 0 0">의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR · creativecommons.org/licenses/by-sa/2.0/kr) · 소소숲 : 지혜의 기록소 「한글놀이」로 만듦<span id="printTrial"></span></p>
     </div>
   </section>
 </main>
@@ -634,6 +637,30 @@ let activeId=null;
 let lockMode=false;        // 가정과제 잠금 링크로 진입
 let lockProfile=null;      // 잠금 모드 임시 프로필(저장 안 함)
 
+/* ---- 체험판 (hangul.sososoop.com) — 빌드 때 window.__TRIAL__ 를 넣는다 ---- */
+const TRIAL=!!window.__TRIAL__;
+const TRIAL_MAX=10;
+function trialLock(what){
+  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 헷갈리는 짝 · 사전 예문 문장 · 무의미 단어 · 읽기 게임 2종 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">한글놀이 정식판 보기 →</a>');
+}
+function applyTrialUI(){
+  if(!TRIAL) return;
+  document.getElementById('printTrial').textContent=' · 체험판 (정식판: sososoop.com/hangul)';
+  document.getElementById('trialBadge').style.display='inline-block';
+  document.title='한글놀이 체험판';
+  // 자료 만들기: 의미 단어만, 단어 범위 초급·보통만, 개수 10개까지
+  [...document.querySelectorAll('#genType option')].forEach(o=>{ if(o.value!=='real'){ o.textContent+=' 🔒'; } });
+  [...document.querySelectorAll('#genLevel option')].forEach(o=>{ if(+o.value>2){ o.textContent+=' 🔒'; } });
+  const c=document.getElementById('genCount'); c.max=TRIAL_MAX; c.value=Math.min(+c.value||TRIAL_MAX,TRIAL_MAX);
+  c.addEventListener('change',()=>{ if(+c.value>TRIAL_MAX){ c.value=TRIAL_MAX; } });
+  c.parentElement.querySelector('label').textContent='개수 (체험판 10개까지)';
+  // 게임: 벽돌깨기 한 글자만
+  document.querySelector('.gp-btn[data-game="rain"]').textContent+=' 🔒';
+  document.querySelectorAll('[data-diff="word2"],[data-diff="word3"]').forEach(b=>b.textContent+=' 🔒');
+  // 프로필 추가·내보내기·가져오기, 가정과제 링크
+  document.querySelectorAll('.profile-bar .mini-btn').forEach(b=>{ if(/추가|내보내기|가져오기/.test(b.textContent)){ b.textContent+=' 🔒'; b.classList.add('locked-feat'); } });
+  const hw=document.querySelector('button[onclick="makeHwLink()"]'); if(hw){ hw.textContent+=' 🔒'; hw.classList.add('locked-feat'); }
+}
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function uid(){ try{ return 'p_'+crypto.randomUUID().slice(0,8); }catch(e){ return 'p_'+Math.floor(performance.now()).toString(36); } }
 function nowTs(){ return Date.now ? Date.now() : +new Date(); }
@@ -883,6 +910,7 @@ function switchProfile(id){   // 아동이 바뀌면 보드·담은 단어도 �
   renderProgress(); renderZones(); renderBoard(); renderCollected();
 }
 function addProfile(){
+  if(TRIAL){ trialLock('아동 프로필 추가'); return; }
   openNameModal('새 프로필 이름', '', name=>{
     const p=newProfile(name||'아이'); profiles.push(p); switchProfile(p.id);
   });
@@ -899,6 +927,7 @@ function deleteProfile(){
   });
 }
 function exportProfiles(){
+  if(TRIAL){ trialLock('프로필 내보내기'); return; }
   const data=JSON.stringify({app:'hangul-blending-board', v:1, exportedAt:nowTs(), profiles}, null, 2);
   const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -1309,7 +1338,13 @@ function syncGenFields(){
   show('levelField', t==='real'||t==='pair'||t==='sentence');
   document.getElementById('genNote').innerHTML=GEN_NOTES[t]||'';
 }
-document.getElementById('genType').addEventListener('change',syncGenFields);
+document.getElementById('genType').addEventListener('change',e=>{
+  if(TRIAL && e.target.value!=='real'){ const o=e.target.selectedOptions[0].textContent.replace(' 🔒',''); e.target.value='real'; trialLock(o); }
+  syncGenFields();
+});
+document.getElementById('genLevel').addEventListener('change',e=>{
+  if(TRIAL && +e.target.value>2){ e.target.value='2'; trialLock('넓은 단어 범위(고급·표준국어대사전)'); }
+});
 
 async function generate(){
   const type=document.getElementById('genType').value;
@@ -1323,7 +1358,8 @@ async function generate(){
   const batchim=document.getElementById('genBatchim').value;
   const len=document.getElementById('genLen').value;
   let count=parseInt(document.getElementById('genCount').value)||20;
-  count=Math.max(1,Math.min(100,count));
+  count=Math.max(1,Math.min(TRIAL?TRIAL_MAX:100,count));
+  if(TRIAL && (type!=='real' || level>2)){ trialLock(type!=='real'?'이 자료 유형':'넓은 단어 범위'); return; }   // 화면 잠금을 우회해도 체험판에서는 만들지 않음
 
   let items=[], head='';
   if(type==='real'){ items=genRealWords(syll,batchim,count,level); head='📋 의미 단어'; }
@@ -1410,6 +1446,7 @@ function decodeHw(str){
   return {cho,jung,jong};
 }
 function makeHwLink(){
+  if(TRIAL){ trialLock('가정과제 링크'); return; }
   const p=activeProfile(); if(!p) return;
   const code=encodeHw(p.cho,p.jung,p.jong);
   // 소소숲 유료판(/hangul/app, 로그인 필요)에서는 보호자용 공개 주소(/hangul/home)로 만든다
@@ -1501,7 +1538,7 @@ function saveRainBest(){ try{ localStorage.setItem(RAIN_BEST_KEY, JSON.stringify
 function currentBest(){ return rainBest[gDiff]||0; }
 function renderBest(){ const el=document.getElementById('gBest'); if(el) el.textContent=currentBest(); }
 
-function setDiff(d){ gDiff=d; document.querySelectorAll('[data-diff]').forEach(b=>b.classList.toggle('on', b.dataset.diff===d)); restartGame(); }
+function setDiff(d){ if(TRIAL && d!=='syl'){ trialLock('두 글자 · 세 글자'); return; } gDiff=d; document.querySelectorAll('[data-diff]').forEach(b=>b.classList.toggle('on', b.dataset.diff===d)); restartGame(); }
 function setRainSpeed(lv){ rainSpeedLevel=lv; document.querySelectorAll('#rainSpeedRow .seg-btn').forEach(b=>b.classList.toggle('on', +b.dataset.spd===lv)); restartGame(); }
 function nSylWords(n){
   const out=[];
@@ -1615,6 +1652,7 @@ function burst(arena, cx, cy, colorVar){
   }
 }
 function selectGame(g){
+  if(TRIAL && g==='rain'){ trialLock('글자잡기 게임'); return; }
   currentGame=g;
   document.querySelectorAll('.gp-btn').forEach(b=>b.classList.toggle('on', b.dataset.game===g));
   document.getElementById('brickGame').style.display = g==='brick'?'':'none';
@@ -1722,6 +1760,7 @@ function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const
 /* =========================================================
    초기화
    ========================================================= */
+applyTrialUI();
 const hwLocked=applyLockModeIfNeeded();
 if(!hwLocked && window.__HW_ONLY__){
   // 보호자용 주소(/hangul/home)는 가정과제 링크로만 연다
