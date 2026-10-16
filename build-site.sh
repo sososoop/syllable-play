@@ -13,6 +13,12 @@ cd "$(dirname "$0")"
 # 공개할 파일·폴더 (여기 없는 것은 절대 올라가지 않음)
 SITE_FILES=(
   index.html
+  hangul-words.json
+  hangul-words-std.json
+  hangul-sent-1.json
+  hangul-sent-2.json
+  hangul-sent-3.json
+  hangul-sent-0.json
   manual.html
   manual-img
   .nojekyll

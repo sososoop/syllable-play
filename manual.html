@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>음절놀이 사용법 · @slp_irudassam 해독 학습 도구</title>
+<title>한글놀이 사용법 · @slp_irudassam</title>
 <style>
   :root{
     --lime:#eaff3d; --lime-soft:#f2ff8f; --blue:#5b6ef5; --ink:#141414;
-    --cons:#bfe3ff; --paper:#fff; --bg:#f4f4ef;
+    --cho:#bfe3ff; --jung:#eaff3d; --jong:#ffd6a5; --paper:#fff; --bg:#f4f4ef;
     --bd:2px solid var(--ink); --sh:4px 4px 0 var(--ink); --sh-sm:3px 3px 0 var(--ink);
   }
   *{box-sizing:border-box}
@@ -21,9 +21,8 @@
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 20px; flex-wrap:wrap; gap:8px;
   }
-  .brand{font-size:24px;font-weight:900;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+  .brand{font-size:22px;font-weight:900;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
   .brand .dotmark{width:16px;height:16px;background:var(--ink);border-radius:50%;display:inline-block}
-  .topbar .sub{font-size:13px;font-weight:800}
   .topbar a{
     border:var(--bd);background:#fff;color:var(--ink);text-decoration:none;
     font-size:13px;font-weight:800;padding:8px 14px;box-shadow:var(--sh-sm);
@@ -55,10 +54,6 @@
     font-size:17px;font-weight:900;flex:0 0 auto;box-shadow:var(--sh-sm);
   }
   .step .sub{font-size:13px;color:#666;font-weight:700;margin:0 0 14px 44px}
-  .shot{
-    width:100%;border:var(--bd);border-radius:2px;box-shadow:var(--sh-sm);
-    display:block;margin:6px 0 16px;
-  }
   ul.tips{list-style:none;margin:0;padding:0}
   ul.tips li{
     position:relative;padding:8px 0 8px 30px;font-size:15px;font-weight:600;
@@ -76,7 +71,9 @@
     margin:0 1px;
   }
   .kbd.blue{background:var(--blue);color:#fff}
-  .kbd.cons{background:var(--cons)}
+  .kbd.cho{background:var(--cho)}
+  .kbd.jung{background:var(--jung)}
+  .kbd.jong{background:var(--jong)}
   .note{
     background:#fff;border:var(--bd);border-left:8px solid var(--lime);border-radius:2px;
     padding:16px 18px;margin:18px 0;box-shadow:var(--sh-sm);font-size:14px;font-weight:600;
@@ -88,82 +85,111 @@
 </head>
 <body>
 <div class="topbar">
-  <div class="brand"><span class="dotmark"></span>음절놀이 사용법</div>
+  <div class="brand"><span class="dotmark"></span>한글놀이 사용법</div>
   <a href="index.html">← 앱으로 가기</a>
 </div>
 
 <main>
   <div class="lead">
-    <b>음절놀이</b>는 자음과 모음을 조합해 음절·단어를 만들며 <b>읽기(해독)</b>를 연습하는 도구예요.
-    아이가 배운 글자만 켜서, 딱 그 범위 안의 음절만 연습하고 학습지로도 뽑을 수 있습니다.
+    <b>한글놀이</b>는 <b>초성·중성·종성</b>을 하나씩 골라 글자를 합쳐 만들며 <b>읽기(해독)</b>를 연습하는 도구예요.
+    아이가 배운 음소만 켜 두면, 놀이·게임·자료가 모두 그 범위 안에서만 만들어집니다.
+    소리 읽어주기(TTS)는 넣지 않고, <b>자모가 모여 글자가 되는 과정</b>을 눈으로 보며 익힙니다.
     <div class="flow">
       <span>① 진도 설정</span><span class="arw">→</span>
-      <span>② 연습하기</span><span class="arw">→</span>
-      <span>③ 자료 만들기</span>
+      <span>② 놀이</span><span class="arw">→</span>
+      <span>③ 게임 / 자료 만들기</span><span class="arw">→</span>
+      <span>④ 가정과제 링크</span>
     </div>
   </div>
 
   <!-- STEP 1 -->
   <section class="step">
-    <h2><span class="num">1</span> 진도 설정 — 배운 글자만 켜기</h2>
-    <p class="sub">가장 먼저 하는 단계예요. 아이가 배운 모음·자음만 켜 두면, 나머지 화면이 모두 그 범위로 맞춰집니다.</p>
-    <img class="shot" src="manual-img/tab-prog.png" alt="진도 설정 화면">
+    <h2><span class="num">1</span> 진도 설정 — 아이·음소 정하기</h2>
+    <p class="sub">가장 먼저 하는 단계예요. 프로필을 고르고, 오늘 배운 초성·중성·종성만 켜 둡니다.</p>
     <ul class="tips">
-      <li><b>모음·자음 박스</b>의 파란 스위치를 켜면(연두색) 그 글자가 사용돼요. 배운 것만 켜세요.</li>
-      <li><span class="kbd">모두 켜기</span> <span class="kbd">모두 끄기</span> 로 모음·자음을 한 번에 조절할 수 있어요.</li>
-      <li>맨 위 <b>현재 활성 음절</b>에서 지금 조합되는 음절을 한눈에 확인해요.</li>
-      <li>예) 자음 <span class="kbd cons">ㄱ</span> 과 모음 <span class="kbd">아</span> <span class="kbd">이</span> 만 켜면 → <b>가 · 기</b> 만 나옵니다.</li>
-      <li>변경은 <b>자동 저장</b>되어 다음에 열어도 그대로 유지돼요.</li>
+      <li><b>👦 아동 프로필</b> — 아이마다 프로필을 나눠 진도를 따로 관리해요. <span class="kbd">＋ 추가</span> <span class="kbd">✏️ 이름변경</span> <span class="kbd">🗑 삭제</span>. 실명 대신 <b>별칭</b>을 권장해요.</li>
+      <li>진도는 이 기기에만 저장돼요. 기기를 옮기거나 백업하려면 <span class="kbd">⭳ 내보내기</span>로 JSON 파일을 저장하고, 새 기기에서 <span class="kbd">⭱ 가져오기</span> 하세요.</li>
+      <li><b>초성·중성·종성</b> 타일을 눌러 배운 음소만 켜요(연두색+✓). 그룹마다 <span class="kbd">모두</span> <span class="kbd">해제</span> 버튼이 있어요.</li>
+      <li><b>종성(받침)</b>은 <span class="kbd jong">∅ 받침없음</span>이 항상 켜져 있고, 받침을 배우면 하나씩 켜 주면 돼요.</li>
+      <li>맨 위 <b>지금 만들 수 있는 글자</b>에서 현재 조합되는 글자 예시를 확인해요. 변경은 <b>자동 저장</b>됩니다.</li>
     </ul>
   </section>
 
   <!-- STEP 2 -->
   <section class="step">
-    <h2><span class="num">2</span> 연습하기 — 눌러서 단어 만들기</h2>
-    <p class="sub">켠 글자로 아이와 함께 음절·단어를 만들며 소리 내어 읽어 봅니다.</p>
-    <img class="shot" src="manual-img/tab-play.png" alt="연습하기 화면">
+    <h2><span class="num">2</span> 놀이 — 초성·중성·종성 합치기</h2>
+    <p class="sub">놀이 화면에서 자모를 하나씩 눌러 글자를 만들고, 아이와 소리 내어 읽어 봅니다.</p>
     <ul class="tips">
-      <li>아래 <b>자판의 글자</b>를 누르면 위 칸에 하나씩 쌓여요. (최대 4음절)</li>
-      <li><span class="kbd cons">🎲 랜덤 단어</span> 켠 음절로 무작위 단어를 자동으로 만들어 줘요.</li>
-      <li><span class="kbd">⬅️ 지우기</span> 마지막 글자 삭제 · <span class="kbd">🧹 처음부터</span> 전체 지우기.</li>
-      <li><span class="kbd">⭐ 담기</span> 한번 더 연습이 필요한 단어를 아래 <b>내가 담은 단어</b>에 모아 둘 수 있어요.</li>
+      <li>아래 세 구역 <span class="kbd cho">초성</span> <span class="kbd jung">중성</span> <span class="kbd jong">종성</span> 에서 하나씩 누르면 위에 글자가 합쳐져요. (누르는 순서는 자유)</li>
+      <li>같은 자리를 다시 누르면 <b>교체</b>, 한 번 더 누르면 <b>해제</b>돼요.</li>
+      <li>두·세 글자 단어는 <span class="kbd blue">다음 글자 ＋</span>로 이어 만들어요. (앞 글자가 잠기고 새 글자 시작 · 최대 3음절)</li>
+      <li><span class="kbd">⬅️ 지우기</span> 마지막 자모부터 지우기 · <span class="kbd">🧹 처음부터</span> 전체 지우기.</li>
+      <li><b>🎲 랜덤 글자</b> — <span class="kbd cho">1음절</span> <span class="kbd cho">2음절</span> <span class="kbd cho">3음절</span> 을 누르면 켠 음소로 무작위 글자를 만들어 줘요.</li>
+      <li><span class="kbd">⭐ 담기</span>로 더 연습할 글자를 <b>담은 단어</b>에 모으고, <span class="kbd">✍️ 글씨연습장</span>으로 바로 쓰기 연습지를 만들 수 있어요.</li>
     </ul>
   </section>
 
   <!-- STEP 3 -->
   <section class="step">
-    <h2><span class="num">3</span> 자료 만들기 — 학습지 자동 생성</h2>
-    <p class="sub">연습한 범위로 단어·문장 목록을 자동으로 만들어 인쇄하거나 복사할 수 있어요.</p>
-    <img class="shot" src="manual-img/tab-gen.png" alt="자료 만들기 화면">
+    <h2><span class="num">3</span> 게임 — 타자·터치로 읽기 연습</h2>
+    <p class="sub">진도에서 켠 음소로 만든 글자가 소재가 돼요. 두 가지 게임이 있어요.</p>
     <ul class="tips">
-      <li><b>유형</b>을 골라요 — 의미 단어 / 무의미 단어(비단어) / 문장.</li>
-      <li><b>품사 · 음절 수 · 개수</b>를 정하고 <span class="kbd blue">✨ 생성</span> 을 누르면 목록이 나와요.</li>
-      <li><span class="kbd">📋 복사</span> 다른 곳에 붙여넣기 · <span class="kbd">🖨️ 인쇄</span> 학습지로 바로 출력.</li>
-      <li>진도 설정에서 <b>켠 음절만</b> 사용돼요. 목록이 부족하면 글자를 더 켜 보세요.</li>
+      <li><b>🧱 벽돌깨기</b> — 벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 깨져요. 시간제한이 없어 <b>천천히 읽고</b> 쳐도 돼요.</li>
+      <li><b>💻 글자잡기</b> — 위에서 떨어지는 글자를 바닥에 닿기 전에 없애요. 생명은 하트 ❤️로 표시돼요.</li>
+      <li>글자잡기 <b>속도</b>는 <span class="kbd">1단계·느림</span> <span class="kbd">2단계·보통</span> <span class="kbd">3단계·빠름</span> 중에 고를 수 있어요. (기본 1단계)</li>
+      <li><b>PC에서는 타자</b>로 치고, <b>휴대폰·태블릿에서는</b> 떨어지는 글자를 <b>정확히 읽고 손가락으로 톡 터치</b>하면 잡혀요.</li>
+      <li>글자 수(<span class="kbd">한 글자</span> <span class="kbd">두 글자</span> <span class="kbd">세 글자</span>)로 난이도를 정하고, <span class="kbd">⏸️ 일시정지</span> · <span class="kbd">🔄 다시</span> · 🔊 소리 켜고 끄기가 가능해요.</li>
     </ul>
   </section>
 
   <!-- STEP 4 -->
   <section class="step">
-    <h2><span class="num">4</span> 글씨 연습장까지 이어 만들기</h2>
-    <p class="sub">생성한 단어를 그대로 <b>글씨 쓰기 연습장</b>으로 만들 수 있어요.</p>
+    <h2><span class="num">4</span> 자료 만들기 — 학습지 자동 생성</h2>
+    <p class="sub">켠 음소 범위로 단어·문장 목록을 자동으로 만들어 인쇄하거나 복사할 수 있어요.</p>
     <ul class="tips">
-      <li>① 자료를 생성한 뒤 <span class="kbd">📋 복사</span> 를 눌러요. (번호 없이 단어만 복사돼요)</li>
-      <li>② <span class="kbd" style="background:#e2d5ff">✍️ 글씨 연습장 만들기</span> 를 누르면 글씨 연습장 웹도구가 새 창으로 열려요.</li>
-      <li>③ 입력칸에 <b>붙여넣기(⌘·Ctrl + V)</b> 하면, 그 단어들로 A4 쓰기 연습장이 완성돼요. ✍️</li>
+      <li><b>유형</b>을 골라요 — <b>의미 단어 / 무의미 단어 / 문장</b>.</li>
+      <li><b>음절 수</b>(1·2·3)와 <b>받침</b>(없음만/있는것만/섞기), <b>개수</b>를 정하고 <span class="kbd blue">✨ 생성</span>을 눌러요.</li>
+      <li><span class="kbd">📋 복사</span> 다른 곳에 붙여넣기 · <span class="kbd">🖨️ 인쇄</span> 학습지로 바로 출력.</li>
+      <li>진도에서 <b>켠 음소만</b> 사용돼요. 목록이 부족하면 음소를 더 켜 보세요.</li>
+    </ul>
+    <div class="note" style="margin-top:16px">
+      <h3>ℹ️ “무의미 단어”는요</h3>
+      실제 사전에 없는 <b>소리 연습용</b> 글자예요. 고유명사·활용형은 사전에 없어도 실제 단어일 수 있으니 <b>선생님이 한 번 확인</b>해 주세요.
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step">
+    <h2><span class="num">5</span> 글씨 연습장까지 이어 만들기</h2>
+    <p class="sub">만든 단어를 그대로 <b>글씨 쓰기 연습장</b>으로 넘길 수 있어요.</p>
+    <ul class="tips">
+      <li>놀이에서 담은 단어는 <span class="kbd">✍️ 글씨연습장</span>, 자료 만들기에서는 <span class="kbd" style="background:#e2d5ff">✍️ 글씨연습장 만들기</span> 버튼을 눌러요.</li>
+      <li>그 단어들로 <b>A4 쓰기 연습장</b>이 새 창에서 자동으로 만들어져요. ✍️</li>
+    </ul>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="step">
+    <h2><span class="num">6</span> 가정과제 링크 — 집에서 같은 범위로 복습</h2>
+    <p class="sub">치료실에서 정한 진도 그대로, 집에서 복습할 수 있는 링크를 보호자에게 보내요.</p>
+    <ul class="tips">
+      <li>진도 설정 화면의 <span class="kbd">🏠 가정과제 링크</span>를 누르면 링크가 만들어져요. <b>복사</b>해서 보호자에게 전달하세요.</li>
+      <li>보호자·아이는 <b>로그인 없이</b> 링크만 열면 돼요. 열면 <b>진도가 잠겨</b> 선생님이 정한 음소 범위로만 놀이·글씨연습을 해요.</li>
+      <li>링크에 <b>아이 이름은 들어가지 않아요.</b> 화면에는 “🏠 오늘의 연습” 배지만 보여요.</li>
     </ul>
   </section>
 
   <div class="note">
     <h3>💡 알아두면 좋은 점</h3>
-    ● <b>의미/소리 자동 구분</b> — 온라인 사전으로 실제 뜻이 있는 단어인지 판별해, 무의미 단어를 만들 때 진짜 단어는 자동으로 빠져요.<br>
-    ● <b>자동 저장</b> — 진도 설정과 담은 단어는 이 기기에 저장되어 다음에 열어도 유지됩니다.<br>
-    ● <b>ㅇ 계열</b>(아·야·어…)은 <b>모음</b> 박스가 대신하므로 자음 목록에는 ㅇ이 없어요.
+    ● <b>지도 순서를 강제하지 않아요</b> — 아이마다 배운 음소가 다르니, 선생님이 켠 음소만 조합에 쓰입니다.<br>
+    ● <b>소리 읽어주기(TTS)는 없어요</b> — 자모가 모여 글자가 되는 과정을 눈으로 보며 블렌딩 감각을 익혀요.<br>
+    ● <b>자동 저장</b> — 프로필·진도·담은 단어는 이 기기에 저장돼요. 데이터가 지워질 수 있으니 <b>가끔 ⭳ 내보내기로 백업</b>하세요.<br>
+    ● <b>ㅇ</b>은 초성에 포함돼 있어요(아·어·오…는 초성 ㅇ + 모음).
   </div>
 </main>
 
 <footer>
-  @slp_irudassam 해독 학습 도구 · <a href="index.html">음절놀이 앱 열기</a><br>
+  @slp_irudassam 한글놀이 · <a href="index.html">앱 열기</a><br>
   <span style="font-size:11px">온라인 사전 판별 시 출처: 국립국어원 「한국어기초사전」 (CC BY-SA 2.0 KR)</span>
 </footer>
 </body>

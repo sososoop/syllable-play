@@ -170,6 +170,17 @@
   .tag.nonsense{background:var(--nonsense)}
   .tag.sent{background:var(--sent)}
   .result-empty{color:#999;font-size:14px;font-weight:600;padding:14px 0}
+  .tag.pair{background:var(--lime)}
+  .result-item .tg{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px;text-decoration-color:var(--blue)}
+  .target-box{margin-top:16px;padding:12px 12px 4px;border:var(--bd);border-radius:2px;background:#fafafa}
+  .target-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .target-head b{font-size:14px}
+  .target-head .sub{font-size:12px;color:#777;font-weight:700}
+  .target-box .pg-grid{grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}
+  .target-box .pg-tile.on{background:var(--blue);color:#fff}
+  .target-box .pg-tile.on:after{color:#fff}
+  .target-box .pg-tile.on.off{background:repeating-linear-gradient(45deg,#9aa6ff,#9aa6ff 6px,#c9cfff 6px,#c9cfff 12px);color:var(--ink)}
+  .src-note{font-size:12px;color:#888;font-weight:700;margin-top:10px}
   /* 음절표 */
   .syl-table{border-collapse:collapse;width:100%;margin-top:8px}
   .syl-table th,.syl-table td{border:2px solid var(--ink);text-align:center;font-size:22px;font-weight:900;padding:8px 4px}
@@ -233,6 +244,7 @@
     .card{box-shadow:none;border:2px solid #000;break-inside:avoid}
     .result-item{font-size:22px}
     .result-item .tag,.syl-table td.real-cell{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .target-box{display:none !important}
     #printTitle{display:block !important}
   }
   #printTitle{display:none;text-align:center;font-size:22px;font-weight:900;margin-bottom:10px}
@@ -284,7 +296,7 @@
 
     <div class="card">
       <p class="hint" style="margin:0;font-size:12px;color:#888">
-        📖 온라인 판별 출처: 국립국어원 <b>한국어기초사전</b> (CC BY-SA 2.0 KR). 단어의 사전 등재 여부(사실)만 판별에 쓰며 뜻풀이는 저장·표시하지 않습니다.
+        📖 의미 단어 출처: 국립국어원 <b>한국어기초사전</b>·<b>표준국어대사전</b> (CC BY-SA 2.0 KR). 사전에 실린 1~3음절 표제어 목록만 쓰며 뜻풀이는 저장·표시하지 않습니다.
       </p>
     </div>
   </section>
@@ -404,6 +416,7 @@
           <select id="genType">
             <option value="real">의미 단어</option>
             <option value="nonsense">무의미 단어</option>
+            <option value="pair">헷갈리는 짝 (한 소리만 다른 단어)</option>
             <option value="sentence">문장</option>
           </select>
         </div>
@@ -424,13 +437,31 @@
             <option value="only">받침 있는것만</option>
           </select>
         </div>
+        <div class="field" id="levelField">
+          <label>단어 범위</label>
+          <select id="genLevel">
+            <option value="1">쉬운 단어 (초급)</option>
+            <option value="2" selected>보통 (초·중급)</option>
+            <option value="3">넓게 (고급까지)</option>
+            <option value="4">기초사전 전체</option>
+            <option value="5">더 넓게 (+표준국어대사전 고유어)</option>
+            <option value="6">최대 (+표준국어대사전 전체)</option>
+          </select>
+        </div>
         <div class="field" id="lenField" style="display:none">
-          <label>어절 수 (문장)</label>
+          <label>문장 길이</label>
           <select id="genLen">
-            <option value="0">섞어서</option>
-            <option value="2">2어절</option>
-            <option value="3">3어절</option>
-            <option value="4">4어절</option>
+            <option value="3">짧게 (3어절까지)</option>
+            <option value="5" selected>보통 (5어절까지)</option>
+            <option value="8">길게 (8어절까지)</option>
+          </select>
+        </div>
+        <div class="field" id="outField" style="display:none">
+          <label>진도 밖 글자</label>
+          <select id="genOut">
+            <option value="0">허용 안 함</option>
+            <option value="2" selected>2글자까지</option>
+            <option value="99">상관없음</option>
           </select>
         </div>
         <div class="field" id="countField">
@@ -438,13 +469,28 @@
           <input id="genCount" type="number" min="1" max="100" value="20">
         </div>
       </div>
+      <div class="target-box" id="targetBox">
+        <div class="target-head">
+          <b>🎯 집중 음소</b><span class="sub">(선택) 고르면 이 소리가 꼭 들어간 것만, 많이 들어간 순으로 나와요</span>
+          <span class="seg" id="targetPosSeg" style="margin-left:auto">
+            <button class="seg-btn on" data-tpos="cho" onclick="setTargetPos('cho')">첫소리</button>
+            <button class="seg-btn" data-tpos="jong" onclick="setTargetPos('jong')">받침</button>
+            <button class="seg-btn" data-tpos="any" onclick="setTargetPos('any')">어디든</button>
+          </span>
+          <button class="mini-btn" onclick="clearTargets()">해제</button>
+        </div>
+        <div class="pg-grouplabel">자음</div>
+        <div class="pg-grid" id="tgCons"></div>
+        <div class="pg-grouplabel">모음</div>
+        <div class="pg-grid" id="tgVow"></div>
+      </div>
       <div class="genbtns">
         <button class="btn-gen" onclick="generate()">✨ 생성</button>
         <button class="btn-copy" onclick="copyResult()">📋 복사</button>
         <button class="btn-copy" onclick="resultToHandwriting()">✍️ 글씨연습장 만들기</button>
         <button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>
       </div>
-      <p class="hint" style="margin:12px 0 0" id="genNote">💡 “무의미 단어”는 실제 사전에 없는 소리 연습용 글자예요. 고유명사·활용형은 사전에 없어도 실제 단어일 수 있으니 <b>선생님이 확인</b>해 주세요.</p>
+      <p class="hint" style="margin:12px 0 0" id="genNote"></p>
     </div>
 
     <div class="card">
@@ -455,8 +501,8 @@
 </main>
 
 <footer>
-  @slp_irudassam 한글놀이<br>
-  <span style="font-size:11px">온라인 사전 판별 시 출처: 국립국어원 「한국어기초사전」 (CC BY-SA 2.0 KR)</span>
+  소소숲 : 지혜의 기록소 · 한글놀이<br>
+  <span style="font-size:11px">의미 단어·예문 출처: 국립국어원 「<a href="https://krdict.korean.go.kr" target="_blank" rel="noopener" style="color:inherit">한국어기초사전</a>」·「<a href="https://stdict.korean.go.kr" target="_blank" rel="noopener" style="color:inherit">표준국어대사전</a>」 (<a href="https://creativecommons.org/licenses/by-sa/2.0/kr/" target="_blank" rel="noopener" style="color:inherit">CC BY-SA 2.0 KR</a>)</span>
 </footer>
 
 <!-- 이름 입력 모달 -->
@@ -673,6 +719,35 @@ let lookupCache={};
 })();
 function saveCache(){ try{ localStorage.setItem(CACHE_STORE, JSON.stringify(lookupCache)); }catch(e){} }
 
+/* =========================================================
+   사전 단어 목록 (국립국어원 「한국어기초사전」 1~3음절 표제어)
+   형식: {"g":{"1":"오이 아이 …","2":…,"3":…,"0":…}} — 키=등급
+   받지 못하면 내장 LEXICON만으로 동작
+   ========================================================= */
+const DICT_URL='/hangul-words.json';          // 한국어기초사전 (등급 1·2·3·0)
+const DICT_STD_URL='/hangul-words-std.json';  // 표준국어대사전 추가분 (sn 고유어 · sa 그 밖)
+// 단어 범위 순서: 1초급 2중급 3고급 4기초사전 등급없음 5표준 고유어 6표준 그 밖
+const DICT_RANK={'1':1,'2':2,'3':3,'0':4,'sn':5,'sa':6};
+let DICT={};     // {묶음: [단어…]}
+async function loadDictFile(url){
+  const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(), 15000);
+  try{
+    const r=await fetch(url,{signal:ctl.signal});
+    if(!r.ok) return;
+    const j=await r.json();
+    if(!j||typeof j.g!=='object') return;
+    for(const g in j.g){
+      if(!(g in DICT_RANK)) continue;
+      DICT[g]=String(j.g[g]).split(' ').filter(w=>/^[가-힣]{1,3}$/.test(w));
+      DICT[g].forEach(w=>REAL_SET.add(w));   // 무의미 단어에서 사전 단어 빼기
+    }
+  }catch(e){}
+  finally{ clearTimeout(to); }
+}
+const dictReady=loadDictFile(DICT_URL);
+let stdReady=null;   // 표준국어대사전은 필요할 때 불러옴
+function loadStd(){ if(!stdReady) stdReady=loadDictFile(DICT_STD_URL); return stdReady; }
+
 let lookupAbort=null;
 async function lookupOnline(word){
   if(word in lookupCache) return lookupCache[word];
@@ -737,7 +812,7 @@ function switchMode(m){
   if(m!=='game') stopRain();
   if(m==='play'){ playPanel.classList.add('on'); tabPlay.classList.add('on'); renderZones(); renderBoard(); }
   if(m==='game'){ gamePanel.classList.add('on'); tabGame.classList.add('on'); startGameTab(); }
-  if(m==='gen'){ genPanel.classList.add('on'); tabGen.classList.add('on'); }
+  if(m==='gen'){ genPanel.classList.add('on'); tabGen.classList.add('on'); renderTargets(); }
   if(m==='prog'){ progPanel.classList.add('on'); tabProg.classList.add('on'); renderProgress(); }
 }
 
@@ -1052,13 +1127,19 @@ function collectedToHandwriting(){
 function sylCount(word){ return [...word].filter(ch=>decompose(ch)).length; }
 function hasBatchim(word){ return [...word].some(ch=>{ const d=decompose(ch); return d && d.ji!==0; }); }
 
-function genRealWords(syll,batchim,count){
+function genRealWords(syll,batchim,count,level){
   let pool=[];
   ['noun','verb','adv','pron'].forEach(p=>{
     const b=lexBucket(p);
     for(const k in b){ if(syll!=0 && String(syll)!==k) continue; pool.push(...b[k]); }
   });
+  // 사전 단어 목록: 고른 범위(level)까지의 묶음만
+  for(const g in DICT){
+    if(DICT_RANK[g]>level) continue;
+    DICT[g].forEach(w=>{ if(syll==0 || sylCount(w)==syll) pool.push(w); });
+  }
   pool=[...new Set(pool)].filter(wordAllowed).filter(w=>batchimMatch(w,batchim));
+  if(hasTargets()) return byTargetDensity(pool.filter(w=>targetCount(w)>0)).slice(0,count).map(w=>({text:w,type:'real'}));
   return shuffle(pool).slice(0,count).map(w=>({text:w,type:'real'}));
 }
 function batchimMatch(word,batchim){
@@ -1069,15 +1150,203 @@ function batchimMatch(word,batchim){
 function genNonsense(syll,batchim,count){
   const one=syllablePool(batchim==='mix'?'mix':batchim);
   if(!one.length) return [];
+  const tgt=hasTargets()? one.filter(sylTargetHit) : one;   // 집중 음소가 든 음절
+  if(!tgt.length) return [];
   const out=[]; const seen=new Set(); let guard=0;
   while(out.length<count && guard<count*500){
     guard++;
     const n = syll!=0 ? Number(syll) : (Math.random()<0.5?2:3);
-    let w=''; for(let i=0;i<n;i++) w+=one[Math.floor(Math.random()*one.length)];
+    const k=Math.floor(Math.random()*n);                      // 이 자리는 꼭 집중 음소 음절
+    let w=''; for(let i=0;i<n;i++){ const src=(i===k)?tgt:one; w+=src[Math.floor(Math.random()*src.length)]; }
     if(seen.has(w)||REAL_SET.has(w)) continue;
     seen.add(w); out.push({text:w,type:'nonsense'});
   }
   return out;
+}
+
+/* =========================================================
+   집중 음소 (진도 = 읽을 수 있는 범위, 집중 음소 = 꼭 들어갈 소리)
+   ========================================================= */
+const TARGET_KEY='sp.targets.v1';
+const TG={cons:new Set(), vow:new Set(), pos:'cho'};
+(function loadTargets(){
+  try{
+    const t=JSON.parse(localStorage.getItem(TARGET_KEY)||'null');
+    if(t){ (t.cons||[]).forEach(c=>{ if(CHO.includes(c)) TG.cons.add(c); }); (t.vow||[]).forEach(v=>{ if(JUNG.includes(v)) TG.vow.add(v); }); if(['cho','jong','any'].includes(t.pos)) TG.pos=t.pos; }
+  }catch(e){}
+})();
+function saveTargets(){ try{ localStorage.setItem(TARGET_KEY, JSON.stringify({cons:[...TG.cons], vow:[...TG.vow], pos:TG.pos})); }catch(e){} }
+function hasTargets(){ return TG.cons.size+TG.vow.size>0; }
+function targetLabel(){ return [...TG.cons, ...TG.vow].join('')+(TG.cons.size? (TG.pos==='cho'?' 첫소리':TG.pos==='jong'?' 받침':''):''); }
+function sylTargetHit(ch){
+  const d=decompose(ch); if(!d) return false;
+  if(TG.vow.has(JUNG[d.mi])) return true;
+  if(TG.pos!=='jong' && TG.cons.has(CHO[d.ci])) return true;
+  if(TG.pos!=='cho' && d.ji && TG.cons.has(JONG[d.ji])) return true;
+  return false;
+}
+function targetCount(text){ let n=0; for(const ch of text) if(sylTargetHit(ch)) n++; return n; }
+/* 집중 음소가 차지하는 비율이 높은 순서 (같으면 무작위). 코·토끼처럼 짧은 단어가 긴 외래어에 밀리지 않게 개수 대신 비율 */
+function byTargetDensity(arr){
+  return shuffle(arr).map(w=>({w, d:targetCount(w)/Math.max(1,sylCount(w))})).sort((a,b)=>b.d-a.d).map(x=>x.w);
+}
+function renderTargets(){
+  const off=targetsOffProgress();
+  const mk=(box,list,set)=>{
+    box.innerHTML='';
+    list.forEach(c=>{
+      const t=document.createElement('div'); t.className='pg-tile'+(set.has(c)?' on':'')+(off.includes(c)?' off':''); t.textContent=c;
+      if(off.includes(c)) t.title='진도 설정에서 꺼져 있어요';
+      t.onclick=()=>{ set.has(c)?set.delete(c):set.add(c); saveTargets(); renderTargets(); };
+      box.appendChild(t);
+    });
+  };
+  mk(document.getElementById('tgCons'), CHO_GROUPS.flatMap(g=>g.idx).map(i=>CHO[i]), TG.cons);
+  mk(document.getElementById('tgVow'), JUNG_GROUPS.flatMap(g=>g.idx).map(i=>JUNG[i]), TG.vow);
+  document.querySelectorAll('#targetPosSeg .seg-btn').forEach(b=>b.classList.toggle('on', b.dataset.tpos===TG.pos));
+}
+/* 진도에 꺼져 있는 집중 음소 (이 소리는 결과에 나올 수 없음) */
+function targetsOffProgress(){
+  const cho=new Set(enabled('cho').map(i=>CHO[i])), jung=new Set(enabled('jung').map(i=>JUNG[i])), jong=new Set(enabled('jong').map(i=>JONG[i]));
+  const off=[];
+  TG.cons.forEach(c=>{ const inCho=cho.has(c), inJong=jong.has(c); if(TG.pos==='cho'?!inCho : TG.pos==='jong'?!inJong : !(inCho||inJong)) off.push(c); });
+  TG.vow.forEach(v=>{ if(!jung.has(v)) off.push(v); });
+  return off;
+}
+function setTargetPos(p){ TG.pos=p; saveTargets(); renderTargets(); }
+function clearTargets(){ TG.cons.clear(); TG.vow.clear(); saveTargets(); renderTargets(); }
+
+/* ---------- 헷갈리는 짝 (한 소리만 다른 단어) ---------- */
+const CONTRAST_CONS=[['ㄱ','ㅋ','ㄲ'],['ㄷ','ㅌ','ㄸ'],['ㅂ','ㅍ','ㅃ'],['ㅈ','ㅊ','ㅉ'],['ㅅ','ㅆ'],['ㄴ','ㄹ'],['ㅁ','ㅂ']];
+const CONTRAST_VOW=[['ㅐ','ㅔ'],['ㅓ','ㅗ'],['ㅗ','ㅜ'],['ㅡ','ㅜ'],['ㅓ','ㅕ'],['ㅏ','ㅑ'],['ㅗ','ㅛ'],['ㅜ','ㅠ'],['ㅚ','ㅙ','ㅞ']];
+function partnerMap(groups){
+  const m={}; groups.forEach(g=>g.forEach(a=>{ m[a]=m[a]||new Set(); g.forEach(b=>{ if(b!==a) m[a].add(b); }); })); return m;
+}
+const PARTNER_CONS=partnerMap(CONTRAST_CONS), PARTNER_VOW=partnerMap(CONTRAST_VOW);
+function wordRankMap(level){
+  const m=new Map();
+  ['noun','verb','adv','pron','interj'].forEach(p=>{ const b=LEXICON[p]; for(const k in b) b[k].forEach(w=>m.set(w,1)); });
+  for(const g in DICT){ const r=DICT_RANK[g]; if(r>level) continue; DICT[g].forEach(w=>{ if(!m.has(w)||m.get(w)>r) m.set(w,r); }); }
+  return m;
+}
+function genPairs(syll,batchim,count,level){
+  const rank=wordRankMap(level);
+  const ok=w=>rank.has(w) && wordAllowed(w) && batchimMatch(w,batchim) && (syll==0 || sylCount(w)==syll);
+  const groups=new Map();   // key → Set(단어)
+  for(const w of rank.keys()){
+    if(!ok(w)) continue;
+    const chars=[...w];
+    chars.forEach((ch,i)=>{
+      const d=decompose(ch); if(!d) return;
+      const tries=[];
+      // 자음(첫소리): 집중 음소가 있으면 그 소리일 때만
+      const c=CHO[d.ci];
+      if(PARTNER_CONS[c] && (!hasTargets() || (TG.cons.has(c) && TG.pos!=='jong')))
+        tries.push(['c', c, [...PARTNER_CONS[c]].map(x=>composeSyl(CHO.indexOf(x),d.mi,d.ji))]);
+      const v=JUNG[d.mi];
+      if(PARTNER_VOW[v] && (!hasTargets() || TG.vow.has(v)))
+        tries.push(['v', v, [...PARTNER_VOW[v]].map(x=>composeSyl(d.ci,JUNG.indexOf(x),d.ji))]);
+      tries.forEach(([kind,ph,syls])=>{
+        const found=syls.map(sy=>chars.slice(0,i).join('')+sy+chars.slice(i+1).join('')).filter(ok);
+        if(!found.length) return;
+        const all=[w,...found];
+        const key=i+kind+all.slice().sort().join(',');
+        if(!groups.has(key)) groups.set(key,new Set(all));
+      });
+    });
+  }
+  // 같은 단어 묶음 중복 제거, 쉬운 단어 위주 + 무작위
+  const seen=new Set(); const rows=[];
+  for(const set of groups.values()){
+    const ws=[...set].sort((a,b)=>CONTRAST_SORT(a,b));
+    const k=ws.join('|'); if(seen.has(k)) continue; seen.add(k);
+    const r=Math.max(...ws.map(w=>rank.get(w)||9));
+    rows.push({ws, r});
+  }
+  // 큰 묶음 먼저 보고, 이미 나온 짝만 있는 작은 묶음(발–말 ⊂ 발–팔–말)은 빼기
+  rows.sort((a,b)=>b.ws.length-a.ws.length);
+  const covered=new Set(); const uniq=[];
+  rows.forEach(row=>{
+    const prs=[]; for(let i=0;i<row.ws.length;i++) for(let j=i+1;j<row.ws.length;j++) prs.push(row.ws[i]+'|'+row.ws[j]);
+    if(prs.every(x=>covered.has(x))) return;
+    prs.forEach(x=>covered.add(x)); uniq.push(row);
+  });
+  const out=shuffle(uniq).sort((a,b)=>a.r-b.r).slice(0,count);
+  return out.map(x=>({text:x.ws.join(' – '), type:'pair'}));
+}
+/* 짝 안에서는 예사소리→거센소리→된소리 순 */
+const CONS_ORDER='ㄱㅋㄲㄷㅌㄸㅂㅍㅃㅈㅊㅉㅅㅆㄴㄹㅁ';
+function CONTRAST_SORT(a,b){
+  for(let i=0;i<Math.min(a.length,b.length);i++){
+    if(a[i]===b[i]) continue;
+    const da=decompose(a[i]), db=decompose(b[i]); if(!da||!db) break;
+    if(da.ci!==db.ci) return CONS_ORDER.indexOf(CHO[da.ci])-CONS_ORDER.indexOf(CHO[db.ci]);
+    return da.mi-db.mi;
+  }
+  return a.localeCompare(b);
+}
+
+/* ---------- 문장: 한국어기초사전 예문에서 고르기 ---------- */
+// 예문은 기초사전 전체 내려받기(2026-09)에서 미리 걸러 둔 파일을 씀 (API 호출 없음)
+// 파일: 표제어 등급별 hangul-sent-{1,2,3,0}.json, s = "표제어\t예문\t예문…" 줄 모음
+const sentFiles=new Map();      // 등급 → Promise<[[표제어,[예문…]],…] | null>
+function loadSentFile(k){
+  if(!sentFiles.has(k)) sentFiles.set(k,(async()=>{
+    try{
+      const r=await fetch('/hangul-sent-'+k+'.json'); if(!r.ok) return null;
+      const j=await r.json(); if(!j||typeof j.s!=='string') return null;
+      return j.s.split('\n').map(l=>{ const p=l.split('\t'); return [p[0],p.slice(1)]; });
+    }catch(e){ sentFiles.delete(k); return null; }
+  })());
+  return sentFiles.get(k);
+}
+const SENT_BLOCK=['팬티','브래지어','속옷','섹스','성교','성기','강간','성폭','매춘','마약','자살','자해','살인','살해','시체','사형','학살','고문','도박','포르노','음란','불륜','간통','낙태','총살','폭탄','테러','처형','시신','죽여','죽인','담배','소주','맥주','술집','술을','술에','술이','술잔','이혼','외도'];
+function cleanSentence(t){
+  t=t.replace(/\s+/g,' ').trim();
+  if(!/^[가-힣 .,?!]+$/.test(t)) return null;        // 숫자·영문·따옴표·대화(가:) 등 제외
+  if(SENT_BLOCK.some(b=>t.includes(b))) return null;
+  return t;
+}
+async function genSentencesOnline(len,count,level,outAllow){
+  len=Number(len)||5; if(!Number.isFinite(outAllow)) outAllow=2;
+  // 1) 단어 범위에 맞는 예문 파일: 기본은 초·중급 표제어 예문, 넓히면 고급·등급 없음까지
+  const cap=Math.min(Math.max(level,2),4);
+  const keys=['1','2'].concat(cap>=3?['3']:[], cap>=4?['0']:[]);
+  const groups=await Promise.all(keys.map(loadSentFile));
+  const failed=groups.every(g=>g===null);
+  // 2) 거르기: 어절 수, 진도 밖 글자 수, 집중 음소
+  const cand=new Map();
+  groups.forEach(g=>(g||[]).forEach(([hw,list])=>{
+    if(SENT_BLOCK.some(b=>hw.includes(b))) return;
+    const ok=[];
+    for(const raw of list){
+      const t=cleanSentence(raw); if(!t || cand.has(t)) continue;
+      if(t.split(' ').length>len) continue;
+      let out=0, syl=0;
+      for(const ch of t){ if(!decompose(ch)) continue; syl++; if(!syllableAllowed(ch)) out++; }
+      if(out>outAllow || syl<2) continue;
+      const n=hasTargets()? targetCount(t) : 0;
+      if(hasTargets() && n===0) continue;
+      // 서술어로 끝난 문장 우선(“검은색 팬티.” 같은 명사구는 뒤로)
+      const full=/(다|요|까|니|어|아|지|네|래|게|자|라)[.?!]$/.test(t) ? 1 : 0;
+      ok.push({t,n,out,syl,full,d:Math.round(n/Math.max(1,syl)*10)/10,src:'krdict'});
+    }
+    shuffle(ok).slice(0,4).forEach(x=>cand.set(x.t,x));   // 한 표제어에서 4문장까지만 (한 단어로 몰리지 않게)
+  }));
+  // 3) 내장 문장도 후보로
+  ['2','3','4'].forEach(k=>(SENTENCES[k]||[]).forEach(t=>{
+    if(cand.has(t) || t.split(' ').length>len) return;
+    let out=0; for(const ch of t){ if(decompose(ch) && !syllableAllowed(ch)) out++; }
+    if(out>outAllow) return;
+    const n=hasTargets()? targetCount(t) : 0;
+    if(hasTargets() && n===0) return;
+    cand.set(t,{t,n,out,syl:0,full:1,d:Math.round(n/Math.max(1,t.replace(/[^가-힣]/g,'').length)*10)/10,src:'local'});
+  }));
+  let arr=shuffle([...cand.values()]);
+  // 서술어로 끝난 문장 → 집중 음소 2개 이상 → 집중 음소 비율 → 진도 밖 글자 적은 순
+  arr.sort((a,b)=>(b.full-a.full)||((b.n>=2)-(a.n>=2))||(b.d-a.d)||(a.out-b.out));
+  if(failed && !arr.length) openInfo('안내','예문 파일을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
+  return arr.slice(0,count).map(x=>({text:x.t,type:'sentence',src:x.src}));
 }
 function genSentences(len,count){
   let pool=[];
@@ -1087,15 +1356,32 @@ function genSentences(len,count){
   return shuffle(pool).slice(0,count).map(s=>({text:s,type:'sentence'}));
 }
 
-document.getElementById('genType').addEventListener('change',e=>{
-  const t=e.target.value;
-  document.getElementById('syllField').style.display = (t==='real'||t==='nonsense')?'':'none';
-  document.getElementById('batchimField').style.display = (t==='real'||t==='nonsense')?'':'none';
-  document.getElementById('lenField').style.display = (t==='sentence')?'':'none';
-});
+const GEN_NOTES={
+  real:'💡 집중 음소를 고르면 그 소리가 든 단어만, 많이 든 순서로 나와요. 밑줄은 집중 음소가 든 글자예요.',
+  nonsense:'💡 “무의미 단어”는 사전(기초사전·표준국어대사전)에 없는 소리 연습용 글자예요. 활용형은 사전에 없어도 실제 말일 수 있으니 <b>선생님이 확인</b>해 주세요.',
+  pair:'💡 한 소리만 다른 단어끼리 묶어요(예: 달–탈–딸, 개–게). 집중 음소를 고르면 그 소리와 헷갈리기 쉬운 짝만 찾아요. 짝 단어도 진도 안의 글자만 써요.',
+  sentence:'💡 사전 예문에서 골라요. 어색한 문장이 섞일 수 있으니 <b>인쇄 전에 확인</b>해 주세요.'
+};
+function syncGenFields(){
+  const t=document.getElementById('genType').value;
+  const show=(id,on)=>{ document.getElementById(id).style.display=on?'':'none'; };
+  show('syllField', t==='real'||t==='nonsense'||t==='pair');
+  show('batchimField', t==='real'||t==='nonsense'||t==='pair');
+  show('lenField', t==='sentence');
+  show('outField', t==='sentence');
+  show('levelField', t==='real'||t==='pair'||t==='sentence');
+  document.getElementById('genNote').innerHTML=GEN_NOTES[t]||'';
+}
+document.getElementById('genType').addEventListener('change',syncGenFields);
 
-function generate(){
+async function generate(){
   const type=document.getElementById('genType').value;
+  const level=parseInt(document.getElementById('genLevel').value,10)||2;
+  await dictReady;
+  if(level>=5 || type==='nonsense') await loadStd();
+  if(type==='sentence'){
+    document.getElementById('resultList').innerHTML='<div class="result-empty">사전 예문에서 문장을 찾는 중이에요…</div>';
+  }
   const syll=document.getElementById('genSyll').value;
   const batchim=document.getElementById('genBatchim').value;
   const len=document.getElementById('genLen').value;
@@ -1103,9 +1389,11 @@ function generate(){
   count=Math.max(1,Math.min(100,count));
 
   let items=[], head='';
-  if(type==='real'){ items=genRealWords(syll,batchim,count); head='📋 의미 단어'; }
+  if(type==='real'){ items=genRealWords(syll,batchim,count,level); head='📋 의미 단어'; }
   else if(type==='nonsense'){ items=genNonsense(syll,batchim,count); head='📋 무의미 단어'; }
-  else { items=genSentences(len,count); head='📋 문장'; }
+  else if(type==='pair'){ items=genPairs(syll,batchim,count,level); head='📋 헷갈리는 짝'; }
+  else { items=await genSentencesOnline(len,count,level,parseInt(document.getElementById('genOut').value,10)); head='📋 문장'; }
+  if(hasTargets()) head+=' · 🎯'+targetLabel();
   renderResult(items,head);
 }
 let lastResult=[];
@@ -1113,18 +1401,33 @@ function renderResult(items,head){
   document.getElementById('resultHead').textContent=head+' ('+items.length+'개)';
   document.getElementById('printTitle').textContent=head.replace('📋 ','')+' 연습';
   const list=document.getElementById('resultList');
-  if(!items.length){ list.innerHTML='<div class="result-empty">조건에 맞는 항목이 부족해요. 진도를 더 켜거나 조건을 바꿔보세요.</div>'; lastResult=[]; return; }
+  if(!items.length){
+    const off=hasTargets()? targetsOffProgress() : [];
+    const msg=off.length
+      ? '집중 음소 '+off.join('·')+'이(가) 진도 설정에서 꺼져 있어요. ⚙️ 진도 설정에서 켠 뒤 다시 생성해 주세요.'
+      : '조건에 맞는 항목이 부족해요. 진도를 더 켜거나 조건을 바꿔보세요.';
+    const d=document.createElement('div'); d.className='result-empty'; d.textContent=msg;
+    list.innerHTML=''; list.appendChild(d); lastResult=[]; return;
+  }
   list.innerHTML='';
-  const tagName={real:'의미',nonsense:'무의미',sentence:'문장'};
+  const tagName={real:'의미',nonsense:'무의미',sentence:'문장',pair:'짝'};
   items.forEach((it,i)=>{
     const row=document.createElement('div'); row.className='result-item';
     const idx=document.createElement('span'); idx.className='idx'; idx.textContent=(i+1);
-    const txt=document.createElement('span'); txt.textContent=it.text;      // textContent (XSS 방지)
+    const txt=document.createElement('span');
+    if(hasTargets()){                                                    // 집중 음소 글자에 밑줄 (글자별 textContent)
+      for(const ch of it.text){ const sp=document.createElement('span'); sp.textContent=ch; if(sylTargetHit(ch)) sp.className='tg'; txt.appendChild(sp); }
+    } else txt.textContent=it.text;      // textContent (XSS 방지)
     const tag=document.createElement('span'); tag.className='tag '+(it.type==='sentence'?'sent':it.type); tag.textContent=tagName[it.type];
     row.appendChild(idx); row.appendChild(txt); row.appendChild(tag);
     list.appendChild(row);
   });
   lastResult=items.map(it=>it.text);
+  if(items.some(it=>it.src==='krdict')){
+    const n=document.createElement('div'); n.className='src-note';
+    n.innerHTML='문장 출처: 국립국어원 「한국어기초사전」 예문 (<a href="https://creativecommons.org/licenses/by-sa/2.0/kr/" target="_blank" rel="noopener" style="color:inherit">CC BY-SA 2.0 KR</a>)';
+    list.appendChild(n);
+  }
 }
 function copyResult(){
   if(!lastResult.length) return;
@@ -1138,7 +1441,7 @@ function resultToHandwriting(){
 }
 function openHandwriting(words){
   // 문장부호 제거, 낱말만 — 글씨연습장 words 파라미터로 전달
-  const clean=words.map(w=>w.replace(/[.,?!]/g,'').trim()).filter(Boolean).slice(0,60);
+  const clean=words.flatMap(w=>w.split(/\s*–\s*/)).map(w=>w.replace(/[.,?!]/g,'').trim()).filter(Boolean).slice(0,60);
   const url='https://sososoop.github.io/korean-handwriting/?words='+encodeURIComponent(clean.join(','));
   window.open(url,'_blank');
 }
@@ -1479,6 +1782,8 @@ if(!applyLockModeIfNeeded()){
   renderZones();
   renderBoard();
   renderCollected();
+  renderTargets();
+  syncGenFields();
 }
 </script>
 </body>
