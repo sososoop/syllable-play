@@ -26,8 +26,8 @@ export default {
 
     const url = new URL(request.url);
     const q = (url.searchParams.get('q') || '').trim();
-    if (!q) {
-      return new Response('missing q', { status: 400, headers: cors });
+    if (!q || q.length > 30) {   // 검색어 길이 제한 — 긴 임의 문자열로 상위 API 한도를 소모하지 못하게
+      return new Response('bad q', { status: 400, headers: cors });
     }
     // 표준국어대사전 상세 검색 (/std) — 키는 Secret STDICT_KEY
     if (url.pathname === '/std') {
@@ -57,10 +57,10 @@ export default {
         }
       }
       try {
-        const r = await fetch(std, { cf: { cacheTtl: 86400, cacheEverything: true } });
+        const r = await fetch(std, { cf: { cacheTtlByStatus: { '200-299': 86400, '400-599': 0 } } });
         return new Response(await r.text(), {
           status: r.status,
-          headers: { ...cors, 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=86400' },
+          headers: { ...cors, 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': r.ok ? 'public, max-age=86400' : 'no-store' },
         });
       } catch (e) {
         return new Response('upstream error', { status: 502, headers: cors });
@@ -114,14 +114,14 @@ export default {
     }
 
     try {
-      const r = await fetch(api, { cf: { cacheTtl: 86400, cacheEverything: true } });
+      const r = await fetch(api, { cf: { cacheTtlByStatus: { '200-299': 86400, '400-599': 0 } } });
       const body = await r.text();
       return new Response(body, {
         status: r.status,
         headers: {
           ...cors,
           'Content-Type': 'application/xml; charset=utf-8',
-          'Cache-Control': 'public, max-age=86400',
+          'Cache-Control': r.ok ? 'public, max-age=86400' : 'no-store',
         },
       });
     } catch (e) {

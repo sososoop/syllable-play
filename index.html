@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>한글놀이</title>
 <style>
   :root{
@@ -90,6 +90,7 @@
   .pg-tile.on:after{content:"✓";position:absolute;top:2px;right:5px;font-size:11px;font-weight:900;color:var(--ink)}
   .pg-tile.fixed{background:var(--lime-soft);cursor:default;opacity:.9}
   .pg-tile.fixed:active{transform:none;box-shadow:var(--sh-sm)}
+  .pg-tile:focus-visible,.jamo-tile:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
   .active-syls{display:flex;flex-wrap:wrap;gap:7px}
 
   /* ---------- 놀이: 블렌딩 보드 ---------- */
@@ -246,6 +247,7 @@
     .result-item .tag,.syl-table td.real-cell{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .target-box{display:none !important}
     #printTitle{display:block !important}
+    #printSrc{display:block !important}
   }
   #printTitle{display:none;text-align:center;font-size:22px;font-weight:900;margin-bottom:10px}
 </style>
@@ -342,6 +344,7 @@
     <div class="card">
       <h2>⭐ 담은 단어 <span id="collectedCount" style="font-size:13px;color:#8a8578;font-weight:600"></span>
         <button class="mini-btn" style="margin-left:auto" onclick="collectedToHandwriting()">✍️ 글씨연습장</button></h2>
+      <p class="hint" style="margin:0 0 10px">초록색은 사전에 실린 단어예요. 색이 없으면 사전에서 확인되지 않은 글자예요(활용형·이름일 수 있어요).</p>
       <div class="collected" id="collected"><span class="empty">아직 담은 단어가 없어요.</span></div>
     </div>
   </section>
@@ -471,7 +474,7 @@
       </div>
       <div class="target-box" id="targetBox">
         <div class="target-head">
-          <b>🎯 집중 음소</b><span class="sub">(선택) 고르면 이 소리가 꼭 들어간 것만, 많이 들어간 순으로 나와요</span>
+          <b>🎯 집중 음소</b><span class="sub">(선택) 고른 소리가 하나라도 든 것만, 그 소리가 든 글자 비율이 높은 순으로 나와요</span>
           <span class="seg" id="targetPosSeg" style="margin-left:auto">
             <button class="seg-btn on" data-tpos="cho" onclick="setTargetPos('cho')">첫소리</button>
             <button class="seg-btn" data-tpos="jong" onclick="setTargetPos('jong')">받침</button>
@@ -486,7 +489,7 @@
       </div>
       <div class="genbtns">
         <button class="btn-gen" onclick="generate()">✨ 생성</button>
-        <button class="btn-copy" onclick="copyResult()">📋 복사</button>
+        <button class="btn-copy" onclick="copyResult(this)">📋 복사</button>
         <button class="btn-copy" onclick="resultToHandwriting()">✍️ 글씨연습장 만들기</button>
         <button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>
       </div>
@@ -496,6 +499,7 @@
     <div class="card">
       <h2 id="resultHead">📋 결과</h2>
       <div class="result-list" id="resultList"><div class="result-empty">조건을 정하고 “생성”을 눌러주세요.</div></div>
+      <p id="printSrc" style="display:none;font-size:11px;color:#666;margin:10px 0 0">의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR · creativecommons.org/licenses/by-sa/2.0/kr) · 소소숲 : 지혜의 기록소 「한글놀이」로 만듦</p>
     </div>
   </section>
 </main>
@@ -623,15 +627,14 @@ const SENTENCES = {
 const PROFILES_KEY='sp.profiles.v1';
 const ACTIVE_KEY='sp.activeProfileId';
 const OLD_KEY='syllable-progress-v1';
-const CACHE_STORE='krdict-cache-v1';
 const RAIN_BEST_KEY='syllable-rain-best-v1';
-const DICT_PROXY='https://syllable-dict.irudassam.workers.dev';
 
 let profiles=[];
 let activeId=null;
 let lockMode=false;        // 가정과제 잠금 링크로 진입
 let lockProfile=null;      // 잠금 모드 임시 프로필(저장 안 함)
 
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function uid(){ try{ return 'p_'+crypto.randomUUID().slice(0,8); }catch(e){ return 'p_'+Math.floor(performance.now()).toString(36); } }
 function nowTs(){ return Date.now ? Date.now() : +new Date(); }
 
@@ -640,7 +643,18 @@ function activeProfile(){
   return profiles.find(p=>p.id===activeId) || profiles[0] || null;
 }
 function enabled(kind){ const p=activeProfile(); return p ? p[kind] : []; }
-function enabledSet(kind){ return new Set(enabled(kind)); }
+let progVersion=0, _enCache={v:-1,p:null,sets:null};
+function enabledSet(kind){   // 생성·문장 필터가 글자마다 부르므로 진도가 바뀔 때만 다시 만든다
+  const p=activeProfile();
+  if(_enCache.v!==progVersion || _enCache.p!==p) _enCache={v:progVersion,p,sets:{cho:new Set(enabled('cho')),jung:new Set(enabled('jung')),jong:new Set(enabled('jong'))}};
+  return _enCache.sets[kind];
+}
+/* 진도·프로필이 바뀌면: 꺼진 음소를 보드에서 내리고, 게임은 다음에 켤 때 새로 만든다 */
+function onProgressChanged(){
+  progVersion++;
+  syllables.forEach(s=>{ if(s.cho!=null && !enabledSet('cho').has(s.cho)) s.cho=null; if(s.jung!=null && !enabledSet('jung').has(s.jung)) s.jung=null; if(s.jong && !enabledSet('jong').has(s.jong)) s.jong=0; });
+  gBricks=[]; gGen++; stopRain();
+}
 
 function newProfile(name){
   return { v:1, id:uid(), name:name||'아이', cho:DEFAULT_CHO.slice(), jung:DEFAULT_JUNG.slice(), jong:DEFAULT_JONG.slice(), createdAt:nowTs(), updatedAt:nowTs() };
@@ -667,6 +681,9 @@ function cleanIdx(arr,max){
 function sanitizeProfile(raw){
   if(!raw||typeof raw!=='object') return null;
   const p=newProfile(typeof raw.name==='string'? raw.name.slice(0,20) : '아이');
+  if(typeof raw.id==='string' && /^[A-Za-z0-9_-]{1,32}$/.test(raw.id)) p.id=raw.id;   // 저장된 id 유지 — 새로고침 뒤 활성 프로필 복원
+  if(Number.isFinite(raw.createdAt)) p.createdAt=raw.createdAt;
+  if(Number.isFinite(raw.updatedAt)) p.updatedAt=raw.updatedAt;
   p.cho=cleanIdx(raw.cho,19);
   p.jung=cleanIdx(raw.jung,21);
   p.jong=cleanIdx(raw.jong,28);
@@ -707,19 +724,6 @@ function sanitizeProfile(raw){
 })();
 
 /* =========================================================
-   온라인 사전 판별 (설계 5-C: 오류를 미등재로 오판하지 않기)
-   반환: true(등재) / false(미등재) / null(확인 실패 — 캐시 안 함)
-   ========================================================= */
-let lookupCache={};
-(function loadCache(){
-  try{
-    lookupCache=JSON.parse(localStorage.getItem(CACHE_STORE)||'{}');
-    for(const w in lookupCache){ if(lookupCache[w]) REAL_SET.add(w); }
-  }catch(e){ lookupCache={}; }
-})();
-function saveCache(){ try{ localStorage.setItem(CACHE_STORE, JSON.stringify(lookupCache)); }catch(e){} }
-
-/* =========================================================
    사전 단어 목록 (국립국어원 「한국어기초사전」 1~3음절 표제어)
    형식: {"g":{"1":"오이 아이 …","2":…,"3":…,"0":…}} — 키=등급
    받지 못하면 내장 LEXICON만으로 동작
@@ -729,52 +733,26 @@ const DICT_STD_URL='/hangul-words-std.json';  // 표준국어대사전 추가분
 // 단어 범위 순서: 1초급 2중급 3고급 4기초사전 등급없음 5표준 고유어 6표준 그 밖
 const DICT_RANK={'1':1,'2':2,'3':3,'0':4,'sn':5,'sa':6};
 let DICT={};     // {묶음: [단어…]}
-async function loadDictFile(url){
+async function loadDictFile(url){   // 성공하면 true — 실패하면 다음 '생성' 때 다시 시도
   const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(), 15000);
   try{
     const r=await fetch(url,{signal:ctl.signal});
-    if(!r.ok) return;
+    if(!r.ok) return false;
     const j=await r.json();
-    if(!j||typeof j.g!=='object') return;
+    if(!j||typeof j.g!=='object') return false;
     for(const g in j.g){
       if(!(g in DICT_RANK)) continue;
       DICT[g]=String(j.g[g]).split(' ').filter(w=>/^[가-힣]{1,3}$/.test(w));
       DICT[g].forEach(w=>REAL_SET.add(w));   // 무의미 단어에서 사전 단어 빼기
     }
-  }catch(e){}
+    return true;
+  }catch(e){ return false; }
   finally{ clearTimeout(to); }
 }
-const dictReady=loadDictFile(DICT_URL);
-let stdReady=null;   // 표준국어대사전은 필요할 때 불러옴
-function loadStd(){ if(!stdReady) stdReady=loadDictFile(DICT_STD_URL); return stdReady; }
-
-let lookupAbort=null;
-async function lookupOnline(word){
-  if(word in lookupCache) return lookupCache[word];
-  if(lookupAbort) lookupAbort.abort();
-  const ctl=new AbortController(); lookupAbort=ctl;
-  const to=setTimeout(()=>ctl.abort(), 6000);
-  try{
-    const r=await fetch(DICT_PROXY+'/?q='+encodeURIComponent(word.normalize('NFC')), {signal:ctl.signal});
-    clearTimeout(to);
-    if(!r.ok) return null;                                  // HTTP 오류 → 확인 실패
-    const ct=(r.headers.get('Content-Type')||'').toLowerCase();
-    const t=await r.text();
-    if(ct.includes('json')){                                // Worker가 명시적 오류(JSON) 반환
-      try{ const j=JSON.parse(t); if(j&&typeof j.found==='boolean'){ lookupCache[word]=j.found; if(j.found) REAL_SET.add(word); saveCache(); return j.found; } }catch(e){}
-      return null;
-    }
-    const xml=new DOMParser().parseFromString(t,'text/xml');
-    if(xml.querySelector('parsererror')) return null;       // XML 파싱 실패 → 확인 실패
-    if(xml.querySelector('error')) return null;             // API 오류 → 캐시 안 함
-    const heads=[...xml.getElementsByTagName('word')].map(n=>n.textContent.replace(/[-\s]/g,''));
-    const found=heads.includes(word);
-    lookupCache[word]=found;                                // 정상 응답만 캐시
-    if(found) REAL_SET.add(word);
-    saveCache();
-    return found;
-  }catch(e){ clearTimeout(to); return null; }               // 네트워크/타임아웃 → 확인 실패
-}
+let dictReady=null, stdReady=null;   // 표준국어대사전은 필요할 때 불러옴
+function loadDict(){ if(!dictReady) dictReady=loadDictFile(DICT_URL).then(ok=>{ if(!ok) dictReady=null; return ok; }); return dictReady; }
+function loadStd(){ if(!stdReady) stdReady=loadDictFile(DICT_STD_URL).then(ok=>{ if(!ok) stdReady=null; return ok; }); return stdReady; }
+loadDict();
 
 /* =========================================================
    음소 → 조합 유틸
@@ -797,12 +775,6 @@ function syllablePool(batchim){
   cho.forEach(ci=>jung.forEach(mi=>jong.forEach(ji=>out.push(composeSyl(ci,mi,ji)))));
   return out;
 }
-/* 진도 미리보기/게임용 대표 음절 집합 */
-function activeSyllables(){
-  const all=syllablePool('mix');
-  return { all };
-}
-
 /* =========================================================
    모드 전환
    ========================================================= */
@@ -859,7 +831,7 @@ function seriesGrid(kind, groups, charFn){
       const isFixed=g.fixed;
       t.className='pg-tile'+(set.has(i)?' on':'')+(isFixed?' fixed':'');
       t.textContent=charFn(i)||'∅';
-      if(!isFixed) t.onclick=()=>togglePhoneme(kind,i);
+      if(!isFixed){ t.onclick=()=>togglePhoneme(kind,i); t.setAttribute('role','button'); t.tabIndex=0; t.setAttribute('aria-pressed',set.has(i)?'true':'false'); }
       grid.appendChild(t);
     });
     wrap.appendChild(grid);
@@ -879,7 +851,7 @@ function togglePhoneme(kind,i){
   if(pos>=0){ if(kind==='jong'&&i===0) return; arr.splice(pos,1); }
   else arr.push(i);
   arr.sort((a,b)=>a-b);
-  persistActive();
+  persistActive(); onProgressChanged();
   renderProgGrids(); renderActiveSyls();
 }
 function setAllSeries(kind,val){
@@ -891,7 +863,7 @@ function setAllSeries(kind,val){
   }else{
     p[kind] = kind==='jong' ? [0] : [];
   }
-  persistActive();
+  persistActive(); onProgressChanged();
   renderProgGrids(); renderActiveSyls();
 }
 function renderActiveSyls(){
@@ -905,10 +877,14 @@ function renderActiveSyls(){
 }
 
 /* ---- 프로필 CRUD ---- */
-function switchProfile(id){ activeId=id; saveProfiles(); renderProgress(); renderZones(); renderBoard(); }
+function switchProfile(id){   // 아동이 바뀌면 보드·담은 단어도 비운다
+  activeId=id; saveProfiles(); onProgressChanged();
+  collected=[]; syllables=[{cho:null,jung:null,jong:0}]; activeIndex=0;
+  renderProgress(); renderZones(); renderBoard(); renderCollected();
+}
 function addProfile(){
   openNameModal('새 프로필 이름', '', name=>{
-    const p=newProfile(name||'아이'); profiles.push(p); activeId=p.id; saveProfiles(); renderProgress();
+    const p=newProfile(name||'아이'); profiles.push(p); switchProfile(p.id);
   });
 }
 function renameProfile(){
@@ -918,8 +894,8 @@ function renameProfile(){
 function deleteProfile(){
   if(profiles.length<=1){ openInfo('삭제 불가','프로필이 하나뿐이라 삭제할 수 없어요. 새 프로필을 먼저 만들어 주세요.'); return; }
   const p=activeProfile(); if(!p) return;
-  openConfirm('프로필 삭제', '“'+p.name+'” 프로필을 삭제할까요? 되돌릴 수 없어요.', ()=>{
-    profiles=profiles.filter(x=>x.id!==p.id); activeId=profiles[0].id; saveProfiles(); renderProgress();
+  openConfirm('프로필 삭제', '“'+esc(p.name)+'” 프로필을 삭제할까요? 되돌릴 수 없어요.', ()=>{
+    profiles=profiles.filter(x=>x.id!==p.id); switchProfile(profiles[0].id);
   });
 }
 function exportProfiles(){
@@ -959,7 +935,6 @@ function importProfiles(file){
    ========================================================= */
 let syllables=[{cho:null,jung:null,jong:0}];
 let activeIndex=0;
-let verdictTimer=null;
 
 function syllChar(s){
   if(s.cho!=null && s.jung!=null) return composeSyl(s.cho,s.jung,s.jong||0);
@@ -972,21 +947,11 @@ function renderZones(){
   const mk=(box,kind,cls,charFn,onclick)=>{
     const el=document.getElementById(box); el.innerHTML='';
     const list=enabled(kind);
-    if(!list.length || (kind==='jong' && list.filter(i=>i!==0).length===0 && kind==='jong')){
-      // 종성은 받침없음만 있으면 안내(선택 불필요)
-    }
-    if(kind==='jong'){
-      list.forEach(i=>{
-        const t=document.createElement('div');
-        t.className='jamo-tile '+cls; t.textContent = i===0?'∅':JONG[i];
-        t.onclick=()=>onclick(i); el.appendChild(t);
-      });
-      return;
-    }
-    if(!list.length){ el.innerHTML='<span class="zone-empty">진도에서 '+(kind==='cho'?'초성':'중성')+'을 켜주세요.</span>'; return; }
+    if(kind!=='jong' && !list.length){ el.innerHTML='<span class="zone-empty">진도에서 '+(kind==='cho'?'초성':'중성')+'을 켜주세요.</span>'; return; }
     list.forEach(i=>{
       const t=document.createElement('div');
-      t.className='jamo-tile '+cls; t.textContent=charFn(i);
+      t.className='jamo-tile '+cls; t.textContent = (kind==='jong'&&i===0)?'∅':charFn(i);
+      t.setAttribute('role','button'); t.tabIndex=0;
       t.onclick=()=>onclick(i); el.appendChild(t);
     });
   };
@@ -1017,9 +982,7 @@ function setJong(i){ const s=syllables[activeIndex]; s.jong = ((s.jong||0)===i?0
 
 function afterEdit(pop){
   renderBoard(pop); markSelectedTiles();
-  // 판별(의미/무의미 사전 조회)은 하지 않는다 — 읽기·타자 연습용
-  if(verdictTimer) clearTimeout(verdictTimer);
-  const v=document.getElementById('verdict'); v.textContent=''; v.className='verdict';
+  const v=document.getElementById('verdict'); v.textContent=''; v.className='verdict';   // 판별 문구 없음 — 읽기 연습용
 }
 
 function renderBoard(pop){
@@ -1063,26 +1026,6 @@ function assembledWord(){
   for(const s of syllables){ if(s.cho==null||s.jung==null) return ''; }
   return syllables.map(s=>composeSyl(s.cho,s.jung,s.jong||0)).join('');
 }
-function scheduleVerdict(){
-  if(verdictTimer) clearTimeout(verdictTimer);
-  const v=document.getElementById('verdict');
-  const word=assembledWord();
-  if(!word){ v.textContent=''; v.className='verdict'; return; }
-  if(REAL_SET.has(word)){ v.textContent='✅ 뜻이 있는 단어예요! “'+word+'”'; v.className='verdict real'; return; }
-  if(word in lookupCache){
-    v.textContent = lookupCache[word] ? '✅ 뜻이 있는 단어예요! “'+word+'”' : '🔶 소리단어(뜻은 없어요) “'+word+'”';
-    v.className='verdict '+(lookupCache[word]?'real':'nonsense'); return;
-  }
-  v.textContent='🔎 사전에서 찾는 중… “'+word+'”'; v.className='verdict checking';
-  verdictTimer=setTimeout(()=>{
-    lookupOnline(word).then(found=>{
-      if(assembledWord()!==word) return;
-      if(found===true){ v.textContent='✅ 뜻이 있는 단어예요! “'+word+'” (사전)'; v.className='verdict real'; }
-      else if(found===false){ v.textContent='🔶 소리단어(뜻은 없어요) “'+word+'”'; v.className='verdict nonsense'; }
-      else { v.textContent='📴 지금은 사전 확인이 어려워요 “'+word+'”'; v.className='verdict checking'; }
-    });
-  }, 450);
-}
 function randomWord(n){
   const pool=syllablePool('mix');
   if(!pool.length) return;
@@ -1091,8 +1034,6 @@ function randomWord(n){
   for(let i=0;i<n;i++){ const ch=pool[Math.floor(Math.random()*pool.length)]; const d=decompose(ch); syllables.push({cho:d.ci,jung:d.mi,jong:d.ji}); }
   activeIndex=syllables.length-1;
   renderBoard(true); markSelectedTiles();
-  // 랜덤 단어는 사전 판별(의미/무의미 조회)을 하지 않는다 — 읽기·타자 연습용 글자만 제시
-  if(verdictTimer) clearTimeout(verdictTimer);
   const v=document.getElementById('verdict'); v.textContent=''; v.className='verdict';
 }
 let collected=[];
@@ -1100,7 +1041,7 @@ function saveWord(){
   const word=assembledWord();
   if(!word) return;
   if(collected.some(c=>c.word===word)){ flashSaved(); return; }
-  collected.unshift({word, real:REAL_SET.has(word)||lookupCache[word]===true});
+  collected.unshift({word, real:REAL_SET.has(word)});
   renderCollected(); flashSaved();
 }
 function flashSaved(){
@@ -1114,7 +1055,7 @@ function renderCollected(){
   if(!collected.length){ box.innerHTML='<span class="empty">아직 담은 단어가 없어요.</span>'; cnt.textContent=''; return; }
   cnt.textContent='('+collected.length+'개)';
   box.innerHTML='';
-  collected.forEach(c=>{ const chip=document.createElement('span'); chip.className='chip '+(c.real?'real':'nonsense'); chip.textContent=c.word; box.appendChild(chip); });
+  collected.forEach(c=>{ const chip=document.createElement('span'); chip.className='chip '+(c.real?'real':''); chip.title=c.real?'사전에 실린 단어':'사전에서 확인되지 않은 글자'; chip.textContent=c.word; box.appendChild(chip); });
 }
 function collectedToHandwriting(){
   if(!collected.length){ openInfo('안내','먼저 단어를 담아주세요.'); return; }
@@ -1131,7 +1072,7 @@ function genRealWords(syll,batchim,count,level){
   let pool=[];
   ['noun','verb','adv','pron'].forEach(p=>{
     const b=lexBucket(p);
-    for(const k in b){ if(syll!=0 && String(syll)!==k) continue; pool.push(...b[k]); }
+    for(const k in b) b[k].forEach(w=>{ if(syll==0 || sylCount(w)==syll) pool.push(w); });   // 묶음 키가 아니라 실제 음절 수로
   });
   // 사전 단어 목록: 고른 범위(level)까지의 묶음만
   for(const g in DICT){
@@ -1196,6 +1137,7 @@ function renderTargets(){
     box.innerHTML='';
     list.forEach(c=>{
       const t=document.createElement('div'); t.className='pg-tile'+(set.has(c)?' on':'')+(off.includes(c)?' off':''); t.textContent=c;
+      t.setAttribute('role','button'); t.tabIndex=0; t.setAttribute('aria-pressed',set.has(c)?'true':'false');
       if(off.includes(c)) t.title='진도 설정에서 꺼져 있어요';
       t.onclick=()=>{ set.has(c)?set.delete(c):set.add(c); saveTargets(); renderTargets(); };
       box.appendChild(t);
@@ -1219,10 +1161,8 @@ function clearTargets(){ TG.cons.clear(); TG.vow.clear(); saveTargets(); renderT
 /* ---------- 헷갈리는 짝 (한 소리만 다른 단어) ---------- */
 const CONTRAST_CONS=[['ㄱ','ㅋ','ㄲ'],['ㄷ','ㅌ','ㄸ'],['ㅂ','ㅍ','ㅃ'],['ㅈ','ㅊ','ㅉ'],['ㅅ','ㅆ'],['ㄴ','ㄹ'],['ㅁ','ㅂ']];
 const CONTRAST_VOW=[['ㅐ','ㅔ'],['ㅓ','ㅗ'],['ㅗ','ㅜ'],['ㅡ','ㅜ'],['ㅓ','ㅕ'],['ㅏ','ㅑ'],['ㅗ','ㅛ'],['ㅜ','ㅠ'],['ㅚ','ㅙ','ㅞ']];
-function partnerMap(groups){
-  const m={}; groups.forEach(g=>g.forEach(a=>{ m[a]=m[a]||new Set(); g.forEach(b=>{ if(b!==a) m[a].add(b); }); })); return m;
-}
-const PARTNER_CONS=partnerMap(CONTRAST_CONS), PARTNER_VOW=partnerMap(CONTRAST_VOW);
+// 받침은 소리가 실제로 다른 쌍만(입–잎처럼 소리가 같은 받침은 짝이 아님)
+const CONTRAST_JONG=[['ㄴ','ㄹ'],['ㅁ','ㅂ'],['ㄴ','ㅇ'],['ㅁ','ㄴ']];
 function wordRankMap(level){
   const m=new Map();
   ['noun','verb','adv','pron','interj'].forEach(p=>{ const b=LEXICON[p]; for(const k in b) b[k].forEach(w=>m.set(w,1)); });
@@ -1238,15 +1178,19 @@ function genPairs(syll,batchim,count,level){
     const chars=[...w];
     chars.forEach((ch,i)=>{
       const d=decompose(ch); if(!d) return;
+      // [종류, 그 자리 소리를 같은 대비 묶음의 다른 소리로 바꾼 음절들]
+      // 묶음 하나씩 따로 — ㅓ–ㅗ와 ㅗ–ㅜ가 ㅓ–ㅗ–ㅜ 한 줄로 합쳐지지 않게
       const tries=[];
-      // 자음(첫소리): 집중 음소가 있으면 그 소리일 때만
-      const c=CHO[d.ci];
-      if(PARTNER_CONS[c] && (!hasTargets() || (TG.cons.has(c) && TG.pos!=='jong')))
-        tries.push(['c', c, [...PARTNER_CONS[c]].map(x=>composeSyl(CHO.indexOf(x),d.mi,d.ji))]);
-      const v=JUNG[d.mi];
-      if(PARTNER_VOW[v] && (!hasTargets() || TG.vow.has(v)))
-        tries.push(['v', v, [...PARTNER_VOW[v]].map(x=>composeSyl(d.ci,JUNG.indexOf(x),d.ji))]);
-      tries.forEach(([kind,ph,syls])=>{
+      const c=CHO[d.ci];   // 첫소리
+      if(!hasTargets() || (TG.cons.has(c) && TG.pos!=='jong'))
+        CONTRAST_CONS.filter(g=>g.includes(c)).forEach(g=>tries.push(['c'+g.join(''), g.filter(x=>x!==c).map(x=>composeSyl(CHO.indexOf(x),d.mi,d.ji))]));
+      const v=JUNG[d.mi];  // 가운뎃소리
+      if(!hasTargets() || TG.vow.has(v))
+        CONTRAST_VOW.filter(g=>g.includes(v)).forEach(g=>tries.push(['v'+g.join(''), g.filter(x=>x!==v).map(x=>composeSyl(d.ci,JUNG.indexOf(x),d.ji))]));
+      const j=d.ji? JONG[d.ji] : null;   // 받침끼리(밤–밥, 발–반)
+      if(j && (!hasTargets() || (TG.cons.has(j) && TG.pos!=='cho')))
+        CONTRAST_JONG.filter(g=>g.includes(j)).forEach(g=>tries.push(['j'+g.join(''), g.filter(x=>x!==j).map(x=>composeSyl(d.ci,d.mi,JONG.indexOf(x)))]));
+      tries.forEach(([kind,syls])=>{
         const found=syls.map(sy=>chars.slice(0,i).join('')+sy+chars.slice(i+1).join('')).filter(ok);
         if(!found.length) return;
         const all=[w,...found];
@@ -1281,7 +1225,8 @@ function CONTRAST_SORT(a,b){
     if(a[i]===b[i]) continue;
     const da=decompose(a[i]), db=decompose(b[i]); if(!da||!db) break;
     if(da.ci!==db.ci) return CONS_ORDER.indexOf(CHO[da.ci])-CONS_ORDER.indexOf(CHO[db.ci]);
-    return da.mi-db.mi;
+    if(da.mi!==db.mi) return da.mi-db.mi;
+    return CONS_ORDER.indexOf(JONG[da.ji])-CONS_ORDER.indexOf(JONG[db.ji]);
   }
   return a.localeCompare(b);
 }
@@ -1293,14 +1238,14 @@ const sentFiles=new Map();      // 등급 → Promise<[[표제어,[예문…]],�
 function loadSentFile(k){
   if(!sentFiles.has(k)) sentFiles.set(k,(async()=>{
     try{
-      const r=await fetch('/hangul-sent-'+k+'.json'); if(!r.ok) return null;
-      const j=await r.json(); if(!j||typeof j.s!=='string') return null;
+      const r=await fetch('/hangul-sent-'+k+'.json'); if(!r.ok){ sentFiles.delete(k); return null; }
+      const j=await r.json(); if(!j||typeof j.s!=='string'){ sentFiles.delete(k); return null; }
       return j.s.split('\n').map(l=>{ const p=l.split('\t'); return [p[0],p.slice(1)]; });
     }catch(e){ sentFiles.delete(k); return null; }
   })());
   return sentFiles.get(k);
 }
-const SENT_BLOCK=['포탄','총알','대포','폭격','전쟁','팬티','브래지어','속옷','섹스','성교','성기','강간','성폭','매춘','마약','자살','자해','살인','살해','시체','사형','학살','고문','도박','포르노','음란','불륜','간통','낙태','총살','폭탄','테러','처형','시신','죽여','죽인','담배','소주','맥주','술집','술을','술에','술이','술잔','이혼','외도'];
+const SENT_BLOCK=['키스','연애','애인','사귀','임신','성관계','음주','흡연','폭력','폭행','흉기','유흥','유혹','섹시','야한','변태','노출','포탄','총알','대포','폭격','전쟁','팬티','브래지어','속옷','섹스','성교','성기','강간','성폭','매춘','마약','자살','자해','살인','살해','시체','사형','학살','고문','도박','포르노','음란','불륜','간통','낙태','총살','폭탄','테러','처형','시신','죽여','죽인','담배','소주','맥주','술집','술을','술에','술이','술잔','이혼','외도'];
 function cleanSentence(t){
   t=t.replace(/\s+/g,' ').trim();
   if(!/^[가-힣 .,?!]+$/.test(t)) return null;        // 숫자·영문·따옴표·대화(가:) 등 제외
@@ -1309,9 +1254,9 @@ function cleanSentence(t){
 }
 async function genSentencesOnline(len,count,level,outAllow){
   len=Number(len)||5; if(!Number.isFinite(outAllow)) outAllow=2;
-  // 1) 단어 범위에 맞는 예문 파일: 기본은 초·중급 표제어 예문, 넓히면 고급·등급 없음까지
-  const cap=Math.min(Math.max(level,2),4);
-  const keys=['1','2'].concat(cap>=3?['3']:[], cap>=4?['0']:[]);
+  // 1) 단어 범위에 맞는 예문 파일: 초급 → 1, 보통 → 1·2, 넓게 → +3, 그 위 → +등급 없음
+  const cap=Math.min(Math.max(level,1),4);
+  const keys=['1'].concat(cap>=2?['2']:[], cap>=3?['3']:[], cap>=4?['0']:[]);
   const groups=await Promise.all(keys.map(loadSentFile));
   const failed=groups.every(g=>g===null);
   // 2) 거르기: 어절 수, 진도 밖 글자 수, 집중 음소
@@ -1348,14 +1293,6 @@ async function genSentencesOnline(len,count,level,outAllow){
   if(failed && !arr.length) openInfo('안내','예문 파일을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
   return arr.slice(0,count).map(x=>({text:x.t,type:'sentence',src:x.src}));
 }
-function genSentences(len,count){
-  let pool=[];
-  const keys = len!=0 ? [String(len)] : ['2','3','4'];
-  keys.forEach(k=>{ (SENTENCES[k]||[]).forEach(s=>{ if(wordAllowed(s.replace(/[.,?!\s]/g,''))) pool.push(s); }); });
-  pool=[...new Set(pool)];
-  return shuffle(pool).slice(0,count).map(s=>({text:s,type:'sentence'}));
-}
-
 const GEN_NOTES={
   real:'💡 집중 음소를 고르면 그 소리가 든 단어만, 많이 든 순서로 나와요. 밑줄은 집중 음소가 든 글자예요.',
   nonsense:'💡 “무의미 단어”는 사전(기초사전·표준국어대사전)에 없는 소리 연습용 글자예요. 활용형은 사전에 없어도 실제 말일 수 있으니 <b>선생님이 확인</b>해 주세요.',
@@ -1377,7 +1314,7 @@ document.getElementById('genType').addEventListener('change',syncGenFields);
 async function generate(){
   const type=document.getElementById('genType').value;
   const level=parseInt(document.getElementById('genLevel').value,10)||2;
-  await dictReady;
+  await loadDict();
   if(level>=5 || type==='nonsense') await loadStd();
   if(type==='sentence'){
     document.getElementById('resultList').innerHTML='<div class="result-empty">사전 예문에서 문장을 찾는 중이에요…</div>';
@@ -1429,11 +1366,11 @@ function renderResult(items,head){
     list.appendChild(n);
   }
 }
-function copyResult(){
+function copyResult(btn){
   if(!lastResult.length) return;
   navigator.clipboard.writeText(lastResult.join('\n')).then(()=>{
-    const b=event.target; const o=b.textContent; b.textContent='✅ 복사됨'; setTimeout(()=>b.textContent=o,1200);
-  });
+    if(!btn) return; const o=btn.textContent; btn.textContent='✅ 복사됨'; setTimeout(()=>btn.textContent=o,1200);
+  }).catch(()=>openInfo('복사 실패','클립보드를 쓸 수 없어요. 목록을 드래그해서 복사해 주세요.'));
 }
 function resultToHandwriting(){
   if(!lastResult.length){ openInfo('안내','먼저 자료를 생성해 주세요.'); return; }
@@ -1460,9 +1397,10 @@ function encodeHw(cho,jung,jong){
   return '1'+bytesToB64url(bits);
 }
 function decodeHw(str){
-  if(str[0]!=='1') return null;
-  const bytes=b64urlToBytes(str.slice(1));
-  if(bytes.length<9) return null;
+  try{ str=decodeURIComponent(str); }catch(e){ return null; }
+  if(!str || str[0]!=='1' || !/^[A-Za-z0-9_-]+$/.test(str.slice(1))) return null;
+  let bytes; try{ bytes=b64urlToBytes(str.slice(1)); }catch(e){ return null; }
+  if(bytes.length!==9) return null;
   const get=off=>!!(bytes[off>>3] & (0x80 >> (off&7)));
   const cho=[],jung=[],jong=[];
   for(let i=0;i<19;i++) if(get(i)) cho.push(i);
@@ -1483,15 +1421,15 @@ function applyLockModeIfNeeded(){
   const h=location.hash||'';
   const m=h.match(/hw=([^&]+)/);
   if(!m) return false;
-  const dec=decodeHw(decodeURIComponent(m[1]));
-  if(!dec || (!dec.cho.length && !dec.jung.length)){
+  const dec=decodeHw(m[1]);
+  if(!dec || !dec.cho.length || !dec.jung.length){   // 초성·중성이 하나라도 없으면 글자를 만들 수 없음
     document.body.innerHTML='<div style="max-width:420px;margin:80px auto;padding:24px;text-align:center;font-family:sans-serif"><h2>링크가 손상되었어요 😢</h2><p style="font-size:15px;color:#555">선생님께 가정과제 링크를 다시 받아주세요.</p></div>';
     return true;
   }
   // 단어 리스트(선택): 한글 화이트리스트 + textContent 렌더
   let words=[];
   const wm=h.match(/[&]w=([^&]+)/);
-  if(wm){ words=decodeURIComponent(wm[1]).split(',').map(w=>w.replace(/[^가-힣]/g,'')).filter(Boolean).slice(0,30); }
+  if(wm){ try{ words=decodeURIComponent(wm[1]).split(',').map(w=>w.replace(/[^가-힣]/g,'').slice(0,5)).filter(Boolean).slice(0,30); }catch(e){} }
   lockMode=true;
   lockProfile={ v:1, id:'hw', name:'오늘의 연습', cho:dec.cho, jung:dec.jung, jong:dec.jong, hwWords:words };
   // UI: 진도/게임/자료 탭 숨김, 놀이만
@@ -1548,10 +1486,11 @@ function closeInfoModal(){ document.getElementById('infoModal').classList.remove
    게임 (벽돌깨기 + 글자잡기) — 소재를 새 음소 진도에 재연결
    ========================================================= */
 let gScore=0, gCombo=0, gStage=0, gDiff='syl', gBricks=[];
+let gGen=0;   // 판 세대 — 다시·전환 뒤 남은 타이머가 새 판을 건드리지 않게
 let currentGame='brick';
 const BRICK_COLORS=['--lime','--cho','--sent','--real','--lime-soft'];
-let rainItems=[], rainRAF=null, rainActive=false, rainLives=3, lastSpawn=0, rainPaused=false;
-const RAIN_SPEEDS={1:0.35, 2:0.5, 3:0.7};   // 1단계 느림 ~ 3단계 빠름(기존 속도)
+let rainItems=[], rainRAF=null, rainActive=false, rainLives=3, lastSpawn=0, rainPaused=false, rainLast=0;
+const RAIN_SPEEDS={1:0.35, 2:0.5, 3:0.7};   // 60Hz 한 프레임당 px — 화면 주사율과 상관없이 같은 속도가 되게 시간으로 환산해 씀
 let rainSpeedLevel=1;                         // 기본 1단계(느림)
 const RAIN_SPAWN_MS=2500, RAIN_MAX=5;
 const IS_TOUCH = !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches); // 모바일/태블릿=터치로 글자잡기
@@ -1566,7 +1505,9 @@ function setDiff(d){ gDiff=d; document.querySelectorAll('[data-diff]').forEach(b
 function setRainSpeed(lv){ rainSpeedLevel=lv; document.querySelectorAll('#rainSpeedRow .seg-btn').forEach(b=>b.classList.toggle('on', +b.dataset.spd===lv)); restartGame(); }
 function nSylWords(n){
   const out=[];
-  ['noun','verb','adv','pron','interj'].forEach(p=>{ const b=LEXICON[p]; if(!b) return; (b[n]||[]).forEach(w=>{ if(wordAllowed(w)) out.push(w); }); });
+  const add=w=>{ if(sylCount(w)===n && wordAllowed(w)) out.push(w); };
+  ['noun','verb','adv','pron','interj'].forEach(p=>{ const b=LEXICON[p]; if(!b) return; for(const k in b) b[k].forEach(add); });
+  ['1','2'].forEach(g=>(DICT[g]||[]).forEach(add));   // 기초사전 초·중급 단어도 게임 소재로
   return [...new Set(out)];
 }
 function nSylCombos(n){
@@ -1590,6 +1531,7 @@ function stageItems(){ return shuffle(currentDiffItems()).slice(0,12); }
 function newStage(){
   const grid=document.getElementById('brickGrid'); const msg=document.getElementById('gameMsg');
   if(!grid) return;
+  gGen++;
   const items=stageItems();
   gBricks=[]; grid.innerHTML='';
   if(!items.length){ msg.textContent='⚙️ 진도에서 음소를 먼저 켜주세요!'; return; }
@@ -1626,13 +1568,13 @@ function breakBrick(b){
   b.broken=true; gScore += diffPoints()+Math.min(gCombo,5); gCombo++; renderGStats(); sfxPop();
   const arena=document.getElementById('gameArena');
   flyBall(b.el, ()=>{ b.el.classList.add('shatter'); const a=arena.getBoundingClientRect(), r=b.el.getBoundingClientRect(); burst(arena, r.left-a.left+r.width/2, r.top-a.top+r.height/2, b.colorVar); setTimeout(()=>{ b.el.style.visibility='hidden'; },240); });
-  if(gBricks.every(x=>x.broken)) setTimeout(()=>{ sfxWin(); stageClear(); },300);
+  if(gBricks.every(x=>x.broken)){ const gen=gGen; setTimeout(()=>{ if(gen!==gGen) return; sfxWin(); stageClear(); },300); }
 }
 function stageClear(){
   gStage++; renderGStats();
   const cheers=['🎉 판 깼다! 잘했어요!','⭐ 멋져요! 다음 판 갈까요?','🏆 최고! 계속 가봐요!','👏 완벽해요!'];
   document.getElementById('gameMsg').textContent=cheers[Math.floor(Math.random()*cheers.length)];
-  setTimeout(newStage,1300);
+  const gen=gGen; setTimeout(()=>{ if(gen===gGen) newStage(); },1300);
 }
 function handleGame(composing){ if(currentGame==='rain') handleRain(composing); else handleBrick(composing); }
 function handleBrick(composing){
@@ -1688,21 +1630,19 @@ function selectGame(g){
     : (IS_TOUCH
         ? '떨어지는 <b>글자를 정확히 읽고 손가락으로 톡!</b> 눌러 잡아요. 바닥에 닿기 전에! 놓쳐도 괜찮아요 — 생명은 하트로 표시돼요.'
         : '위에서 <b>떨어지는 글자</b>를 바닥에 닿기 전에 <b>타자로 쳐서</b> 없애요! <b>마우스로 글자를 클릭해도</b> 없앨 수 있어요. 놓쳐도 괜찮아요 — 생명은 하트로 표시돼요.');
-  gScore=0; gCombo=0; gStage=0; document.getElementById('gameMsg').textContent='';
+  gGen++; gScore=0; gCombo=0; gStage=0; document.getElementById('gameMsg').textContent='';
   if(g==='brick'){ stopRain(); renderGStats(); newStage(); }
   else { rainLives=3; startRain(); }
 }
 function restartGame(){
-  gScore=0; gCombo=0; gStage=0; document.getElementById('gameMsg').textContent='';
+  gGen++; gScore=0; gCombo=0; gStage=0; document.getElementById('gameMsg').textContent='';
   if(currentGame==='brick'){ renderGStats(); newStage(); }
   else { rainLives=3; startRain(); }
 }
-function stopBrick(){}
 function renderRainLives(){ const el=document.getElementById('rainLives'); if(!el) return; const n=Math.max(0,rainLives); el.textContent='❤️'.repeat(n)+'🤍'.repeat(Math.max(0,3-n)); }
 function startRain(){
-  stopBrick();
   rainItems.forEach(it=>it.el.remove()); rainItems=[];
-  rainActive=true; rainPaused=false; rainLives=(rainLives>0?rainLives:3); lastSpawn=0;
+  rainActive=true; rainPaused=false; rainLives=(rainLives>0?rainLives:3); lastSpawn=0; rainLast=0;
   const btn=document.getElementById('pauseBtn'); if(btn) btn.textContent='⏸️ 일시정지';
   const ov=document.getElementById('rainPause'); if(ov) ov.style.display='none';
   gCombo=0; renderGStats(); renderRainLives(); renderBest();
@@ -1715,7 +1655,7 @@ function togglePause(){
   rainPaused=!rainPaused;
   const btn=document.getElementById('pauseBtn'), ov=document.getElementById('rainPause');
   if(rainPaused){ if(rainRAF){ cancelAnimationFrame(rainRAF); rainRAF=null; } btn.textContent='▶️ 계속하기'; ov.style.display='flex'; }
-  else{ btn.textContent='⏸️ 일시정지'; ov.style.display='none'; lastSpawn=0; rainRAF=requestAnimationFrame(rainStep); focusInput(); }
+  else{ btn.textContent='⏸️ 일시정지'; ov.style.display='none'; lastSpawn=0; rainLast=0; rainRAF=requestAnimationFrame(rainStep); focusInput(); }
 }
 function spawnRain(W){
   const pool=currentDiffItems(); if(!pool.length) return;
@@ -1734,7 +1674,8 @@ function rainStep(ts){
   const arena=document.getElementById('rainArena'); const H=arena.clientHeight, W=arena.clientWidth;
   if(!lastSpawn) lastSpawn=ts;
   if(ts-lastSpawn>RAIN_SPAWN_MS && rainItems.length<RAIN_MAX){ spawnRain(W); lastSpawn=ts; }
-  rainItems.forEach(it=>{ if(it.dead) return; it.y+=it.speed; it.el.style.transform='translate('+it.x+'px,'+it.y+'px)'; if(it.y > H-52) missRain(it); });
+  const step=rainLast? Math.min(50, ts-rainLast)/16.7 : 1; rainLast=ts;
+  rainItems.forEach(it=>{ if(it.dead) return; it.y+=it.speed*step; it.el.style.transform='translate('+it.x+'px,'+it.y+'px)'; if(it.y > H-52) missRain(it); });
   rainItems=rainItems.filter(it=>!it.dead);
   rainRAF=requestAnimationFrame(rainStep);
 }
@@ -1773,6 +1714,9 @@ function handleRain(composing){
   gi.addEventListener('keydown', e=>{ if(e.key==='Escape' && currentGame==='rain'){ e.preventDefault(); togglePause(); } });
 })();
 
+document.addEventListener('keydown',e=>{   // 타일을 키보드로도 누를 수 있게
+  if((e.key==='Enter'||e.key===' ') && e.target && e.target.matches && e.target.matches('.pg-tile[role=button],.jamo-tile[role=button]')){ e.preventDefault(); e.target.click(); }
+});
 function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 /* =========================================================
