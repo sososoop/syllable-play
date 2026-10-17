@@ -281,8 +281,8 @@
         <button class="mini-btn" onclick="addProfile()">＋ 추가</button>
         <button class="mini-btn" onclick="renameProfile()">✏️ 이름변경</button>
         <button class="mini-btn warn" onclick="deleteProfile()">🗑 삭제</button>
-        <button class="mini-btn" onclick="exportProfiles()">⭳ 내보내기</button>
-        <button class="mini-btn" onclick="if(TRIAL){trialLock('프로필 가져오기');return;} document.getElementById('importFile').click()">⭱ 가져오기</button>
+        <button class="mini-btn" onclick="exportProfiles()">📤 내보내기</button>
+        <button class="mini-btn" onclick="if(TRIAL){trialLock('프로필 가져오기');return;} document.getElementById('importFile').click()">📥 가져오기</button>
         <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importProfiles(this.files[0])">
       </div>
     </div>
