@@ -658,6 +658,9 @@ function renderTrialRand(){
 function trialRandDone(){
   openInfo('오늘의 무료 체험 '+TRIAL_RAND_MAX+'회를 모두 사용했어요!', '한글놀이가 선생님의 읽기 중재에 도움이 될 것 같으신가요?<br>내일 다시 무료로 이용하실 수 있어요.<br><br>더 다양한 음절 수준에서 제한 없이 연습하고 싶으시다면 전체 이용권을 이용해 보세요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">전체 이용권 살펴보기 →</a>');
 }
+function trialGameLock(){
+  openInfo('2~3음절 읽기 게임도 활용해 보세요!', '정식판에서는 아동의 읽기 수준에 맞춰 1~3음절 게임을 자유롭게 사용할 수 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">정식판 기능 살펴보기 →</a>');
+}
 function trialLock(what){
   openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 자료를 개수 제한 없이 만들기(최대 100개) · 넓은 단어 범위 · 두 글자·세 글자 게임 · 랜덤 글자 무제한 · 글씨연습장 인쇄 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">한글놀이 정식판 보기 →</a>');
 }
@@ -1568,7 +1571,7 @@ function saveRainBest(){ try{ localStorage.setItem(RAIN_BEST_KEY, JSON.stringify
 function currentBest(){ return rainBest[gDiff]||0; }
 function renderBest(){ const el=document.getElementById('gBest'); if(el) el.textContent=currentBest(); }
 
-function setDiff(d){ if(TRIAL && d!=='syl'){ trialLock('두 글자 · 세 글자'); return; } gDiff=d; document.querySelectorAll('[data-diff]').forEach(b=>b.classList.toggle('on', b.dataset.diff===d)); restartGame(); }
+function setDiff(d){ if(TRIAL && d!=='syl'){ trialGameLock(); return; } gDiff=d; document.querySelectorAll('[data-diff]').forEach(b=>b.classList.toggle('on', b.dataset.diff===d)); restartGame(); }
 function setRainSpeed(lv){ rainSpeedLevel=lv; document.querySelectorAll('#rainSpeedRow .seg-btn').forEach(b=>b.classList.toggle('on', +b.dataset.spd===lv)); restartGame(); }
 function nSylWords(n){
   const out=[];
