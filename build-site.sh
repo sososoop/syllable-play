@@ -14,6 +14,8 @@ cd "$(dirname "$0")"
 SITE_FILES=(
   index.html
   hangul-words.json
+  hangul-sent-1.json
+  hangul-sent-2.json
   manual.html
   manual-img
   .nojekyll
@@ -23,7 +25,8 @@ rm -rf dist && mkdir -p dist
 for f in "${SITE_FILES[@]}"; do
   [ -e "$f" ] && cp -R "$f" dist/ && echo "  + $f"
 done
-# 단독판(hangul.sososoop.com)은 체험판 — 정식판 전용 데이터(표준국어대사전 목록·예문 파일)는 올리지 않고,
+# 단독판(hangul.sososoop.com)은 체험판 — 정식판 전용 데이터(표준국어대사전 목록·고급 예문 파일 3·0)는 올리지 않고,
+# 예문은 단어 범위 초급·보통(1·2)만 넣는다(체험판 문장 3개용).
 # 앱에 체험판 표시를 넣는다. 정식판은 소소숲(/hangul/app)에서 원본 index.html을 그대로 쓴다.
 python3 - <<'PY'
 p='dist/index.html'; s=open(p).read()

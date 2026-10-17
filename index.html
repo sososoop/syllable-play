@@ -322,7 +322,7 @@
         <button class="btn-save" onclick="saveWord()">⭐ 담기</button>
       </div>
       <div class="buildbtns" style="margin-top:8px">
-        <span style="align-self:center;font-size:14px;font-weight:900">🎲 랜덤 글자</span>
+        <span id="randLabel" style="align-self:center;font-size:14px;font-weight:900">🎲 랜덤 글자</span>
         <button class="btn-random" onclick="randomWord(1)">1음절</button>
         <button class="btn-random" onclick="randomWord(2)">2음절</button>
         <button class="btn-random" onclick="randomWord(3)">3음절</button>
@@ -639,27 +639,49 @@ let lockProfile=null;      // 잠금 모드 임시 프로필(저장 안 함)
 
 /* ---- 체험판 (hangul.sososoop.com) — 빌드 때 window.__TRIAL__ 를 넣는다 ---- */
 const TRIAL=!!window.__TRIAL__;
-const TRIAL_MAX=10;
+const TRIAL_MAX={real:10, nonsense:10, pair:3, sentence:3};   // 자료 유형별 최대 개수
+const TRIAL_RAND_MAX=10;                                        // 블렌딩 보드 🎲 랜덤 글자: 하루 횟수
+const TRIAL_RAND_KEY='sp.trialRand.v1';
+function trialMax(type){ return TRIAL_MAX[type]||TRIAL_MAX.real; }
+function trialRandLeft(){
+  try{ const t=JSON.parse(localStorage.getItem(TRIAL_RAND_KEY)||'null'); const d=new Date().toDateString(); return TRIAL_RAND_MAX-((t&&t.d===d)?t.n:0); }catch(e){ return TRIAL_RAND_MAX; }
+}
+function useTrialRand(){
+  const left=trialRandLeft(); if(left<=0) return false;
+  try{ localStorage.setItem(TRIAL_RAND_KEY, JSON.stringify({d:new Date().toDateString(), n:TRIAL_RAND_MAX-left+1})); }catch(e){}
+  return true;
+}
+function renderTrialRand(){
+  const el=document.getElementById('randLabel'); if(!el || !TRIAL) return;
+  el.textContent='🎲 랜덤 글자 (체험판 오늘 '+Math.max(0,trialRandLeft())+'번 남음)';
+}
 function trialLock(what){
-  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 헷갈리는 짝 · 사전 예문 문장 · 무의미 단어 · 읽기 게임 2종 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">한글놀이 정식판 보기 →</a>');
+  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 자료를 개수 제한 없이 만들기(최대 100개) · 넓은 단어 범위 · 두 글자·세 글자 게임 · 랜덤 글자 무제한 · 글씨연습장 인쇄 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">한글놀이 정식판 보기 →</a>');
 }
 function applyTrialUI(){
   if(!TRIAL) return;
   document.getElementById('printTrial').textContent=' · 체험판 (정식판: sososoop.com/hangul)';
   document.getElementById('trialBadge').style.display='inline-block';
   document.title='한글놀이 체험판';
-  // 자료 만들기: 의미 단어만, 단어 범위 초급·보통만, 개수 10개까지
-  [...document.querySelectorAll('#genType option')].forEach(o=>{ if(o.value!=='real'){ o.textContent+=' 🔒'; } });
+  // 자료 만들기: 단어 범위 초급·보통만, 개수는 의미·무의미 10개, 헷갈리는 짝·문장 3개까지
   [...document.querySelectorAll('#genLevel option')].forEach(o=>{ if(+o.value>2){ o.textContent+=' 🔒'; } });
-  const c=document.getElementById('genCount'); c.max=TRIAL_MAX; c.value=Math.min(+c.value||TRIAL_MAX,TRIAL_MAX);
-  c.addEventListener('change',()=>{ if(+c.value>TRIAL_MAX){ c.value=TRIAL_MAX; } });
-  c.parentElement.querySelector('label').textContent='개수 (체험판 10개까지)';
-  // 게임: 벽돌깨기 한 글자만
-  document.querySelector('.gp-btn[data-game="rain"]').textContent+=' 🔒';
+  const c=document.getElementById('genCount');
+  c.addEventListener('change',()=>{ const m=trialMax(document.getElementById('genType').value); if(+c.value>m){ c.value=m; } });
+  syncTrialCount();
+  // 블렌딩 보드: 🎲 랜덤 글자는 2음절까지, 하루 횟수 표시
+  document.querySelectorAll('.btn-random').forEach(b=>{ if(b.textContent==='3음절'){ b.textContent+=' 🔒'; b.classList.add('locked-feat'); } });
+  renderTrialRand();
+  // 게임: 벽돌깨기·글자잡기 모두 한 글자만
   document.querySelectorAll('[data-diff="word2"],[data-diff="word3"]').forEach(b=>b.textContent+=' 🔒');
   // 프로필 추가·내보내기·가져오기, 가정과제 링크
   document.querySelectorAll('.profile-bar .mini-btn').forEach(b=>{ if(/추가|내보내기|가져오기/.test(b.textContent)){ b.textContent+=' 🔒'; b.classList.add('locked-feat'); } });
   const hw=document.querySelector('button[onclick="makeHwLink()"]'); if(hw){ hw.textContent+=' 🔒'; hw.classList.add('locked-feat'); }
+}
+function syncTrialCount(){
+  if(!TRIAL) return;
+  const m=trialMax(document.getElementById('genType').value);
+  const c=document.getElementById('genCount'); c.max=m; c.value=m;
+  c.parentElement.querySelector('label').textContent='개수 (체험판 '+m+'개까지)';
 }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function uid(){ try{ return 'p_'+crypto.randomUUID().slice(0,8); }catch(e){ return 'p_'+Math.floor(performance.now()).toString(36); } }
@@ -1058,6 +1080,11 @@ function assembledWord(){
 function randomWord(n){
   const pool=syllablePool('mix');
   if(!pool.length) return;
+  if(TRIAL){
+    if(n===3){ trialLock('랜덤 세 글자'); return; }
+    if(!useTrialRand()){ trialLock('랜덤 글자 더 만들기(체험판은 하루 '+TRIAL_RAND_MAX+'번)'); return; }
+    renderTrialRand();
+  }
   n = (n===1||n===2||n===3) ? n : (Math.random()<0.5?2:3);
   syllables=[];
   for(let i=0;i<n;i++){ const ch=pool[Math.floor(Math.random()*pool.length)]; const d=decompose(ch); syllables.push({cho:d.ci,jung:d.mi,jong:d.ji}); }
@@ -1339,7 +1366,7 @@ function syncGenFields(){
   document.getElementById('genNote').innerHTML=GEN_NOTES[t]||'';
 }
 document.getElementById('genType').addEventListener('change',e=>{
-  if(TRIAL && e.target.value!=='real'){ const o=e.target.selectedOptions[0].textContent.replace(' 🔒',''); e.target.value='real'; trialLock(o); }
+  syncTrialCount();
   syncGenFields();
 });
 document.getElementById('genLevel').addEventListener('change',e=>{
@@ -1358,8 +1385,8 @@ async function generate(){
   const batchim=document.getElementById('genBatchim').value;
   const len=document.getElementById('genLen').value;
   let count=parseInt(document.getElementById('genCount').value)||20;
-  count=Math.max(1,Math.min(TRIAL?TRIAL_MAX:100,count));
-  if(TRIAL && (type!=='real' || level>2)){ trialLock(type!=='real'?'이 자료 유형':'넓은 단어 범위'); return; }   // 화면 잠금을 우회해도 체험판에서는 만들지 않음
+  count=Math.max(1,Math.min(TRIAL?trialMax(type):100,count));
+  if(TRIAL && level>2){ trialLock('넓은 단어 범위'); return; }   // 화면 잠금을 우회해도 체험판에서는 만들지 않음
 
   let items=[], head='';
   if(type==='real'){ items=genRealWords(syll,batchim,count,level); head='📋 의미 단어'; }
@@ -1415,7 +1442,7 @@ function resultToHandwriting(){
 function openHandwriting(words){
   // 문장부호 제거, 낱말만 — 글씨연습장 words 파라미터로 전달
   const clean=words.flatMap(w=>w.split(/\s*–\s*/)).map(w=>w.replace(/[.,?!]/g,'').trim()).filter(Boolean).slice(0,60);
-  const url='https://sososoop.github.io/korean-handwriting/?words='+encodeURIComponent(clean.join(','));
+  const url='https://sososoop.github.io/korean-handwriting/?words='+encodeURIComponent(clean.join(','))+(TRIAL?'&trial=1':'');
   window.open(url,'_blank');
 }
 
@@ -1652,7 +1679,6 @@ function burst(arena, cx, cy, colorVar){
   }
 }
 function selectGame(g){
-  if(TRIAL && g==='rain'){ trialLock('글자잡기 게임'); return; }
   currentGame=g;
   document.querySelectorAll('.gp-btn').forEach(b=>b.classList.toggle('on', b.dataset.game===g));
   document.getElementById('brickGame').style.display = g==='brick'?'':'none';
