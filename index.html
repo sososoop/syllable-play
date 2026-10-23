@@ -5,246 +5,315 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>한글놀이</title>
 <style>
+  /* 소소숲 기본 디자인(센터 대시보드) — 2026-10-23 전면 교체.
+     #fffdf7 모눈 종이, #1a1a1a 2px 테두리, 직각, 파랑 #3b5bdb 강조, 민트 #12b5a5 보조, 진녹색 상단 바 #141e10.
+     키트: ~/클로드/소소숲_기본디자인. 밝은 화면만(다크 모드 없음). */
   :root{
-    --lime:#eaff3d;      /* 형광 라임 포인트 */
-    --lime-soft:#f2ff8f; /* 옅은 라임(하이라이트 박스) */
-    --blue:#5b6ef5;      /* 선택 탭 */
-    --ink:#141414;       /* 검정 테두리/글자 */
-    --real:#3ecf6a;      /* 의미단어 */
-    --nonsense:#ff8a4c;  /* 무의미단어 */
-    --sent:#b79bff;      /* 문장 */
-    --cho:#bfe3ff;       /* 초성 */
-    --jung:#eaff3d;      /* 중성 */
-    --jong:#ffd6a5;      /* 종성 */
-    --paper:#fff;
-    --bg:#f4f4ef;
-    --bd:2px solid var(--ink);
-    --sh:4px 4px 0 var(--ink);
-    --sh-sm:3px 3px 0 var(--ink);
+    --ink:#1a1a1a;--muted:#6b7280;--paper:#fffdf7;--white:#fff;--hair:#1a1a1a22;--grid:#1a1a1a0b;
+    --blue:#3b5bdb;--blue-dark:#2f49b0;--teal:#12b5a5;--teal-dark:#0e9488;--mint:#e1f6f2;
+    --nav:#141e10;--nav-ink:#f5f0e8;--nav-dim:#c0c7b7;--text:#61666c;--soft-shadow:#dddccf;
+    --surface-2:#f4f2ea;--surface-3:#e7e4d8;--ink-2:#4b5652;--line-2:#1a1a1a44;
+    --good:#0b7f74;--warn:#9a6700;--serious:#c2410c;--crit:#d42a20;
+    --good-soft:#e1f6f2;--warn-soft:#fff4d6;--serious-soft:#ffeadf;--crit-soft:#fde6e4;--info-soft:#e8edff;
+    /* 음소 색: 초성 파랑 · 중성 민트 · 종성 주황 (대시보드 계열 s1·s2·s3의 연한 색) */
+    --cho:#d0dbff;--jung:#c3eee6;--jong:#ffdcc6;--tint4:#fff1c2;--tint5:#fff;
+    --border:2px solid var(--ink);--bd:var(--border);
+    --font:system-ui,-apple-system,BlinkMacSystemFont,Pretendard,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    --wrap:1120px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
   body{
-    font-family:"Apple SD Gothic Neo","Malgun Gothic",Pretendard,sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    min-height:100vh;
-    -webkit-text-size-adjust:100%;
+    color:var(--ink);background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:40px 40px;font-family:var(--font);font-size:14px;line-height:1.6;letter-spacing:-.02em;
+    min-height:100vh;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;
   }
-  /* ---------- 상단 라임 바 ---------- */
-  .topbar{
-    background:var(--lime);border-bottom:var(--bd);
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 20px;flex-wrap:wrap;gap:8px;
-  }
-  .brand{font-size:22px;font-weight:900;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
-  .brand .dotmark{width:16px;height:16px;background:var(--ink);border-radius:50%;display:inline-block}
-  .topbar .right{display:flex;align-items:center;gap:8px}
-  .hw-badge{display:none;background:var(--ink);color:var(--lime);font-size:13px;font-weight:900;padding:8px 14px;border-radius:2px}
-  .trial-badge{display:none;background:var(--blue);color:#fff;font-size:13px;font-weight:900;padding:8px 14px;border:2px solid var(--ink);text-decoration:none;box-shadow:3px 3px 0 var(--ink)}
-  .locked-feat{opacity:.55}
-  .top-link{border:2px solid var(--ink);background:#fff;color:var(--ink);text-decoration:none;font-size:13px;font-weight:800;padding:8px 14px;box-shadow:3px 3px 0 var(--ink)}
+  button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+  button{cursor:pointer}
+  em{font-style:normal;color:var(--blue)}
+  :focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+  svg.ic{width:1.1em;height:1.1em;vertical-align:-.18em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
-  .modeswitch{
-    max-width:980px;margin:22px auto 0;padding:0 16px;
-    display:flex;gap:10px;flex-wrap:wrap;
-  }
+  /* ---------- 상단 바 ---------- */
+  .masthead{background:var(--nav);color:var(--nav-ink)}
+  .masthead-inner{max-width:var(--wrap);min-height:60px;margin:auto;padding:0 32px;display:flex;align-items:center;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:750;white-space:nowrap}
+  .brand img{width:32px;height:32px;object-fit:contain}
+  .brand-sub{font-weight:450;opacity:.85;margin-left:3px;font-size:14px}
+  .app-name{font-size:13px;font-weight:750;color:var(--nav-ink);border-left:1px solid #f5f0e833;padding-left:16px;white-space:nowrap}
+  .app-name small{font-size:12px;font-weight:500;color:var(--nav-dim);margin-left:6px}
+  .mh-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex:none}
+  .hw-badge{display:none;background:var(--nav-ink);color:var(--nav);font-size:12px;font-weight:800;padding:6px 12px}
+  .trial-badge{display:none;background:var(--blue);color:#fff;font-size:12px;font-weight:800;padding:6px 12px;border:1px solid var(--nav-ink);text-decoration:none}
+  .trial-badge:hover{background:var(--blue-dark)}
+  .top-link{display:inline-flex;align-items:center;gap:6px;border:1px solid #f5f0e844;color:var(--nav-ink);text-decoration:none;font-size:12px;font-weight:700;padding:6px 12px}
+  .top-link:hover{background:#ffffff14}
+  .locked-feat{opacity:.5}
+
+  /* ---------- 번호 메뉴 ---------- */
+  .menu-wrap{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:2px solid var(--ink)}
+  .modeswitch{max-width:calc(var(--wrap) - 64px);margin:auto;display:flex;border-left:1px solid var(--hair);border-right:1px solid var(--hair)}
   .modeswitch button{
-    border:var(--bd);background:#fff;padding:11px 20px;
-    font-size:15px;font-weight:800;color:var(--ink);cursor:pointer;
-    box-shadow:var(--sh-sm);transition:transform .08s;
+    flex:1 1 0;display:flex;gap:12px;align-items:center;padding:16px 20px;border:0;border-right:1px solid var(--hair);
+    background:none;font-size:15px;font-weight:750;white-space:nowrap;text-align:left;color:var(--ink);transition:background .15s;min-width:0;
   }
-  .modeswitch button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .modeswitch button:last-child{border-right:0}
+  .modeswitch button:hover{background:var(--mint)}
   .modeswitch button.on{background:var(--blue);color:#fff}
-  main{max-width:980px;margin:0 auto;padding:16px 16px 70px}
+  .modeswitch .ic{font-size:17px}
+  .nav-num{font-size:11px;opacity:.65;letter-spacing:.05em;font-weight:600}
+
+  /* ---------- 본문 틀 ---------- */
+  main{max-width:var(--wrap);margin:0 auto;padding:28px 32px 40px}
   .panel{display:none}
   .panel.on{display:block;animation:fade .18s}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .page-heading{margin-bottom:22px}
+  .eyebrow{display:table;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--blue);background:var(--white);border:1px solid var(--blue);padding:5px 10px;margin:0 0 14px}
+  .page-heading h1{margin:0 0 6px;font-size:clamp(24px,2.6vw,34px);font-weight:900;line-height:1.3;letter-spacing:-.06em;word-break:keep-all}
+  .page-heading p{margin:0;font-size:14px;color:var(--text);line-height:1.8;word-break:keep-all}
 
-  /* ---------- 공용 카드 ---------- */
-  .card{background:var(--paper);border:var(--bd);border-radius:2px;padding:20px;margin:16px 0;box-shadow:var(--sh)}
-  .card h2{font-size:18px;font-weight:900;margin:0 0 14px;display:flex;align-items:center;gap:8px}
-  .eyebrow{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--blue);margin:0 0 4px}
-  .hint{font-size:13px;color:#555;margin:4px 0 14px;line-height:1.6}
+  /* ---------- 카드 ---------- */
+  .card{background:var(--white);border:var(--border);box-shadow:3px 3px 0 var(--soft-shadow);padding:16px 20px 20px;margin:0 0 18px;min-width:0}
+  .card>h2{
+    margin:-16px -20px 16px;padding:13px 20px 11px;border-bottom:1px solid var(--hair);
+    font-size:15px;font-weight:850;letter-spacing:-.04em;display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;
+  }
+  .card>h2 .ic{color:var(--blue)}
+  .card-sub{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:0}
+  .hint{font-size:13px;color:var(--text);margin:4px 0 14px;line-height:1.7;word-break:keep-all}
   .hint b{color:var(--ink)}
-  .mini-btn{border:var(--bd);border-radius:2px;background:#fff;font-size:12px;font-weight:800;padding:7px 11px;cursor:pointer;box-shadow:var(--sh-sm);transition:transform .06s;color:var(--ink)}
-  .mini-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-  .mini-btn.warn{background:#ffdad7}
+  .mini-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:5px 11px;
+    border:var(--border);background:var(--white);color:var(--ink);font-size:12px;font-weight:750;white-space:nowrap;
+    transition:transform .15s,box-shadow .15s;
+  }
+  .mini-btn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--soft-shadow)}
+  .mini-btn:active{transform:none;box-shadow:none}
+  .mini-btn.warn{background:var(--crit-soft);color:var(--crit)}
+  .mini-btn .ic{color:var(--blue)}
+  .mini-btn.warn .ic{color:var(--crit)}
 
   /* ---------- 프로필 바 ---------- */
   .profile-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .profile-bar select{padding:10px 12px;border:var(--bd);border-radius:2px;font-size:15px;font-weight:800;background:#fff;color:var(--ink);min-width:120px}
+  .profile-bar select{padding:7px 10px;border:var(--border);border-radius:0;font-size:15px;font-weight:800;background:var(--white);color:var(--ink);min-width:140px;min-height:40px}
 
   /* ---------- 진도 그리드 ---------- */
   .prog-series{margin:0 0 6px}
   .series-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 8px}
-  .series-title{font-size:15px;font-weight:900}
-  .series-count{font-size:12px;font-weight:800;color:var(--blue)}
-  .pg-grouplabel{font-size:11px;font-weight:900;color:#999;letter-spacing:1px;margin:12px 2px 6px}
+  .series-title{font-size:15px;font-weight:850}
+  .series-count{font-size:12px;font-weight:800;color:var(--blue);border:1px solid var(--blue);background:var(--info-soft);padding:0 7px}
+  .pg-grouplabel{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.06em;margin:12px 2px 6px}
   .pg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px}
   .pg-tile{
-    position:relative;border:var(--bd);border-radius:2px;background:#fff;
-    font-size:22px;font-weight:900;padding:12px 0;text-align:center;cursor:pointer;
-    box-shadow:var(--sh-sm);transition:transform .06s;color:var(--ink);min-height:48px;
+    position:relative;border:var(--border);border-radius:0;background:var(--white);
+    font-size:22px;font-weight:900;padding:11px 0;text-align:center;cursor:pointer;
+    box-shadow:3px 3px 0 var(--soft-shadow);transition:transform .08s,background .12s;color:var(--ink);min-height:48px;
   }
-  .pg-tile:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-  .pg-tile.on{background:var(--lime)}
-  .pg-tile.on:after{content:"✓";position:absolute;top:2px;right:5px;font-size:11px;font-weight:900;color:var(--ink)}
-  .pg-tile.fixed{background:var(--lime-soft);cursor:default;opacity:.9}
-  .pg-tile.fixed:active{transform:none;box-shadow:var(--sh-sm)}
-  .pg-tile:focus-visible,.jamo-tile:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+  .pg-tile:hover{background:var(--mint)}
+  .pg-tile:active{transform:translate(2px,2px);box-shadow:none}
+  .pg-tile.on{background:var(--blue);color:#fff}
+  .pg-tile.on:after{content:"✓";position:absolute;top:2px;right:5px;font-size:11px;font-weight:900;color:#fff}
+  .pg-tile.fixed{background:var(--mint);color:var(--ink);cursor:default}
+  .pg-tile.fixed:after{color:var(--teal-dark)}
+  .pg-tile.fixed:active{transform:none;box-shadow:3px 3px 0 var(--soft-shadow)}
+  .pg-tile:focus-visible,.jamo-tile:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
   .active-syls{display:flex;flex-wrap:wrap;gap:7px}
 
   /* ---------- 놀이: 블렌딩 보드 ---------- */
   .board{
-    display:flex;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap;
-    min-height:120px;background:var(--lime-soft);border:var(--bd);border-radius:2px;padding:18px 14px;margin-bottom:10px;
+    display:flex;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap;min-height:128px;
+    background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:20px 20px;border:var(--border);padding:18px 14px;margin-bottom:10px;
   }
   .syl-box{
     position:relative;min-width:74px;min-height:92px;display:flex;align-items:center;justify-content:center;
-    font-size:52px;font-weight:900;line-height:1;border-radius:4px;cursor:pointer;padding:6px 8px;
+    font-size:52px;font-weight:900;line-height:1;cursor:pointer;padding:6px 8px;
   }
-  .syl-box.locked{background:#e7e7de;border:2px solid #b7b7ab;color:#444}
-  .syl-box.active{background:#fff;border:2px dashed var(--blue)}
+  .syl-box.locked{background:var(--white);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--soft-shadow);color:var(--ink)}
+  .syl-box.active{background:var(--white);border:2px dashed var(--blue)}
   .syl-box.pop{animation:pop .16s}
   @keyframes pop{from{transform:scale(.6);opacity:.3}to{transform:scale(1);opacity:1}}
-  .board .placeholder{color:#8f8f7a;font-size:16px;font-weight:800}
-  .verdict{text-align:center;font-size:16px;font-weight:900;min-height:26px;margin:8px 0 2px}
-  .verdict.real{color:#2a9d54}
-  .verdict.nonsense{color:#e06a2a}
-  .verdict.checking{color:#888}
+  .board .placeholder{color:var(--muted);font-size:15px;font-weight:700}
+  .verdict{text-align:center;font-size:15px;font-weight:850;min-height:26px;margin:8px 0 2px}
+  .verdict.real{color:var(--good)}
+  .verdict.nonsense{color:var(--serious)}
+  .verdict.checking{color:var(--muted)}
   .buildbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
   .buildbtns button, .genbtns button{
-    border:var(--bd);border-radius:2px;padding:12px 18px;font-size:14px;font-weight:900;cursor:pointer;box-shadow:var(--sh-sm);transition:transform .08s;color:var(--ink);
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:46px;
+    border:var(--border);border-radius:0;padding:10px 18px;font-size:14px;font-weight:800;background:var(--white);color:var(--ink);
+    transition:transform .15s,box-shadow .15s;
   }
-  .buildbtns button:active, .genbtns button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .buildbtns button:hover:not(:disabled), .genbtns button:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--soft-shadow)}
+  .buildbtns button:active, .genbtns button:active{transform:none;box-shadow:none}
   .buildbtns button:disabled{opacity:.4;cursor:not-allowed}
-  .btn-next{background:var(--blue);color:#fff}
-  .btn-back{background:#fff}
-  .btn-random{background:var(--cho)}
-  .btn-save{background:var(--lime)}
+  .buildbtns .ic, .genbtns .ic{color:var(--blue)}
+  .btn-next{background:var(--blue)!important;color:#fff!important}
+  .btn-next .ic{color:#fff!important}
+  .btn-random{min-width:72px}
+  .btn-save{background:var(--teal)!important;color:#fff!important}
+  .btn-save .ic{color:#fff!important}
+  .rand-label{align-self:center;font-size:13px;font-weight:800;color:var(--ink-2);display:inline-flex;gap:6px;align-items:center}
 
   /* 자모 존 */
   .zone{margin-top:14px}
-  .zone-label{font-size:12px;font-weight:900;color:#888;letter-spacing:1px;margin:0 2px 7px;display:flex;align-items:center;gap:8px}
+  .zone:first-child{margin-top:0}
+  .zone-label{font-size:12px;font-weight:800;color:var(--ink-2);letter-spacing:.02em;margin:0 2px 8px;display:flex;align-items:center;gap:8px}
+  .zone-label:before{content:"";width:14px;height:14px;border:2px solid var(--ink);background:var(--zc,#fff)}
+  .zone-label.cho{--zc:var(--cho)} .zone-label.jung{--zc:var(--jung)} .zone-label.jong{--zc:var(--jong)}
   .zone-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:9px}
   .jamo-tile{
-    border:var(--bd);border-radius:2px;font-size:26px;font-weight:900;padding:13px 0;cursor:pointer;
-    box-shadow:var(--sh-sm);transition:transform .06s;color:var(--ink);text-align:center;min-height:52px;
+    border:var(--border);border-radius:0;font-size:26px;font-weight:900;padding:12px 0;cursor:pointer;
+    box-shadow:3px 3px 0 var(--soft-shadow);transition:transform .08s;color:var(--ink);text-align:center;min-height:52px;
   }
-  .jamo-tile:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .jamo-tile:active{transform:translate(2px,2px);box-shadow:none}
   .jamo-tile.cho{background:var(--cho)}
   .jamo-tile.jung{background:var(--jung)}
   .jamo-tile.jong{background:var(--jong)}
-  .jamo-tile.sel{box-shadow:inset 0 0 0 2px var(--ink);transform:translate(3px,3px)}   /* 선택: 눌린 모양 + 네 변 같은 굵기 테두리 */
-  .zone-empty{font-size:13px;color:#999;font-weight:700}
+  .jamo-tile.sel{background:var(--ink);color:#fff;box-shadow:none;transform:translate(2px,2px)}   /* 선택: 검정 칸 + 눌린 모양 */
+  .zone-empty{font-size:13px;color:var(--muted);font-weight:700}
 
   /* 저장한 단어 / 칩 */
   .collected{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
-  .chip{padding:7px 13px;border:var(--bd);border-radius:2px;font-size:16px;font-weight:800;box-shadow:var(--sh-sm);background:#fff}
-  .chip.real{background:var(--real)}
-  .chip.nonsense{background:var(--nonsense)}
-  .empty{color:#999;font-size:13px;font-weight:600}
+  .chip{padding:5px 12px;border:var(--border);font-size:16px;font-weight:800;background:var(--white);box-shadow:3px 3px 0 var(--soft-shadow)}
+  .chip.real{background:var(--good-soft)}
+  .chip.nonsense{background:var(--serious-soft)}
+  .empty{color:var(--muted);font-size:13px;font-weight:600}
 
-  /* ---------- 생성 모드 ---------- */
-  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
-  .field label{display:block;font-size:12px;font-weight:900;color:#666;margin-bottom:6px}
+  /* ---------- 자료 만들기 ---------- */
+  .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+  .field label{display:block;font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.04em;margin-bottom:6px}
   .field select,.field input{
-    width:100%;padding:11px 10px;border:var(--bd);border-radius:2px;font-size:14px;font-weight:700;background:#fff;color:var(--ink);
+    width:100%;padding:9px 10px;min-height:42px;border:var(--border);border-radius:0;font-size:14px;font-weight:700;background:var(--white);color:var(--ink);
   }
   .segrow{display:flex;gap:6px;flex-wrap:wrap}
-  .seg{display:inline-flex;border:var(--bd);border-radius:2px;overflow:hidden;box-shadow:var(--sh-sm)}
-  .seg-btn{border:0;border-right:2px solid var(--ink);background:#fff;font-weight:900;font-size:13px;padding:10px 14px;cursor:pointer;color:var(--ink)}
+  .seg{display:inline-flex;border:var(--border);background:var(--white)}
+  .seg-btn{border:0;border-right:1px solid var(--ink);background:var(--white);font-weight:750;font-size:13px;padding:8px 14px;color:var(--ink);white-space:nowrap}
   .seg-btn:last-child{border-right:0}
-  .seg-btn.on{background:var(--blue);color:#fff}
+  .seg-btn:hover:not(.on){background:var(--mint)}
+  .seg-btn.on{background:var(--teal);color:#fff}
   .genbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-  .btn-gen{background:var(--blue);color:#fff}
-  .btn-print{background:var(--lime)}
-  .btn-copy{background:#fff}
+  .btn-gen{background:var(--blue)!important;color:#fff!important}
+  .btn-gen .ic{color:#fff!important}
 
-  .result-list{margin-top:8px}
-  .result-item{
-    display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:2px solid #eee;font-size:20px;font-weight:800;
-  }
+  .result-list{margin-top:4px}
+  .result-item{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--hair);font-size:20px;font-weight:800}
   .result-item:last-child{border-bottom:0}
-  .result-item .idx{font-size:12px;color:#aaa;min-width:24px;font-weight:800}
-  .result-item .tag{font-size:11px;font-weight:900;padding:3px 9px;border:2px solid var(--ink);margin-left:auto}
-  .tag.real{background:var(--real)}
-  .tag.nonsense{background:var(--nonsense)}
-  .tag.sent{background:var(--sent)}
-  .result-empty{color:#999;font-size:14px;font-weight:600;padding:14px 0}
-  .tag.pair{background:var(--lime)}
+  .result-item .idx{font-size:11px;color:var(--muted);min-width:24px;font-weight:700;font-variant-numeric:tabular-nums}
+  .result-item .tag{font-size:11px;font-weight:800;padding:1px 8px;border:1px solid currentColor;margin-left:auto;letter-spacing:0;white-space:nowrap}
+  .tag.real{background:var(--good-soft);color:var(--good)}
+  .tag.nonsense{background:var(--serious-soft);color:var(--serious)}
+  .tag.sent{background:var(--info-soft);color:var(--blue)}
+  .tag.pair{background:var(--warn-soft);color:var(--warn)}
+  .result-empty{color:var(--muted);font-size:14px;font-weight:600;padding:14px 0}
   .result-item .tg{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px;text-decoration-color:var(--blue)}
-  .target-box{margin-top:16px;padding:12px 12px 4px;border:var(--bd);border-radius:2px;background:#fafafa}
+  .target-box{margin-top:16px;padding:12px 14px 6px;border:1px solid var(--ink);background:var(--paper)}
   .target-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-  .target-head b{font-size:14px}
-  .target-head .sub{font-size:12px;color:#777;font-weight:700}
+  .target-head b{font-size:14px;display:inline-flex;align-items:center;gap:6px}
+  .target-head b .ic{color:var(--blue)}
+  .target-head .sub{font-size:12px;color:var(--muted);font-weight:600}
   .target-box .pg-grid{grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}
-  .target-box .pg-tile.on{background:var(--blue);color:#fff}
-  .target-box .pg-tile.on:after{color:#fff}
-  .target-box .pg-tile.on.off{background:repeating-linear-gradient(45deg,#9aa6ff,#9aa6ff 6px,#c9cfff 6px,#c9cfff 12px);color:var(--ink)}
-  .src-note{font-size:12px;color:#888;font-weight:700;margin-top:10px}
+  .target-box .pg-tile{font-size:19px;padding:8px 0;min-height:40px}
+  .target-box .pg-tile.on.off{background:repeating-linear-gradient(45deg,#a9b8f5,#a9b8f5 6px,#d6defc 6px,#d6defc 12px);color:var(--ink)}
+  .target-box .pg-tile.on.off:after{color:var(--ink)}
+  .src-note{font-size:12px;color:var(--muted);font-weight:600;margin-top:10px}
   /* 음절표 */
-  .syl-table{border-collapse:collapse;width:100%;margin-top:8px}
-  .syl-table th,.syl-table td{border:2px solid var(--ink);text-align:center;font-size:22px;font-weight:900;padding:8px 4px}
-  .syl-table th{background:var(--lime-soft);font-size:18px}
-  .syl-table td.real-cell{background:var(--lime);}
-  .syl-table caption{font-weight:900;font-size:14px;margin-bottom:6px;text-align:left}
+  .syl-table{border-collapse:collapse;width:100%;margin-top:8px;background:var(--white)}
+  .syl-table th,.syl-table td{border:1px solid var(--ink);text-align:center;font-size:22px;font-weight:900;padding:8px 4px}
+  .syl-table th{background:var(--surface-2);font-size:18px}
+  .syl-table td.real-cell{background:var(--good-soft)}
+  .syl-table caption{font-weight:850;font-size:14px;margin-bottom:6px;text-align:left}
 
   /* ---------- 게임 ---------- */
   .game-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-  .game-stats{display:flex;gap:16px;font-size:13px;font-weight:800;color:#555}
-  .game-stats b{font-size:20px;color:var(--ink)}
-  .arena{position:relative;height:330px;background:var(--lime-soft);border:var(--bd);border-radius:2px;overflow:hidden;margin-bottom:14px}
+  .game-stats{display:flex;border:var(--border);background:var(--white)}
+  .game-stats>span{display:flex;flex-direction:column;align-items:center;padding:4px 14px;border-right:1px solid var(--hair);font-size:11px;font-weight:700;color:var(--muted);line-height:1.4}
+  .game-stats>span:last-child{border-right:0}
+  .game-stats b{font-size:20px;color:var(--ink);font-weight:900;font-variant-numeric:tabular-nums}
+  .arena{
+    position:relative;height:330px;border:var(--border);overflow:hidden;margin-bottom:14px;background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;
+  }
   .bricks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px}
   .brick{
-    border:var(--bd);border-radius:2px;box-shadow:var(--sh-sm);color:var(--ink);
-    font-size:30px;font-weight:900;min-height:58px;line-height:1;
-    display:flex;align-items:center;justify-content:center;
+    border:var(--border);box-shadow:3px 3px 0 var(--soft-shadow);color:var(--ink);
+    font-size:30px;font-weight:900;min-height:58px;line-height:1;display:flex;align-items:center;justify-content:center;
   }
   .brick.shatter{animation:shatter .26s forwards}
   @keyframes shatter{to{transform:scale(1.5) rotate(12deg);opacity:0}}
-  .ball{position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:var(--ink);z-index:5;box-shadow:var(--sh-sm)}
-  .paddle{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:88px;height:12px;background:var(--blue);border:var(--bd);border-radius:2px;z-index:4}
+  .ball{position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;background:var(--ink);z-index:5}
+  .paddle{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:88px;height:12px;background:var(--blue);border:var(--border);z-index:4}
   .game-input-row{display:flex;gap:10px;align-items:center}
-  #gameInput{flex:1;padding:14px 16px;border:var(--bd);border-radius:2px;font-size:24px;font-weight:800;background:#fff;color:var(--ink);text-align:center}
-  #gameInput:focus{outline:none;box-shadow:var(--sh-sm)}
-  #gameInput.wrong{background:#ffdad7;animation:shake .2s}
+  #gameInput{flex:1;min-width:0;padding:12px 16px;border:var(--border);border-radius:0;font-size:24px;font-weight:800;background:var(--white);color:var(--ink);text-align:center}
+  #gameInput:focus{outline:none;box-shadow:inset 0 0 0 2px var(--teal)}
+  #gameInput.wrong{background:var(--crit-soft);animation:shake .2s}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-  .game-msg{text-align:center;font-size:18px;font-weight:900;min-height:26px;margin-top:14px;color:var(--blue)}
-  .game-picker{display:flex;gap:10px;margin:2px 0 14px}
-  .gp-btn{flex:1;border:var(--bd);border-radius:2px;background:#fff;font-weight:900;font-size:16px;padding:14px 10px;cursor:pointer;color:var(--ink);box-shadow:var(--sh-sm);transition:transform .08s}
-  .gp-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
-  .gp-btn.on{background:var(--lime)}
+  .game-input-row .mini-btn{min-height:52px;padding:5px 14px}
+  .game-msg{text-align:center;font-size:17px;font-weight:850;min-height:26px;margin-top:14px;color:var(--blue)}
+  .game-picker{display:flex;margin:0 0 14px;border:var(--border)}
+  .gp-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-right:1px solid var(--ink);background:var(--white);font-weight:800;font-size:15px;padding:13px 10px;color:var(--ink)}
+  .gp-btn:last-child{border-right:0}
+  .gp-btn:hover:not(.on){background:var(--mint)}
+  .gp-btn.on{background:var(--blue);color:#fff}
   .particle{position:absolute;width:11px;height:11px;border:2px solid var(--ink);pointer-events:none;z-index:8;animation:burst .5s ease-out forwards}
   @keyframes burst{to{transform:translate(var(--dx),var(--dy)) rotate(200deg);opacity:0}}
   .rain-arena{overflow:hidden}
   .rain-ground{position:absolute;left:0;right:0;bottom:0;height:8px;background:var(--ink);z-index:2}
   .rain-lives{position:absolute;right:12px;bottom:12px;font-size:20px;letter-spacing:2px;z-index:6}
-  .raindrop{position:absolute;left:0;top:0;background:#fff;border:var(--bd);border-radius:2px;box-shadow:var(--sh-sm);font-size:26px;font-weight:900;padding:10px 14px;line-height:1;white-space:nowrap;z-index:3;color:var(--ink);cursor:pointer;touch-action:manipulation}
-  .raindrop:active{background:var(--lime)}
+  .raindrop{position:absolute;left:0;top:0;background:var(--white);border:var(--border);box-shadow:3px 3px 0 var(--soft-shadow);font-size:26px;font-weight:900;padding:10px 14px;line-height:1;white-space:nowrap;z-index:3;color:var(--ink);cursor:pointer;touch-action:manipulation}
+  .raindrop:active{background:var(--mint)}
   .raindrop.splash{animation:splash .3s forwards}
-  @keyframes splash{to{opacity:0;background:#ffb3ad}}
-  .rain-pause{display:none;position:absolute;inset:0;z-index:9;background:rgba(244,244,239,.9);align-items:center;justify-content:center;text-align:center;font-size:28px;font-weight:900;color:var(--ink)}
-  .rain-pause span{display:block;margin-top:8px;font-size:14px;font-weight:800;color:#666}
+  @keyframes splash{to{opacity:0;background:var(--crit-soft)}}
+  .rain-pause{display:none;position:absolute;inset:0;z-index:9;background:rgba(255,253,247,.92);align-items:center;justify-content:center;text-align:center;font-size:26px;font-weight:900;color:var(--ink)}
+  .rain-pause span{display:block;margin-top:8px;font-size:14px;font-weight:700;color:var(--muted)}
 
-  footer{text-align:center;font-size:12px;font-weight:700;color:#999;padding:24px 10px}
+  /* ---------- 바닥글 ---------- */
+  footer{max-width:var(--wrap);margin:0 auto;padding:0 32px 30px}
+  .foot-inner{border-top:2px solid var(--ink);padding-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;font-size:11px;color:var(--muted);line-height:1.7}
+  .foot-inner a{color:inherit}
+  .foot-inner .r{margin-left:auto;font-weight:700;color:var(--ink-2)}
 
-  /* 모달 */
-  .modal-back{display:none;position:fixed;inset:0;background:rgba(20,20,20,.45);z-index:50;align-items:center;justify-content:center;padding:20px}
+  /* ---------- 모달 ---------- */
+  .modal-back{display:none;position:fixed;inset:0;background:rgba(20,30,16,.45);z-index:50;align-items:center;justify-content:center;padding:20px}
   .modal-back.on{display:flex}
-  .modal{background:#fff;border:var(--bd);border-radius:2px;box-shadow:var(--sh);padding:22px;max-width:380px;width:100%}
-  .modal h3{margin:0 0 12px;font-size:17px;font-weight:900}
-  .modal input{width:100%;padding:12px;border:var(--bd);border-radius:2px;font-size:16px;font-weight:700;margin-bottom:14px}
+  .modal{background:var(--white);border:var(--border);box-shadow:6px 6px 0 var(--teal);padding:0 20px 18px;max-width:400px;width:100%}
+  .modal h3{margin:0 -20px 14px;padding:13px 20px 11px;border-bottom:1px solid var(--hair);font-size:16px;font-weight:850;letter-spacing:-.04em}
+  .modal input{width:100%;padding:10px 12px;border:var(--border);border-radius:0;font-size:16px;font-weight:700;margin-bottom:14px;background:var(--white)}
   .modal .row{display:flex;gap:10px;justify-content:flex-end}
-  .modal .row button{border:var(--bd);border-radius:2px;padding:10px 16px;font-weight:900;cursor:pointer;box-shadow:var(--sh-sm);background:#fff}
-  .modal .row .ok{background:var(--lime)}
-  .modal .msg{font-size:14px;line-height:1.6;margin-bottom:14px}
+  .modal .row button{min-height:40px;border:var(--border);padding:8px 16px;font-weight:800;background:var(--white);transition:transform .15s,box-shadow .15s}
+  .modal .row button:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--soft-shadow)}
+  .modal .row .ok{background:var(--blue);color:#fff}
+  .modal .row .warn{background:var(--crit);color:#fff}
+  .modal .msg{font-size:14px;line-height:1.7;margin-bottom:16px;color:var(--ink-2);word-break:keep-all}
+  .modal .msg a{color:var(--blue);font-weight:850}
+
+  /* ---------- 좁은 화면 ---------- */
+  @media(max-width:760px){
+    .brand-sub,.app-name small{display:none}
+    .modeswitch{max-width:none;border:0}
+    .modeswitch button{flex-direction:column;gap:2px;align-items:center;padding:10px 4px;font-size:13px;text-align:center}
+    .modeswitch .nav-num{display:none}
+  }
+  @media(max-width:560px){
+    .masthead-inner,main{padding-left:16px;padding-right:16px}
+    footer{padding:0 16px 24px}
+    .masthead-inner{gap:10px}
+    .brand>span{display:none}
+    .app-name{border-left:0;padding-left:0}
+    .card{padding:14px 14px 16px}
+    .card>h2{margin:-14px -14px 14px;padding:12px 14px 10px}
+    .game-stats>span{padding:4px 9px}
+  }
 
   @media print{
     body{background:#fff}
-    .topbar,.modeswitch,footer,.controls,.genbtns,.hint,.eyebrow,#playPanel,#gamePanel,#progPanel{display:none !important}
+    .masthead,.menu-wrap,footer,.page-heading,.controls,.genbtns,.hint,.eyebrow,#playPanel,#gamePanel,#progPanel{display:none !important}
+    main{padding:0}
     .card{box-shadow:none;border:2px solid #000;break-inside:avoid}
+    .card>h2{border-bottom:1px solid #000}
     .result-item{font-size:22px}
     .result-item .tag,.syl-table td.real-cell{-webkit-print-color-adjust:exact;print-color-adjust:exact}
     .target-box{display:none !important}
@@ -255,74 +324,89 @@
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="brand"><span class="dotmark"></span><span id="brandName">한글놀이</span></div>
-  <div class="right">
-    <span class="hw-badge" id="hwBadge">🏠 오늘의 연습</span>
-    <a class="trial-badge" id="trialBadge" href="https://sososoop.com/hangul" target="_blank" rel="noopener">정식판 보기</a>
-    <a href="manual.html" class="top-link" id="manualLink">❓ 사용법</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-prog" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/><rect x="8" y="3" width="8" height="8"/></symbol><symbol id="i-game" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="2"/><path d="M7 10v5M4.5 12.5h5M15 12h.01M18 14h.01"/></symbol><symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M6 14h12v7H6z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16zM13 6l3 3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 15v6h16v-6"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 15v6h16v-6"/></symbol><symbol id="i-type" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h7a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-7a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7z"/></symbol><symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol><symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.6l6.2-.9z"/></symbol><symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/></symbol><symbol id="i-brick" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><path d="M3 12h18M9 5v7M15 12v7"/></symbol><symbol id="i-rain" viewBox="0 0 24 24"><path d="M7 3v5M17 5v5M12 9v5M6 14v4M18 15v4M3 21h18"/></symbol><symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5h10"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol></svg>
+<header class="masthead">
+  <div class="masthead-inner">
+    <span class="brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAQhlWElmTU0AKgAAAAgABwESAAMAAAABAAEAAAEaAAUAAAABAAAAYgEbAAUAAAABAAAAagEoAAMAAAABAAIAAAExAAIAAAA5AAAAcgE7AAIAAAANAAAArIdpAAQAAAABAAAAugAAAAAAAAC0AAAAAQAAALQAAAABQ2FudmEgZG9jPURBSE9xamRZM3FvIHVzZXI9VUFFMkl1QUpNZ0kgYnJhbmQ9QkFFMkluQ3lrRUEAAHNldW5neXVuIGxlZQAAAAaQAAAHAAAABDAyMTCRAQAHAAAABAECAwCgAAAHAAAABDAxMDCgAQADAAAAAQABAACgAgAEAAAAAQAAAICgAwAEAAAAAQAAAIAAAAAA5RWdCQAAAAlwSFlzAAAbrwAAG68BXhqRHAAABkZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CiAgICAgICAgIDxleGlmOkNvbG9yU3BhY2U+NjU1MzU8L2V4aWY6Q29sb3JTcGFjZT4KICAgICAgICAgPGV4aWY6UGl4ZWxYRGltZW5zaW9uPjIzNTE8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpFeGlmVmVyc2lvbj4wMjEwPC9leGlmOkV4aWZWZXJzaW9uPgogICAgICAgICA8ZXhpZjpGbGFzaFBpeFZlcnNpb24+MDEwMDwvZXhpZjpGbGFzaFBpeFZlcnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4yMzUxPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6Q29tcG9uZW50c0NvbmZpZ3VyYXRpb24+CiAgICAgICAgICAgIDxyZGY6U2VxPgogICAgICAgICAgICAgICA8cmRmOmxpPjE8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT4yPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGk+MzwvcmRmOmxpPgogICAgICAgICAgICAgICA8cmRmOmxpPjA8L3JkZjpsaT4KICAgICAgICAgICAgPC9yZGY6U2VxPgogICAgICAgICA8L2V4aWY6Q29tcG9uZW50c0NvbmZpZ3VyYXRpb24+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+Q2FudmEgZG9jPURBSE9xamRZM3FvIHVzZXI9VUFFMkl1QUpNZ0kgYnJhbmQ9QkFFMkluQ3lrRUE8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+MTgwPC90aWZmOlhSZXNvbHV0aW9uPgogICAgICAgICA8dGlmZjpZUmVzb2x1dGlvbj4xODA8L3RpZmY6WVJlc29sdXRpb24+CiAgICAgICAgIDxkYzp0aXRsZT4KICAgICAgICAgICAgPHJkZjpBbHQ+CiAgICAgICAgICAgICAgIDxyZGY6bGkgeG1sOmxhbmc9IngtZGVmYXVsdCI+7KCc66qpIOyXhuuKlCDrlJTsnpDsnbggLSAyPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkFsdD4KICAgICAgICAgPC9kYzp0aXRsZT4KICAgICAgICAgPGRjOmNyZWF0b3I+CiAgICAgICAg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" alt="" width="32" height="32"><span>소소숲<span class="brand-sub"> : 지혜의 기록소</span></span></span>
+    <span class="app-name" id="brandName">한글놀이<small>읽기 중재 도구</small></span>
+    <div class="mh-right">
+      <span class="hw-badge" id="hwBadge">오늘의 연습</span>
+      <a class="trial-badge" id="trialBadge" href="https://sososoop.com/hangul" target="_blank" rel="noopener">정식판 보기</a>
+      <a href="manual.html" class="top-link" id="manualLink"><svg class="ic"><use href="#i-help"/></svg>사용법</a>
+    </div>
   </div>
-</div>
-<div class="modeswitch" id="modeswitch">
-  <button id="tabProg" class="on" onclick="switchMode('prog')">⚙️ 진도 설정</button>
-  <button id="tabPlay" onclick="switchMode('play')">💡 놀이</button>
-  <button id="tabGame" onclick="switchMode('game')">🎮 게임</button>
-  <button id="tabGen" onclick="switchMode('gen')">🖨️ 자료 만들기</button>
+</header>
+<div class="menu-wrap">
+  <nav class="modeswitch" id="modeswitch" aria-label="메뉴">
+    <button id="tabProg" class="on" onclick="switchMode('prog')"><span class="nav-num">01</span><svg class="ic"><use href="#i-prog"/></svg>진도 설정</button>
+    <button id="tabPlay" onclick="switchMode('play')"><span class="nav-num">02</span><svg class="ic"><use href="#i-play"/></svg>놀이</button>
+    <button id="tabGame" onclick="switchMode('game')"><span class="nav-num">03</span><svg class="ic"><use href="#i-game"/></svg>게임</button>
+    <button id="tabGen" onclick="switchMode('gen')"><span class="nav-num">04</span><svg class="ic"><use href="#i-print"/></svg>자료 만들기</button>
+  </nav>
 </div>
 
 <main>
   <!-- ================= 진도 설정 ================= -->
   <section id="progPanel" class="panel on">
+    <div class="page-heading">
+      <span class="eyebrow">01 / PROGRESS</span>
+      <h1>오늘 배운 <em>음소</em>를 켜 주세요</h1>
+      <p>켠 초성·중성·종성만 놀이·게임·자료 만들기에 쓰여요. 아동마다 프로필을 나눠 관리할 수 있어요.</p>
+    </div>
     <div class="card">
-      <h2>👦 아동 프로필</h2>
+      <h2><svg class="ic"><use href="#i-user"/></svg>아동 프로필</h2>
       <p class="hint" style="margin-top:0">아동마다 배운 음소가 다르니, 프로필을 나눠 관리하세요. 실명 대신 <b>별칭</b>을 권장해요. 이름·진도는 이 기기에만 저장됩니다.</p>
       <div class="profile-bar">
         <select id="profileSelect" onchange="switchProfile(this.value)"></select>
-        <button class="mini-btn" onclick="addProfile()">＋ 추가</button>
-        <button class="mini-btn" onclick="renameProfile()">✏️ 이름변경</button>
-        <button class="mini-btn warn" onclick="deleteProfile()">🗑 삭제</button>
-        <button class="mini-btn" onclick="exportProfiles()">📤 내보내기</button>
-        <button class="mini-btn" onclick="if(TRIAL){trialLock('프로필 가져오기');return;} document.getElementById('importFile').click()">📥 가져오기</button>
+        <button class="mini-btn" onclick="addProfile()"><svg class="ic"><use href="#i-plus"/></svg>추가</button>
+        <button class="mini-btn" onclick="renameProfile()"><svg class="ic"><use href="#i-edit"/></svg>이름변경</button>
+        <button class="mini-btn warn" onclick="deleteProfile()"><svg class="ic"><use href="#i-trash"/></svg>삭제</button>
+        <button class="mini-btn" onclick="exportProfiles()"><svg class="ic"><use href="#i-up"/></svg>내보내기</button>
+        <button class="mini-btn" onclick="if(TRIAL){trialLock('프로필 가져오기');return;} document.getElementById('importFile').click()"><svg class="ic"><use href="#i-down"/></svg>가져오기</button>
         <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importProfiles(this.files[0])">
       </div>
     </div>
 
     <div class="card">
-      <h2>🔤 지금 만들 수 있는 글자</h2>
+      <h2><svg class="ic"><use href="#i-type"/></svg>지금 만들 수 있는 글자</h2>
       <p class="hint" style="margin-top:0">아래에서 켠 초성·중성·종성으로 조합되는 글자 예시입니다. (일부만 표시)</p>
       <div class="active-syls" id="activeSyls"></div>
     </div>
 
     <div class="card">
-      <h2>⚙️ 진도 설정 <button class="mini-btn" style="margin-left:auto" onclick="makeHwLink()">🏠 가정과제 링크</button></h2>
+      <h2><svg class="ic"><use href="#i-prog"/></svg>진도 설정 <button class="mini-btn" style="margin-left:auto" onclick="makeHwLink()"><svg class="ic"><use href="#i-home"/></svg>가정과제 링크</button></h2>
       <p class="hint" style="margin-top:0">오늘 배운 음소만 켜세요. 켠 음소만 놀이·게임·자료 만들기에 쓰입니다. 변경은 자동 저장됩니다.</p>
       <div id="progGrids"></div>
     </div>
 
     <div class="card">
-      <p class="hint" style="margin:0;font-size:12px;color:#888">
-        📖 의미 단어 출처: 국립국어원 <b>한국어기초사전</b>·<b>표준국어대사전</b> (CC BY-SA 2.0 KR). 사전에 실린 1~3음절 표제어 목록만 쓰며 뜻풀이는 저장·표시하지 않습니다.
+      <p class="hint" style="margin:0;font-size:12px">
+        <svg class="ic"><use href="#i-book"/></svg> 의미 단어 출처: 국립국어원 <b>한국어기초사전</b>·<b>표준국어대사전</b> (CC BY-SA 2.0 KR). 사전에 실린 1~3음절 표제어 목록만 쓰며 뜻풀이는 저장·표시하지 않습니다.
       </p>
     </div>
   </section>
 
   <!-- ================= 놀이(블렌딩 보드) ================= -->
   <section id="playPanel" class="panel">
+    <div class="page-heading">
+      <span class="eyebrow">02 / BLENDING BOARD</span>
+      <h1>소리를 모아 <em>글자</em>를 만들어요</h1>
+      <p>초성·중성·종성을 차례로 눌러 글자를 만들고, 소리 내어 읽어 보세요.</p>
+    </div>
     <div class="card">
-      <p class="eyebrow">BLENDING BOARD</p>
-      <h2>✏️ 초성·중성·종성을 눌러 글자를 만들어요</h2>
+      <h2><svg class="ic"><use href="#i-play"/></svg>블렌딩 보드</h2>
       <div class="board" id="board">
         <span class="placeholder">아래 자모를 눌러보세요</span>
       </div>
       <div class="verdict" id="verdict"></div>
       <div class="buildbtns">
-        <button class="btn-next" id="nextBtn" onclick="nextSyl()">다음 글자 ＋</button>
-        <button class="btn-back" onclick="delLast()">⬅️ 지우기</button>
-        <button class="btn-clear" onclick="clearBoard()">🧹 처음부터</button>
-        <button class="btn-save" onclick="saveWord()">⭐ 담기</button>
+        <button class="btn-next" id="nextBtn" onclick="nextSyl()"><svg class="ic"><use href="#i-plus"/></svg>다음 글자</button>
+        <button class="btn-back" onclick="delLast()"><svg class="ic"><use href="#i-back"/></svg>지우기</button>
+        <button class="btn-clear" onclick="clearBoard()"><svg class="ic"><use href="#i-reset"/></svg>처음부터</button>
+        <button class="btn-save" onclick="saveWord()"><svg class="ic"><use href="#i-star"/></svg>담기</button>
       </div>
       <div class="buildbtns" style="margin-top:8px">
-        <span id="randLabel" style="align-self:center;font-size:14px;font-weight:900">🎲 랜덤 글자</span>
+        <span class="rand-label"><svg class="ic"><use href="#i-dice"/></svg><span id="randLabel">랜덤 글자</span></span>
         <button class="btn-random" onclick="randomWord(1)">1음절</button>
         <button class="btn-random" onclick="randomWord(2)">2음절</button>
         <button class="btn-random" onclick="randomWord(3)">3음절</button>
@@ -331,39 +415,43 @@
 
     <div class="card">
       <div class="zone">
-        <div class="zone-label">초성 (첫소리)</div>
+        <div class="zone-label cho">초성 (첫소리)</div>
         <div class="zone-tiles" id="zoneCho"></div>
       </div>
       <div class="zone">
-        <div class="zone-label">중성 (가운뎃소리)</div>
+        <div class="zone-label jung">중성 (가운뎃소리)</div>
         <div class="zone-tiles" id="zoneJung"></div>
       </div>
       <div class="zone">
-        <div class="zone-label">종성 (받침)</div>
+        <div class="zone-label jong">종성 (받침)</div>
         <div class="zone-tiles" id="zoneJong"></div>
       </div>
     </div>
 
     <div class="card">
-      <h2>⭐ 담은 단어 <span id="collectedCount" style="font-size:13px;color:#8a8578;font-weight:600"></span>
-        <button class="mini-btn" style="margin-left:auto" onclick="collectedToHandwriting()">✍️ 글씨연습장</button></h2>
-      <p class="hint" style="margin:0 0 10px">초록색은 사전에 실린 단어예요. 색이 없으면 사전에서 확인되지 않은 글자예요(활용형·이름일 수 있어요).</p>
+      <h2><svg class="ic"><use href="#i-star"/></svg>담은 단어 <span id="collectedCount" class="card-sub"></span>
+        <button class="mini-btn" style="margin-left:auto" onclick="collectedToHandwriting()"><svg class="ic"><use href="#i-edit"/></svg>글씨연습장</button></h2>
+      <p class="hint" style="margin:0 0 10px">민트색은 사전에 실린 단어예요. 색이 없으면 사전에서 확인되지 않은 글자예요(활용형·이름일 수 있어요).</p>
       <div class="collected" id="collected"><span class="empty">아직 담은 단어가 없어요.</span></div>
     </div>
   </section>
 
   <!-- ================= 게임 ================= -->
   <section id="gamePanel" class="panel">
+    <div class="page-heading">
+      <span class="eyebrow">03 / TYPING GAMES</span>
+      <h1>읽고 쳐서 <em>글자</em>를 잡아요</h1>
+      <p>진도에서 켠 음소로 만든 글자만 나와요. 천천히 소리 내어 읽고 쳐 보세요.</p>
+    </div>
     <div class="card">
-      <p class="eyebrow">TYPING GAMES</p>
-      <h2>🎮 타자 게임 <button id="soundToggle" class="mini-btn" style="margin-left:auto" onclick="toggleSound()">🔊</button></h2>
+      <h2><svg class="ic"><use href="#i-game"/></svg>타자 게임 <button id="soundToggle" class="mini-btn" style="margin-left:auto" onclick="toggleSound()">🔊</button></h2>
       <div class="game-picker">
-        <button class="gp-btn on" data-game="brick" onclick="selectGame('brick')">🧱 벽돌깨기</button>
-        <button class="gp-btn" data-game="rain" onclick="selectGame('rain')">💻 글자잡기</button>
+        <button class="gp-btn on" data-game="brick" onclick="selectGame('brick')"><svg class="ic"><use href="#i-brick"/></svg>벽돌깨기</button>
+        <button class="gp-btn" data-game="rain" onclick="selectGame('rain')"><svg class="ic"><use href="#i-rain"/></svg>글자잡기</button>
       </div>
       <p class="hint" id="gameHint">벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 벽돌을 깨요! 진도에서 켠 음소로 만든 글자만 나와요. 시간제한은 없으니 <b>천천히 소리 내어 읽고</b> 쳐보세요.</p>
       <div class="segrow" id="rainSpeedRow" style="display:none;margin:0 0 14px">
-        <span style="font-size:13px;font-weight:900;align-self:center;margin-right:6px">속도</span>
+        <span style="font-size:12px;font-weight:800;color:var(--muted);align-self:center;margin-right:6px">속도</span>
         <div class="seg">
           <button class="seg-btn on" data-spd="1" onclick="setRainSpeed(1)">1단계·느림</button>
           <button class="seg-btn" data-spd="2" onclick="setRainSpeed(2)">2단계·보통</button>
@@ -380,10 +468,10 @@
           <span>점수 <b id="gScore">0</b></span>
           <span>콤보 <b id="gCombo">0</b></span>
           <span><span id="gThirdLabel">깬 판</span> <b id="gStage">0</b></span>
-          <span id="bestStat" style="display:none">🏆 최고 <b id="gBest">0</b></span>
+          <span id="bestStat" style="display:none">최고 <b id="gBest">0</b></span>
         </div>
       </div>
-      <p class="hint" style="margin:0 0 12px">💡 <b>한 글자·두 글자·세 글자</b>는 나오는 낱말의 글자 수예요. 두·세 글자는 <b>진도 설정</b>에서 켠 글자를 조합해 만들어서, 실제 낱말이 아닐 수도 있어요.</p>
+      <p class="hint" style="margin:0 0 12px"><b>한 글자·두 글자·세 글자</b>는 나오는 낱말의 글자 수예요. 두·세 글자는 <b>진도 설정</b>에서 켠 글자를 조합해 만들어서, 실제 낱말이 아닐 수도 있어요.</p>
 
       <div id="brickGame">
         <div class="arena" id="gameArena">
@@ -403,7 +491,7 @@
       <div class="game-input-row">
         <input id="gameInput" type="text" placeholder="글자를 입력하세요" autocomplete="off" autocapitalize="off" spellcheck="false">
         <button class="mini-btn" id="pauseBtn" style="display:none" onclick="togglePause()">⏸️ 일시정지</button>
-        <button class="mini-btn" onclick="restartGame()">🔄 다시</button>
+        <button class="mini-btn" onclick="restartGame()"><svg class="ic"><use href="#i-reset"/></svg>다시</button>
       </div>
       <div class="game-msg" id="gameMsg"></div>
     </div>
@@ -411,11 +499,14 @@
 
   <!-- ================= 자료 만들기 ================= -->
   <section id="genPanel" class="panel">
+    <div class="page-heading">
+      <span class="eyebrow">04 / MATERIALS</span>
+      <h1>진도에 맞는 <em>학습 자료</em>를 만들어요</h1>
+      <p>조건을 정하고 생성을 누르면 현재 프로필에서 켠 음소로만 목록을 만들어요.</p>
+    </div>
     <div id="printTitle"></div>
     <div class="card">
-      <p class="eyebrow">AUTO GENERATOR</p>
-      <h2>🖨️ 학습 자료 만들기</h2>
-      <p class="hint">조건을 정하고 <b>생성</b>을 누르면 목록이 만들어져요. 현재 프로필에서 켠 음소만 사용합니다.</p>
+      <h2><svg class="ic"><use href="#i-print"/></svg>조건 정하기</h2>
       <div class="controls">
         <div class="field">
           <label>유형</label>
@@ -477,7 +568,7 @@
       </div>
       <div class="target-box" id="targetBox">
         <div class="target-head">
-          <b>🎯 집중 음소</b><span class="sub">(선택) 고른 소리가 하나라도 든 것만, 그 소리가 든 글자 비율이 높은 순으로 나와요</span>
+          <b><svg class="ic"><use href="#i-target"/></svg>집중 음소</b><span class="sub">(선택) 고른 소리가 하나라도 든 것만, 그 소리가 든 글자 비율이 높은 순으로 나와요</span>
           <span class="seg" id="targetPosSeg" style="margin-left:auto">
             <button class="seg-btn on" data-tpos="cho" onclick="setTargetPos('cho')">첫소리</button>
             <button class="seg-btn" data-tpos="jong" onclick="setTargetPos('jong')">받침</button>
@@ -491,16 +582,16 @@
         <div class="pg-grid" id="tgVow"></div>
       </div>
       <div class="genbtns">
-        <button class="btn-gen" onclick="generate()">✨ 생성</button>
-        <button class="btn-copy" onclick="copyResult(this)">📋 복사</button>
-        <button class="btn-copy" onclick="resultToHandwriting()">✍️ 글씨연습장 만들기</button>
-        <button class="btn-print" onclick="window.print()">🖨️ 인쇄</button>
+        <button class="btn-gen" onclick="generate()"><svg class="ic"><use href="#i-spark"/></svg>생성</button>
+        <button class="btn-copy" onclick="copyResult(this)"><svg class="ic"><use href="#i-copy"/></svg>복사</button>
+        <button class="btn-copy" onclick="resultToHandwriting()"><svg class="ic"><use href="#i-edit"/></svg>글씨연습장 만들기</button>
+        <button class="btn-print" onclick="window.print()"><svg class="ic"><use href="#i-print"/></svg>인쇄</button>
       </div>
       <p class="hint" style="margin:12px 0 0" id="genNote"></p>
     </div>
 
     <div class="card">
-      <h2 id="resultHead">📋 결과</h2>
+      <h2><svg class="ic"><use href="#i-list"/></svg><span id="resultHead">결과</span></h2>
       <div class="result-list" id="resultList"><div class="result-empty">조건을 정하고 “생성”을 눌러주세요.</div></div>
       <p id="printSrc" style="display:none;font-size:11px;color:#666;margin:10px 0 0">의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR · creativecommons.org/licenses/by-sa/2.0/kr) · 소소숲 : 지혜의 기록소 「한글놀이」로 만듦<span id="printTrial"></span></p>
     </div>
@@ -508,8 +599,10 @@
 </main>
 
 <footer>
-  소소숲 : 지혜의 기록소 · 한글놀이<br>
-  <span style="font-size:11px">의미 단어·예문 출처: 국립국어원 「<a href="https://krdict.korean.go.kr" target="_blank" rel="noopener" style="color:inherit">한국어기초사전</a>」·「<a href="https://stdict.korean.go.kr" target="_blank" rel="noopener" style="color:inherit">표준국어대사전</a>」 (<a href="https://creativecommons.org/licenses/by-sa/2.0/kr/" target="_blank" rel="noopener" style="color:inherit">CC BY-SA 2.0 KR</a>)</span>
+  <div class="foot-inner">
+    <span>의미 단어·예문 출처: 국립국어원 「<a href="https://krdict.korean.go.kr" target="_blank" rel="noopener">한국어기초사전</a>」·「<a href="https://stdict.korean.go.kr" target="_blank" rel="noopener">표준국어대사전</a>」 (<a href="https://creativecommons.org/licenses/by-sa/2.0/kr/" target="_blank" rel="noopener">CC BY-SA 2.0 KR</a>)</span>
+    <span class="r">소소숲 : 지혜의 기록소 · 한글놀이</span>
+  </div>
 </footer>
 
 <!-- 이름 입력 모달 -->
@@ -630,7 +723,7 @@ const SENTENCES = {
 const PROFILES_KEY='sp.profiles.v1';
 const ACTIVE_KEY='sp.activeProfileId';
 const OLD_KEY='syllable-progress-v1';
-const RAIN_BEST_KEY='syllable-rain-best-v1';
+const RAIN_BEST_KEY='syllable-rain-best-v2';   // v2: 점수가 글자당 1점으로 바뀜(10-23) — 예전 최고 기록과 섞이지 않게
 
 let profiles=[];
 let activeId=null;
@@ -653,16 +746,16 @@ function useTrialRand(){
 }
 function renderTrialRand(){
   const el=document.getElementById('randLabel'); if(!el || !TRIAL) return;
-  el.textContent='🎲 랜덤 글자 (체험판 오늘 '+Math.max(0,trialRandLeft())+'번 남음)';
+  el.textContent='랜덤 글자 (체험판 오늘 '+Math.max(0,trialRandLeft())+'번 남음)';
 }
 function trialRandDone(){
-  openInfo('오늘의 무료 체험 '+TRIAL_RAND_MAX+'회를 모두 사용했어요!', '한글놀이가 선생님의 읽기 중재에 도움이 될 것 같으신가요?<br>내일 다시 무료로 이용하실 수 있어요.<br><br>더 다양한 음절 수준에서 제한 없이 연습하고 싶으시다면 전체 이용권을 이용해 보세요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">전체 이용권 살펴보기 →</a>');
+  openInfo('오늘의 무료 체험 '+TRIAL_RAND_MAX+'회를 모두 사용했어요!', '한글놀이가 선생님의 읽기 중재에 도움이 될 것 같으신가요?<br>내일 다시 무료로 이용하실 수 있어요.<br><br>더 다양한 음절 수준에서 제한 없이 연습하고 싶으시다면 전체 이용권을 이용해 보세요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" >전체 이용권 살펴보기 →</a>');
 }
 function trialGameLock(){
-  openInfo('2~3음절 읽기 게임도 활용해 보세요!', '정식판에서는 아동의 읽기 수준에 맞춰 1~3음절 게임을 자유롭게 사용할 수 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">정식판 기능 살펴보기 →</a>');
+  openInfo('2~3음절 읽기 게임도 활용해 보세요!', '정식판에서는 아동의 읽기 수준에 맞춰 1~3음절 게임을 자유롭게 사용할 수 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" >정식판 기능 살펴보기 →</a>');
 }
 function trialLock(what){
-  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 자료를 개수 제한 없이 만들기(최대 100개) · 넓은 단어 범위 · 두 글자·세 글자 게임 · 랜덤 글자 무제한 · 글씨연습장 인쇄 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" style="color:#5b6ef5;font-weight:900">한글놀이 정식판 보기 →</a>');
+  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 자료를 개수 제한 없이 만들기(최대 100개) · 넓은 단어 범위 · 두 글자·세 글자 게임 · 랜덤 글자 무제한 · 글씨연습장 인쇄 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" >한글놀이 정식판 보기 →</a>');
 }
 function applyTrialUI(){
   if(!TRIAL) return;
@@ -835,7 +928,7 @@ function syllablePool(batchim){
    ========================================================= */
 function switchMode(m){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.modeswitch button').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#modeswitch button').forEach(b=>b.classList.remove('on'));
   if(m!=='game') stopRain();
   if(m==='play'){ playPanel.classList.add('on'); tabPlay.classList.add('on'); renderZones(); renderBoard(); }
   if(m==='game'){ gamePanel.classList.add('on'); tabGame.classList.add('on'); startGameTab(); }
@@ -1395,11 +1488,11 @@ async function generate(){
   if(TRIAL && level>2){ trialLock('넓은 단어 범위'); return; }   // 화면 잠금을 우회해도 체험판에서는 만들지 않음
 
   let items=[], head='';
-  if(type==='real'){ items=genRealWords(syll,batchim,count,level); head='📋 의미 단어'; }
-  else if(type==='nonsense'){ items=genNonsense(syll,batchim,count); head='📋 무의미 단어'; }
-  else if(type==='pair'){ items=genPairs(syll,batchim,count,level); head='📋 헷갈리는 짝'; }
-  else { items=await genSentencesOnline(len,count,level,parseInt(document.getElementById('genOut').value,10)); head='📋 문장'; }
-  if(hasTargets()) head+=' · 🎯'+targetLabel();
+  if(type==='real'){ items=genRealWords(syll,batchim,count,level); head='의미 단어'; }
+  else if(type==='nonsense'){ items=genNonsense(syll,batchim,count); head='무의미 단어'; }
+  else if(type==='pair'){ items=genPairs(syll,batchim,count,level); head='헷갈리는 짝'; }
+  else { items=await genSentencesOnline(len,count,level,parseInt(document.getElementById('genOut').value,10)); head='문장'; }
+  if(hasTargets()) head+=' · 집중 '+targetLabel();
   renderResult(items,head);
 }
 let lastResult=[];
@@ -1438,7 +1531,7 @@ function renderResult(items,head){
 function copyResult(btn){
   if(!lastResult.length) return;
   navigator.clipboard.writeText(lastResult.join('\n')).then(()=>{
-    if(!btn) return; const o=btn.textContent; btn.textContent='✅ 복사됨'; setTimeout(()=>btn.textContent=o,1200);
+    if(!btn) return; const o=btn.innerHTML; btn.textContent='✓ 복사됨'; setTimeout(()=>btn.innerHTML=o,1200);
   }).catch(()=>openInfo('복사 실패','클립보드를 쓸 수 없어요. 목록을 드래그해서 복사해 주세요.'));
 }
 function resultToHandwriting(){
@@ -1493,7 +1586,7 @@ function applyLockModeIfNeeded(){
   if(!m) return false;
   const dec=decodeHw(m[1]);
   if(!dec || !dec.cho.length || !dec.jung.length){   // 초성·중성이 하나라도 없으면 글자를 만들 수 없음
-    document.body.innerHTML='<div style="max-width:420px;margin:80px auto;padding:24px;text-align:center;font-family:sans-serif"><h2>링크가 손상되었어요 😢</h2><p style="font-size:15px;color:#555">선생님께 가정과제 링크를 다시 받아주세요.</p></div>';
+    document.body.innerHTML='<div class="card" style="max-width:420px;margin:80px 16px;margin-inline:auto;padding:28px 24px;text-align:center"><h2 style="font-size:20px;font-weight:900;letter-spacing:-.04em;margin:0 0 10px">링크가 손상되었어요 😢</h2><p style="font-size:15px;color:var(--text)">선생님께 가정과제 링크를 다시 받아주세요.</p></div>';
     return true;
   }
   // 단어 리스트(선택): 한글 화이트리스트 + textContent 렌더
@@ -1558,7 +1651,7 @@ function closeInfoModal(){ document.getElementById('infoModal').classList.remove
 let gScore=0, gCombo=0, gStage=0, gDiff='syl', gBricks=[];
 let gGen=0;   // 판 세대 — 다시·전환 뒤 남은 타이머가 새 판을 건드리지 않게
 let currentGame='brick';
-const BRICK_COLORS=['--lime','--cho','--sent','--real','--lime-soft'];
+const BRICK_COLORS=['--cho','--jung','--jong','--tint4','--tint5'];
 let rainItems=[], rainRAF=null, rainActive=false, rainLives=3, lastSpawn=0, rainPaused=false, rainLast=0;
 const RAIN_SPEEDS={1:0.35, 2:0.5, 3:0.7};   // 60Hz 한 프레임당 px — 화면 주사율과 상관없이 같은 속도가 되게 시간으로 환산해 씀
 let rainSpeedLevel=1;                         // 기본 1단계(느림)
@@ -1596,7 +1689,6 @@ function currentDiffItems(){
   if(gDiff==='word3'){ const items=[...new Set([...nSylWords(3).filter(w=>w.length===3), ...nSylCombos(3)])]; if(items.length) return items; }
   return [...new Set(syllablePool('mix'))];
 }
-function diffPoints(){ return gDiff==='word3'?3 : gDiff==='word2'?2 : 1; }
 function stageItems(){ return shuffle(currentDiffItems()).slice(0,12); }
 function newStage(){
   const grid=document.getElementById('brickGrid'); const msg=document.getElementById('gameMsg');
@@ -1635,7 +1727,7 @@ function flyBall(brickEl, cb){
 function resetGameInput(){ const gi=document.getElementById('gameInput'); gi.value=''; gi.blur(); gi.focus(); }
 function breakBrick(b){
   if(b.broken) return;
-  b.broken=true; gScore += diffPoints()+Math.min(gCombo,5); gCombo++; renderGStats(); sfxPop();
+  b.broken=true; gScore += 1; gCombo++; renderGStats(); sfxPop();
   const arena=document.getElementById('gameArena');
   flyBall(b.el, ()=>{ b.el.classList.add('shatter'); const a=arena.getBoundingClientRect(), r=b.el.getBoundingClientRect(); burst(arena, r.left-a.left+r.width/2, r.top-a.top+r.height/2, b.colorVar); setTimeout(()=>{ b.el.style.visibility='hidden'; },240); });
   if(gBricks.every(x=>x.broken)){ const gen=gGen; setTimeout(()=>{ if(gen!==gGen) return; sfxWin(); stageClear(); },300); }
@@ -1752,7 +1844,7 @@ function rainStep(ts){
 function catchRain(it){
   it.dead=true; const a=document.getElementById('rainArena');
   burst(a, it.x+it.el.offsetWidth/2, it.y+it.el.offsetHeight/2, randColorVar()); it.el.remove();
-  gScore += diffPoints()+Math.min(gCombo,5); gCombo++; renderGStats();
+  gScore += 1; gCombo++; renderGStats();
   if(gScore>currentBest()){ rainBest[gDiff]=gScore; saveRainBest(); renderBest(); }
   sfxPop();
 }
@@ -1796,7 +1888,7 @@ applyTrialUI();
 const hwLocked=applyLockModeIfNeeded();
 if(!hwLocked && window.__HW_ONLY__){
   // 보호자용 주소(/hangul/home)는 가정과제 링크로만 연다
-  document.body.innerHTML='<div style="max-width:440px;margin:80px auto;padding:24px;text-align:center;font-family:sans-serif"><h2>가정과제 링크로 들어와 주세요 🏠</h2><p style="font-size:15px;color:#555;line-height:1.6">이 주소는 선생님께 받은 가정과제 링크로만 열려요.<br>링크를 다시 받아 그대로 눌러 주세요.</p><p style="margin-top:20px"><a href="/hangul" style="color:#5b6ef5;font-weight:700">한글놀이 소개 보기 →</a></p></div>';
+  document.body.innerHTML='<div class="card" style="max-width:440px;margin:80px 16px;margin-inline:auto;padding:28px 24px;text-align:center"><h2 style="font-size:20px;font-weight:900;letter-spacing:-.04em;margin:0 0 10px">가정과제 링크로 들어와 주세요 🏠</h2><p style="font-size:15px;color:var(--text);line-height:1.7">이 주소는 선생님께 받은 가정과제 링크로만 열려요.<br>링크를 다시 받아 그대로 눌러 주세요.</p><p style="margin-top:20px"><a href="/hangul" style="color:#3b5bdb;font-weight:700">한글놀이 소개 보기 →</a></p></div>';
 } else if(!hwLocked){
   renderProgress();
   renderZones();

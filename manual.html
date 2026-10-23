@@ -3,93 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>한글놀이 사용법 · @slp_irudassam</title>
+<title>한글놀이 사용법 · 소소숲 : 지혜의 기록소</title>
 <style>
+  /* 소소숲 기본 디자인(센터 대시보드) — 2026-10-23, 앱 index.html 과 같은 토큰 */
   :root{
-    --lime:#eaff3d; --lime-soft:#f2ff8f; --blue:#5b6ef5; --ink:#141414;
-    --cho:#bfe3ff; --jung:#eaff3d; --jong:#ffd6a5; --paper:#fff; --bg:#f4f4ef;
-    --bd:2px solid var(--ink); --sh:4px 4px 0 var(--ink); --sh-sm:3px 3px 0 var(--ink);
+    --ink:#1a1a1a;--muted:#6b7280;--paper:#fffdf7;--white:#fff;--hair:#1a1a1a22;--grid:#1a1a1a0b;
+    --blue:#3b5bdb;--teal:#12b5a5;--teal-dark:#0e9488;--mint:#e1f6f2;--nav:#141e10;--nav-ink:#f5f0e8;--nav-dim:#c0c7b7;
+    --text:#61666c;--soft-shadow:#dddccf;--ink-2:#4b5652;--info-soft:#e8edff;
+    --cho:#d0dbff;--jung:#c3eee6;--jong:#ffdcc6;--border:2px solid var(--ink);
+    --font:system-ui,-apple-system,BlinkMacSystemFont,Pretendard,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    font-family:"Apple SD Gothic Neo","Malgun Gothic",Pretendard,sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.7;
+    color:var(--ink);background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:40px 40px;font-family:var(--font);line-height:1.7;letter-spacing:-.02em;-webkit-font-smoothing:antialiased;
   }
-  .topbar{
-    background:var(--lime); border-bottom:var(--bd);
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 20px; flex-wrap:wrap; gap:8px;
-  }
-  .brand{font-size:22px;font-weight:900;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
-  .brand .dotmark{width:16px;height:16px;background:var(--ink);border-radius:50%;display:inline-block}
-  .topbar a{
-    border:var(--bd);background:#fff;color:var(--ink);text-decoration:none;
-    font-size:13px;font-weight:800;padding:8px 14px;box-shadow:var(--sh-sm);
-  }
-  main{max-width:820px;margin:0 auto;padding:20px 16px 70px}
+  .masthead{background:var(--nav);color:var(--nav-ink)}
+  .masthead-inner{max-width:880px;min-height:60px;margin:auto;padding:0 32px;display:flex;align-items:center;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:750;white-space:nowrap}
+  .brand img{width:32px;height:32px;object-fit:contain}
+  .brand-sub{font-weight:450;opacity:.85;margin-left:3px;font-size:14px}
+  .app-name{font-size:13px;font-weight:750;border-left:1px solid #f5f0e833;padding-left:16px;white-space:nowrap}
+  .masthead a{margin-left:auto;border:1px solid #f5f0e844;color:var(--nav-ink);text-decoration:none;font-size:12px;font-weight:700;padding:6px 12px;white-space:nowrap}
+  .masthead a:hover{background:#ffffff14}
+  main{max-width:880px;margin:0 auto;padding:28px 32px 20px}
+  .eyebrow{display:table;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--blue);background:var(--white);border:1px solid var(--blue);padding:5px 10px;margin:0 0 14px}
+  h1{margin:0 0 18px;font-size:clamp(24px,2.6vw,34px);font-weight:900;line-height:1.3;letter-spacing:-.06em}
+  h1 em{font-style:normal;color:var(--blue)}
 
-  .lead{
-    background:var(--lime-soft);border:var(--bd);border-radius:2px;
-    padding:18px 20px;margin:20px 0;box-shadow:var(--sh);font-size:15px;font-weight:600;
-  }
-  .lead b{font-weight:900}
-  .flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  .flow span{
-    background:#fff;border:var(--bd);border-radius:2px;padding:7px 12px;
-    font-size:13px;font-weight:900;box-shadow:var(--sh-sm);
-  }
-  .flow .arw{border:0;box-shadow:none;background:transparent;padding:7px 2px}
+  .lead{background:var(--white);border:var(--border);padding:18px 20px;margin:0 0 18px;box-shadow:3px 3px 0 var(--soft-shadow);font-size:15px;color:var(--ink-2)}
+  .lead b{color:var(--ink);font-weight:850}
+  .flow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .flow span{background:var(--white);border:var(--border);padding:5px 12px;font-size:13px;font-weight:800}
+  .flow span:first-child{background:var(--blue);color:#fff}
+  .flow .arw{border:0;background:transparent!important;color:var(--muted)!important;padding:5px 0}
 
-  .step{
-    background:var(--paper);border:var(--bd);border-radius:2px;
-    padding:22px 20px;margin:18px 0;box-shadow:var(--sh);
-  }
+  .step{background:var(--white);border:var(--border);padding:0 20px 14px;margin:0 0 18px;box-shadow:3px 3px 0 var(--soft-shadow)}
   .step h2{
-    font-size:19px;font-weight:900;margin:0 0 4px;display:flex;align-items:center;gap:10px;
+    font-size:16px;font-weight:850;letter-spacing:-.04em;margin:0 -20px;padding:13px 20px 11px;border-bottom:1px solid var(--hair);
+    display:flex;align-items:center;gap:10px;
   }
-  .step h2 .num{
-    background:var(--blue);color:#fff;border:var(--bd);border-radius:2px;
-    width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
-    font-size:17px;font-weight:900;flex:0 0 auto;box-shadow:var(--sh-sm);
-  }
-  .step .sub{font-size:13px;color:#666;font-weight:700;margin:0 0 14px 44px}
+  .step h2 .num{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--blue);border:1px solid var(--blue);background:var(--info-soft);padding:0 7px;flex:0 0 auto}
+  .step .sub{font-size:13px;color:var(--text);font-weight:600;margin:12px 0 6px}
   ul.tips{list-style:none;margin:0;padding:0}
-  ul.tips li{
-    position:relative;padding:8px 0 8px 30px;font-size:15px;font-weight:600;
-    border-bottom:2px solid #f0f0ea;
-  }
+  ul.tips li{position:relative;padding:9px 0 9px 26px;font-size:14.5px;border-bottom:1px solid var(--hair);word-break:keep-all}
   ul.tips li:last-child{border-bottom:0}
-  ul.tips li:before{
-    content:"✓";position:absolute;left:0;top:8px;
-    color:var(--blue);font-weight:900;
-  }
-  ul.tips li b{font-weight:900}
-  .kbd{
-    display:inline-block;background:var(--lime);border:2px solid var(--ink);
-    border-radius:3px;padding:1px 8px;font-weight:900;font-size:13px;box-shadow:2px 2px 0 var(--ink);
-    margin:0 1px;
-  }
-  .kbd.blue{background:var(--blue);color:#fff}
+  ul.tips li:before{content:"✓";position:absolute;left:2px;top:9px;color:var(--teal-dark);font-weight:900}
+  ul.tips li b{font-weight:850}
+  .kbd{display:inline-block;background:var(--white);border:1px solid var(--ink);padding:0 7px;font-weight:750;font-size:12.5px;margin:0 1px;line-height:1.7;white-space:nowrap}
+  .kbd.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
   .kbd.cho{background:var(--cho)}
   .kbd.jung{background:var(--jung)}
   .kbd.jong{background:var(--jong)}
-  .note{
-    background:#fff;border:var(--bd);border-left:8px solid var(--lime);border-radius:2px;
-    padding:16px 18px;margin:18px 0;box-shadow:var(--sh-sm);font-size:14px;font-weight:600;
+  .note{background:var(--mint);border:1px solid var(--teal);padding:14px 18px;margin:0 0 18px;font-size:14px;color:var(--ink-2)}
+  .note h3{margin:0 0 6px;font-size:14.5px;font-weight:850;color:var(--ink)}
+  footer{max-width:880px;margin:0 auto;padding:0 32px 30px}
+  .foot-inner{border-top:2px solid var(--ink);padding-top:18px;display:flex;flex-wrap:wrap;gap:6px 24px;font-size:11px;color:var(--muted)}
+  .foot-inner a{color:inherit}
+  .foot-inner .r{margin-left:auto;font-weight:700;color:var(--ink-2)}
+  @media(max-width:560px){
+    .masthead-inner,main{padding-left:16px;padding-right:16px} footer{padding:0 16px 24px}
+    .brand>span{display:none} .app-name{border-left:0;padding-left:0}
+    .step{padding:0 14px 12px} .step h2{margin:0 -14px;padding:12px 14px 10px}
   }
-  .note h3{margin:0 0 8px;font-size:15px;font-weight:900}
-  footer{text-align:center;font-size:12px;font-weight:700;color:#999;padding:24px 10px}
-  footer a{color:#666}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="brand"><span class="dotmark"></span>한글놀이 사용법</div>
-  <a href="index.html">← 앱으로 가기</a>
-</div>
+<header class="masthead">
+  <div class="masthead-inner">
+    <span class="brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAQhlWElmTU0AKgAAAAgABwESAAMAAAABAAEAAAEaAAUAAAABAAAAYgEbAAUAAAABAAAAagEoAAMAAAABAAIAAAExAAIAAAA5AAAAcgE7AAIAAAANAAAArIdpAAQAAAABAAAAugAAAAAAAAC0AAAAAQAAALQAAAABQ2FudmEgZG9jPURBSE9xamRZM3FvIHVzZXI9VUFFMkl1QUpNZ0kgYnJhbmQ9QkFFMkluQ3lrRUEAAHNldW5neXVuIGxlZQAAAAaQAAAHAAAABDAyMTCRAQAHAAAABAECAwCgAAAHAAAABDAxMDCgAQADAAAAAQABAACgAgAEAAAAAQAAAICgAwAEAAAAAQAAAIAAAAAA5RWdCQAAAAlwSFlzAAAbrwAAG68BXhqRHAAABkZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CiAgICAgICAgIDxleGlmOkNvbG9yU3BhY2U+NjU1MzU8L2V4aWY6Q29sb3JTcGFjZT4KICAgICAgICAgPGV4aWY6UGl4ZWxYRGltZW5zaW9uPjIzNTE8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpFeGlmVmVyc2lvbj4wMjEwPC9leGlmOkV4aWZWZXJzaW9uPgogICAgICAgICA8ZXhpZjpGbGFzaFBpeFZlcnNpb24+MDEwMDwvZXhpZjpGbGFzaFBpeFZlcnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4yMzUxPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6Q29tcG9uZW50c0NvbmZpZ3VyYXRpb24+CiAgICAgICAgICAgIDxyZGY6U2VxPgogICAgICAgICAgICAgICA8cmRmOmxpPjE8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT4yPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGk+MzwvcmRmOmxpPgogICAgICAgICAgICAgICA8cmRmOmxpPjA8L3JkZjpsaT4KICAgICAgICAgICAgPC9yZGY6U2VxPgogICAgICAgICA8L2V4aWY6Q29tcG9uZW50c0NvbmZpZ3VyYXRpb24+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+Q2FudmEgZG9jPURBSE9xamRZM3FvIHVzZXI9VUFFMkl1QUpNZ0kgYnJhbmQ9QkFFMkluQ3lrRUE8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+MTgwPC90aWZmOlhSZXNvbHV0aW9uPgogICAgICAgICA8dGlmZjpZUmVzb2x1dGlvbj4xODA8L3RpZmY6WVJlc29sdXRpb24+CiAgICAgICAgIDxkYzp0aXRsZT4KICAgICAgICAgICAgPHJkZjpBbHQ+CiAgICAgICAgICAgICAgIDxyZGY6bGkgeG1sOmxhbmc9IngtZGVmYXVsdCI+7KCc66qpIOyXhuuKlCDrlJTsnpDsnbggLSAyPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkFsdD4KICAgICAgICAgPC9kYzp0aXRsZT4KICAgICAgICAgPGRjOmNyZWF0b3I+CiAgICAgICAg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" alt="" width="32" height="32"><span>소소숲<span class="brand-sub"> : 지혜의 기록소</span></span></span>
+    <span class="app-name">한글놀이 사용법</span>
+    <a href="index.html">← 앱으로 가기</a>
+  </div>
+</header>
 
 <main>
+  <span class="eyebrow">GUIDE / 사용법</span>
+  <h1>한글놀이, 이렇게 <em>써요</em></h1>
   <div class="lead">
     <b>한글놀이</b>는 <b>초성·중성·종성</b>을 하나씩 골라 글자를 합쳐 만들며 <b>읽기(해독)</b>를 연습하는 도구예요.
     아이가 배운 음소만 켜 두면, 놀이·게임·자료가 모두 그 범위 안에서만 만들어집니다.
@@ -104,12 +96,12 @@
 
   <!-- STEP 1 -->
   <section class="step">
-    <h2><span class="num">1</span> 진도 설정 — 아이·음소 정하기</h2>
+    <h2><span class="num">01</span>진도 설정 — 아이·음소 정하기</h2>
     <p class="sub">가장 먼저 하는 단계예요. 프로필을 고르고, 오늘 배운 초성·중성·종성만 켜 둡니다.</p>
     <ul class="tips">
-      <li><b>👦 아동 프로필</b> — 아이마다 프로필을 나눠 진도를 따로 관리해요. <span class="kbd">＋ 추가</span> <span class="kbd">✏️ 이름변경</span> <span class="kbd">🗑 삭제</span>. 실명 대신 <b>별칭</b>을 권장해요.</li>
-      <li>진도는 이 기기에만 저장돼요. 기기를 옮기거나 백업하려면 <span class="kbd">📤 내보내기</span>로 JSON 파일을 저장하고, 새 기기에서 <span class="kbd">📥 가져오기</span> 하세요.</li>
-      <li><b>초성·중성·종성</b> 타일을 눌러 배운 음소만 켜요(연두색+✓). 그룹마다 <span class="kbd">모두</span> <span class="kbd">해제</span> 버튼이 있어요.</li>
+      <li><b>아동 프로필</b> — 아이마다 프로필을 나눠 진도를 따로 관리해요. <span class="kbd">추가</span> <span class="kbd">이름변경</span> <span class="kbd">삭제</span>. 실명 대신 <b>별칭</b>을 권장해요.</li>
+      <li>진도는 이 기기에만 저장돼요. 기기를 옮기거나 백업하려면 <span class="kbd">내보내기</span>로 JSON 파일을 저장하고, 새 기기에서 <span class="kbd">가져오기</span> 하세요.</li>
+      <li><b>초성·중성·종성</b> 타일을 눌러 배운 음소만 켜요(파란색+✓). 그룹마다 <span class="kbd">모두</span> <span class="kbd">해제</span> 버튼이 있어요.</li>
       <li><b>종성(받침)</b>은 <span class="kbd jong">∅ 받침없음</span>이 항상 켜져 있고, 받침을 배우면 하나씩 켜 주면 돼요.</li>
       <li>맨 위 <b>지금 만들 수 있는 글자</b>에서 현재 조합되는 글자 예시를 확인해요. 변경은 <b>자동 저장</b>됩니다.</li>
     </ul>
@@ -117,25 +109,25 @@
 
   <!-- STEP 2 -->
   <section class="step">
-    <h2><span class="num">2</span> 놀이 — 초성·중성·종성 합치기</h2>
+    <h2><span class="num">02</span>놀이 — 초성·중성·종성 합치기</h2>
     <p class="sub">놀이 화면에서 자모를 하나씩 눌러 글자를 만들고, 아이와 소리 내어 읽어 봅니다.</p>
     <ul class="tips">
       <li>아래 세 구역 <span class="kbd cho">초성</span> <span class="kbd jung">중성</span> <span class="kbd jong">종성</span> 에서 하나씩 누르면 위에 글자가 합쳐져요. (누르는 순서는 자유)</li>
       <li>같은 자리를 다시 누르면 <b>교체</b>, 한 번 더 누르면 <b>해제</b>돼요.</li>
-      <li>두·세 글자 단어는 <span class="kbd blue">다음 글자 ＋</span>로 이어 만들어요. (앞 글자가 잠기고 새 글자 시작 · 최대 3음절)</li>
-      <li><span class="kbd">⬅️ 지우기</span> 마지막 자모부터 지우기 · <span class="kbd">🧹 처음부터</span> 전체 지우기.</li>
-      <li><b>🎲 랜덤 글자</b> — <span class="kbd cho">1음절</span> <span class="kbd cho">2음절</span> <span class="kbd cho">3음절</span> 을 누르면 켠 음소로 무작위 글자를 만들어 줘요.</li>
-      <li><span class="kbd">⭐ 담기</span>로 더 연습할 글자를 <b>담은 단어</b>에 모으고, <span class="kbd">✍️ 글씨연습장</span>으로 바로 쓰기 연습지를 만들 수 있어요.</li>
+      <li>두·세 글자 단어는 <span class="kbd blue">다음 글자</span>로 이어 만들어요. (앞 글자가 잠기고 새 글자 시작 · 최대 3음절)</li>
+      <li><span class="kbd">지우기</span> 마지막 자모부터 지우기 · <span class="kbd">처음부터</span> 전체 지우기.</li>
+      <li><b>랜덤 글자</b> — <span class="kbd cho">1음절</span> <span class="kbd cho">2음절</span> <span class="kbd cho">3음절</span> 을 누르면 켠 음소로 무작위 글자를 만들어 줘요.</li>
+      <li><span class="kbd">담기</span>로 더 연습할 글자를 <b>담은 단어</b>에 모으고, <span class="kbd">글씨연습장</span>으로 바로 쓰기 연습지를 만들 수 있어요.</li>
     </ul>
   </section>
 
   <!-- STEP 3 -->
   <section class="step">
-    <h2><span class="num">3</span> 게임 — 타자·터치로 읽기 연습</h2>
+    <h2><span class="num">03</span>게임 — 타자·터치로 읽기 연습</h2>
     <p class="sub">진도에서 켠 음소로 만든 글자가 소재가 돼요. 두 가지 게임이 있어요.</p>
     <ul class="tips">
-      <li><b>🧱 벽돌깨기</b> — 벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 깨져요. 시간제한이 없어 <b>천천히 읽고</b> 쳐도 돼요.</li>
-      <li><b>💻 글자잡기</b> — 위에서 떨어지는 글자를 바닥에 닿기 전에 없애요. 생명은 하트 ❤️로 표시돼요.</li>
+      <li><b>벽돌깨기</b> — 벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 깨져요. 시간제한이 없어 <b>천천히 읽고</b> 쳐도 돼요.</li>
+      <li><b>글자잡기</b> — 위에서 떨어지는 글자를 바닥에 닿기 전에 없애요. 생명은 하트 ❤️로 표시돼요.</li>
       <li>글자잡기 <b>속도</b>는 <span class="kbd">1단계·느림</span> <span class="kbd">2단계·보통</span> <span class="kbd">3단계·빠름</span> 중에 고를 수 있어요. (기본 1단계)</li>
       <li><b>PC에서는 타자</b>로 치고, <b>휴대폰·태블릿에서는</b> 떨어지는 글자를 <b>정확히 읽고 손가락으로 톡 터치</b>하면 잡혀요.</li>
       <li>글자 수(<span class="kbd">한 글자</span> <span class="kbd">두 글자</span> <span class="kbd">세 글자</span>)로 난이도를 정하고, <span class="kbd">⏸️ 일시정지</span> · <span class="kbd">🔄 다시</span> · 🔊 소리 켜고 끄기가 가능해요.</li>
@@ -144,53 +136,55 @@
 
   <!-- STEP 4 -->
   <section class="step">
-    <h2><span class="num">4</span> 자료 만들기 — 학습지 자동 생성</h2>
+    <h2><span class="num">04</span>자료 만들기 — 학습지 자동 생성</h2>
     <p class="sub">켠 음소 범위로 단어·문장 목록을 자동으로 만들어 인쇄하거나 복사할 수 있어요.</p>
     <ul class="tips">
       <li><b>유형</b>을 골라요 — <b>의미 단어 / 무의미 단어 / 문장</b>.</li>
-      <li><b>음절 수</b>(1·2·3)와 <b>받침</b>(없음만/있는것만/섞기), <b>개수</b>를 정하고 <span class="kbd blue">✨ 생성</span>을 눌러요.</li>
-      <li><span class="kbd">📋 복사</span> 다른 곳에 붙여넣기 · <span class="kbd">🖨️ 인쇄</span> 학습지로 바로 출력.</li>
+      <li><b>음절 수</b>(1·2·3)와 <b>받침</b>(없음만/있는것만/섞기), <b>개수</b>를 정하고 <span class="kbd blue">생성</span>을 눌러요.</li>
+      <li><span class="kbd">복사</span> 다른 곳에 붙여넣기 · <span class="kbd">인쇄</span> 학습지로 바로 출력.</li>
       <li>진도에서 <b>켠 음소만</b> 사용돼요. 목록이 부족하면 음소를 더 켜 보세요.</li>
     </ul>
     <div class="note" style="margin-top:16px">
-      <h3>ℹ️ “무의미 단어”는요</h3>
+      <h3>“무의미 단어”는요</h3>
       실제 사전에 없는 <b>소리 연습용</b> 글자예요. 고유명사·활용형은 사전에 없어도 실제 단어일 수 있으니 <b>선생님이 한 번 확인</b>해 주세요.
     </div>
   </section>
 
   <!-- STEP 5 -->
   <section class="step">
-    <h2><span class="num">5</span> 글씨 연습장까지 이어 만들기</h2>
+    <h2><span class="num">05</span>글씨 연습장까지 이어 만들기</h2>
     <p class="sub">만든 단어를 그대로 <b>글씨 쓰기 연습장</b>으로 넘길 수 있어요.</p>
     <ul class="tips">
-      <li>놀이에서 담은 단어는 <span class="kbd">✍️ 글씨연습장</span>, 자료 만들기에서는 <span class="kbd" style="background:#e2d5ff">✍️ 글씨연습장 만들기</span> 버튼을 눌러요.</li>
+      <li>놀이에서 담은 단어는 <span class="kbd">글씨연습장</span>, 자료 만들기에서는 <span class="kbd">글씨연습장 만들기</span> 버튼을 눌러요.</li>
       <li>그 단어들로 <b>A4 쓰기 연습장</b>이 새 창에서 자동으로 만들어져요. ✍️</li>
     </ul>
   </section>
 
   <!-- STEP 6 -->
   <section class="step">
-    <h2><span class="num">6</span> 가정과제 링크 — 집에서 같은 범위로 복습</h2>
+    <h2><span class="num">06</span>가정과제 링크 — 집에서 같은 범위로 복습</h2>
     <p class="sub">치료실에서 정한 진도 그대로, 집에서 복습할 수 있는 링크를 보호자에게 보내요.</p>
     <ul class="tips">
-      <li>진도 설정 화면의 <span class="kbd">🏠 가정과제 링크</span>를 누르면 링크가 만들어져요. <b>복사</b>해서 보호자에게 전달하세요.</li>
+      <li>진도 설정 화면의 <span class="kbd">가정과제 링크</span>를 누르면 링크가 만들어져요. <b>복사</b>해서 보호자에게 전달하세요.</li>
       <li>보호자·아이는 <b>로그인 없이</b> 링크만 열면 돼요. 열면 <b>진도가 잠겨</b> 선생님이 정한 음소 범위로만 놀이·글씨연습을 해요.</li>
-      <li>링크에 <b>아이 이름은 들어가지 않아요.</b> 화면에는 “🏠 오늘의 연습” 배지만 보여요.</li>
+      <li>링크에 <b>아이 이름은 들어가지 않아요.</b> 화면에는 “오늘의 연습” 배지만 보여요.</li>
     </ul>
   </section>
 
   <div class="note">
-    <h3>💡 알아두면 좋은 점</h3>
+    <h3>알아두면 좋은 점</h3>
     ● <b>지도 순서를 강제하지 않아요</b> — 아이마다 배운 음소가 다르니, 선생님이 켠 음소만 조합에 쓰입니다.<br>
     ● <b>소리 읽어주기(TTS)는 없어요</b> — 자모가 모여 글자가 되는 과정을 눈으로 보며 블렌딩 감각을 익혀요.<br>
-    ● <b>자동 저장</b> — 프로필·진도·담은 단어는 이 기기에 저장돼요. 데이터가 지워질 수 있으니 <b>가끔 📤 내보내기로 백업</b>하세요.<br>
+    ● <b>자동 저장</b> — 프로필·진도·담은 단어는 이 기기에 저장돼요. 데이터가 지워질 수 있으니 <b>가끔 내보내기로 백업</b>하세요.<br>
     ● <b>ㅇ</b>은 초성에 포함돼 있어요(아·어·오…는 초성 ㅇ + 모음).
   </div>
 </main>
 
 <footer>
-  @slp_irudassam 한글놀이 · <a href="index.html">앱 열기</a><br>
-  <span style="font-size:11px">온라인 사전 판별 시 출처: 국립국어원 「한국어기초사전」 (CC BY-SA 2.0 KR)</span>
+  <div class="foot-inner">
+    <span>의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR)</span>
+    <span class="r">소소숲 : 지혜의 기록소 · 한글놀이 · <a href="index.html">앱 열기</a></span>
+  </div>
 </footer>
 </body>
 </html>
