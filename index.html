@@ -331,21 +331,28 @@
     <span class="app-name" id="brandName">한글놀이<small>읽기 중재 도구</small></span>
     <div class="mh-right">
       <span class="hw-badge" id="hwBadge">오늘의 연습</span>
+<!--@cut home-->
       <a class="trial-badge" id="trialBadge" href="https://sososoop.com/hangul" target="_blank" rel="noopener">정식판 보기</a>
       <a href="manual.html" class="top-link" id="manualLink"><svg class="ic"><use href="#i-help"/></svg>사용법</a>
+<!--@end-->
     </div>
   </div>
 </header>
 <div class="menu-wrap">
   <nav class="modeswitch" id="modeswitch" aria-label="메뉴">
+<!--@cut home-->
     <button id="tabProg" class="on" onclick="switchMode('prog')"><span class="nav-num">01</span><svg class="ic"><use href="#i-prog"/></svg>진도 설정</button>
+<!--@end-->
     <button id="tabPlay" onclick="switchMode('play')"><span class="nav-num">02</span><svg class="ic"><use href="#i-play"/></svg>놀이</button>
+<!--@cut home-->
     <button id="tabGame" onclick="switchMode('game')"><span class="nav-num">03</span><svg class="ic"><use href="#i-game"/></svg>게임</button>
     <button id="tabGen" onclick="switchMode('gen')"><span class="nav-num">04</span><svg class="ic"><use href="#i-print"/></svg>자료 만들기</button>
+<!--@end-->
   </nav>
 </div>
 
 <main>
+<!--@cut home-->
   <!-- ================= 진도 설정 ================= -->
   <section id="progPanel" class="panel on">
     <div class="page-heading">
@@ -385,6 +392,7 @@
       </p>
     </div>
   </section>
+<!--@end-->
 
   <!-- ================= 놀이(블렌딩 보드) ================= -->
   <section id="playPanel" class="panel">
@@ -436,6 +444,7 @@
     </div>
   </section>
 
+<!--@cut home-->
   <!-- ================= 게임 ================= -->
   <section id="gamePanel" class="panel">
     <div class="page-heading">
@@ -596,6 +605,7 @@
       <p id="printSrc" style="display:none;font-size:11px;color:#666;margin:10px 0 0">의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR · creativecommons.org/licenses/by-sa/2.0/kr) · 소소숲 : 지혜의 기록소 「한글놀이」로 만듦<span id="printTrial"></span></p>
     </div>
   </section>
+<!--@end-->
 </main>
 
 <footer>
@@ -605,6 +615,7 @@
   </div>
 </footer>
 
+<!--@cut home-->
 <!-- 이름 입력 모달 -->
 <div class="modal-back" id="nameModal">
   <div class="modal">
@@ -616,6 +627,7 @@
     </div>
   </div>
 </div>
+<!--@end-->
 <!-- 안내/링크 모달 -->
 <div class="modal-back" id="infoModal">
   <div class="modal">
@@ -711,11 +723,13 @@ const REAL_SET = new Set();
   for(const k in b) b[k].forEach(w=>REAL_SET.add(w));
 });
 
+/*@cut home*/
 const SENTENCES = {
   2:['아기가 자다.','비가 오다.','누나가 오다.','고기 주다.','바다 가다.','오이 사다.','어디 가다?','너무 시다.','밥을 먹다.','책을 읽다.','손을 씻다.','물을 주다.'],
   3:['아기가 두부 사다.','아버지가 바나나 주다.','누나가 고기 사다.','비가 자주 오다.','어서 바다 가다.','아이가 오이 보다.','마주 서서 보다.','나도 사자 보다.','동생이 밥을 먹다.','강아지가 공을 잡다.','학교에 신발 신다.'],
   4:['누나가 바나나 더 주다.','어머, 비가 너무 오다.','아버지가 아주 자주 오다.','아이가 바지 자주 구기다.','어머니가 두부 다시 사다.','나도 오이 다시 사다.','동생이 밥을 다 먹다.','강아지가 공을 꼭 잡다.']
 };
+/*@end*/
 
 /* =========================================================
    프로필 상태 (localStorage: sp.profiles.v1 / sp.activeProfileId)
@@ -797,6 +811,8 @@ function enabledSet(kind){   // 생성·문장 필터가 글자마다 부르므�
   if(_enCache.v!==progVersion || _enCache.p!==p) _enCache={v:progVersion,p,sets:{cho:new Set(enabled('cho')),jung:new Set(enabled('jung')),jong:new Set(enabled('jong'))}};
   return _enCache.sets[kind];
 }
+/* 빌드 표시: @cut 구간은 체험판(trial)·보호자용(home) 파일에서 통째로 빠진다 — build-variants.py */
+/*@cut home*/
 /* 진도·프로필이 바뀌면: 꺼진 음소를 보드에서 내리고, 게임은 다음에 켤 때 새로 만든다 */
 function onProgressChanged(){
   progVersion++;
@@ -870,6 +886,7 @@ function sanitizeProfile(raw){
   activeId=profiles[0].id;
   saveProfiles();
 })();
+/*@end*/
 
 /* =========================================================
    사전 단어 목록 (국립국어원 「한국어기초사전」 1~3음절 표제어)
@@ -929,13 +946,18 @@ function syllablePool(batchim){
 function switchMode(m){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('#modeswitch button').forEach(b=>b.classList.remove('on'));
+/*@cut home*/
   if(m!=='game') stopRain();
+/*@end*/
   if(m==='play'){ playPanel.classList.add('on'); tabPlay.classList.add('on'); renderZones(); renderBoard(); }
+/*@cut home*/
   if(m==='game'){ gamePanel.classList.add('on'); tabGame.classList.add('on'); startGameTab(); }
   if(m==='gen'){ genPanel.classList.add('on'); tabGen.classList.add('on'); renderTargets(); }
   if(m==='prog'){ progPanel.classList.add('on'); tabProg.classList.add('on'); renderProgress(); }
+/*@end*/
 }
 
+/*@cut home*/
 /* =========================================================
    진도 설정 화면
    ========================================================= */
@@ -1032,9 +1054,11 @@ function switchProfile(id){   // 아동이 바뀌면 보드·담은 단어도 �
 }
 function addProfile(){
   if(TRIAL){ trialLock('아동 프로필 추가'); return; }
+/*@cut trial*/
   openNameModal('새 프로필 이름', '', name=>{
     const p=newProfile(name||'아이'); profiles.push(p); switchProfile(p.id);
   });
+/*@end*/
 }
 function renameProfile(){
   const p=activeProfile(); if(!p) return;
@@ -1049,14 +1073,18 @@ function deleteProfile(){
 }
 function exportProfiles(){
   if(TRIAL){ trialLock('프로필 내보내기'); return; }
+/*@cut trial*/
   const data=JSON.stringify({app:'hangul-blending-board', v:1, exportedAt:nowTs(), profiles}, null, 2);
   const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a'); a.href=url; a.download='한글놀이_프로필.json'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
+/*@end*/
 }
 function importProfiles(file){
   if(!file) return;
+  if(TRIAL){ trialLock('프로필 가져오기'); return; }
+/*@cut trial*/
   if(file.size>1024*1024){ openInfo('가져오기 실패','파일이 너무 커요(1MB 초과).'); return; }
   const rd=new FileReader();
   rd.onload=()=>{
@@ -1077,7 +1105,9 @@ function importProfiles(file){
   };
   rd.readAsText(file);
   document.getElementById('importFile').value='';
+/*@end*/
 }
+/*@end*/
 
 /* =========================================================
    놀이 — 블렌딩 보드
@@ -1217,6 +1247,7 @@ function collectedToHandwriting(){
   openHandwriting(collected.map(c=>c.word));
 }
 
+/*@cut home*/
 /* =========================================================
    자료 만들기
    ========================================================= */
@@ -1538,6 +1569,7 @@ function resultToHandwriting(){
   if(!lastResult.length){ openInfo('안내','먼저 자료를 생성해 주세요.'); return; }
   openHandwriting(lastResult);
 }
+/*@end*/
 function openHandwriting(words){
   // 문장부호 제거, 낱말만 — 글씨연습장 words 파라미터로 전달
   const clean=words.flatMap(w=>w.split(/\s*–\s*/)).map(w=>w.replace(/[.,?!]/g,'').trim()).filter(Boolean).slice(0,60);
@@ -1550,6 +1582,7 @@ function openHandwriting(words){
    ========================================================= */
 function bytesToB64url(bytes){ let bin=''; bytes.forEach(b=>bin+=String.fromCharCode(b)); return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function b64urlToBytes(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; const bin=atob(s); const out=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i); return out; }
+/*@cut trial home*/
 function encodeHw(cho,jung,jong){
   const bits=new Uint8Array(9);
   const set=off=>{ bits[off>>3] |= (0x80 >> (off&7)); };
@@ -1558,6 +1591,7 @@ function encodeHw(cho,jung,jong){
   jong.forEach(i=>set(40+i));        // 40..67
   return '1'+bytesToB64url(bits);
 }
+/*@end*/
 function decodeHw(str){
   try{ str=decodeURIComponent(str); }catch(e){ return null; }
   if(!str || str[0]!=='1' || !/^[A-Za-z0-9_-]+$/.test(str.slice(1))) return null;
@@ -1571,15 +1605,19 @@ function decodeHw(str){
   if(!jong.includes(0)) jong.unshift(0);
   return {cho,jung,jong};
 }
+/*@cut home*/
 function makeHwLink(){
   if(TRIAL){ trialLock('가정과제 링크'); return; }
+/*@cut trial*/
   const p=activeProfile(); if(!p) return;
   const code=encodeHw(p.cho,p.jung,p.jong);
   // 소소숲 유료판(/hangul/app, 로그인 필요)에서는 보호자용 공개 주소(/hangul/home)로 만든다
   const base=/\/hangul\/app\/?$/.test(location.pathname) ? location.origin+'/hangul/home' : location.origin+location.pathname;
   const url=base+'#hw='+code;
   openLinkModal('🏠 가정과제 링크', '아래 링크를 보호자에게 보내세요. 링크로 들어가면 <b>이 진도 그대로 잠금</b>되어 집에서 같은 범위로 연습할 수 있어요. (진도 변경 불가·아동 이름 미포함)', url);
+/*@end*/
 }
+/*@end*/
 function applyLockModeIfNeeded(){
   const h=location.hash||'';
   const m=h.match(/hw=([^&]+)/);
@@ -1607,6 +1645,7 @@ function applyLockModeIfNeeded(){
    모달 (커스텀 — 브라우저 alert/prompt 대체)
    ========================================================= */
 let nameCb=null, confirmCb=null;
+/*@cut home*/
 function openNameModal(title,val,cb){
   document.getElementById('nameModalTitle').textContent=title;
   const inp=document.getElementById('nameModalInput'); inp.value=val||'';
@@ -1617,6 +1656,7 @@ function openNameModal(title,val,cb){
 function closeNameModal(){ document.getElementById('nameModal').classList.remove('on'); nameCb=null; }
 document.getElementById('nameModalOk').onclick=()=>{ const v=document.getElementById('nameModalInput').value.trim(); const cb=nameCb; closeNameModal(); if(cb) cb(v); };
 document.getElementById('nameModalInput').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('nameModalOk').click(); });
+/*@end*/
 
 function openInfo(title,msg){
   document.getElementById('infoModalTitle').textContent=title;
@@ -1645,6 +1685,7 @@ function openLinkModal(title,msg,url){
 }
 function closeInfoModal(){ document.getElementById('infoModal').classList.remove('on'); }
 
+/*@cut home*/
 /* =========================================================
    게임 (벽돌깨기 + 글자잡기) — 소재를 새 음소 진도에 재연결
    ========================================================= */
@@ -1685,8 +1726,10 @@ function nSylCombos(n){
   return [...out];
 }
 function currentDiffItems(){
+/*@cut trial*/
   if(gDiff==='word2'){ const items=[...new Set([...nSylWords(2).filter(w=>w.length===2), ...nSylCombos(2)])]; if(items.length) return items; }
   if(gDiff==='word3'){ const items=[...new Set([...nSylWords(3).filter(w=>w.length===3), ...nSylCombos(3)])]; if(items.length) return items; }
+/*@end*/
   return [...new Set(syllablePool('mix'))];
 }
 function stageItems(){ return shuffle(currentDiffItems()).slice(0,12); }
@@ -1875,6 +1918,7 @@ function handleRain(composing){
   gi.addEventListener('compositionend', ()=>handleGame(false));
   gi.addEventListener('keydown', e=>{ if(e.key==='Escape' && currentGame==='rain'){ e.preventDefault(); togglePause(); } });
 })();
+/*@end*/
 
 document.addEventListener('keydown',e=>{   // 타일을 키보드로도 누를 수 있게
   if((e.key==='Enter'||e.key===' ') && e.target && e.target.matches && e.target.matches('.pg-tile[role=button],.jamo-tile[role=button]')){ e.preventDefault(); e.target.click(); }
@@ -1889,6 +1933,7 @@ const hwLocked=applyLockModeIfNeeded();
 if(!hwLocked && window.__HW_ONLY__){
   // 보호자용 주소(/hangul/home)는 가정과제 링크로만 연다
   document.body.innerHTML='<div class="card" style="max-width:440px;margin:80px 16px;margin-inline:auto;padding:28px 24px;text-align:center"><h2 style="font-size:20px;font-weight:900;letter-spacing:-.04em;margin:0 0 10px">가정과제 링크로 들어와 주세요 🏠</h2><p style="font-size:15px;color:var(--text);line-height:1.7">이 주소는 선생님께 받은 가정과제 링크로만 열려요.<br>링크를 다시 받아 그대로 눌러 주세요.</p><p style="margin-top:20px"><a href="/hangul" style="color:#3b5bdb;font-weight:700">한글놀이 소개 보기 →</a></p></div>';
+/*@cut home*/
 } else if(!hwLocked){
   renderProgress();
   renderZones();
@@ -1896,6 +1941,7 @@ if(!hwLocked && window.__HW_ONLY__){
   renderCollected();
   renderTargets();
   syncGenFields();
+/*@end*/
 }
 </script>
 </body>

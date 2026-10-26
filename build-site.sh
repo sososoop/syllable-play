@@ -29,12 +29,9 @@ done
 # 단독판(hangul.sososoop.com)은 체험판 — 고급 예문 파일(3·0)은 올리지 않는다. 표준국어대사전 목록은 무의미 단어에서
 # 사전 단어를 빼는 데 필요해서 넣는다(단어 범위 5·6단계는 앱에서 잠금).
 # 예문은 단어 범위 초급·보통(1·2)만 넣는다(체험판 문장 3개용).
-# 앱에 체험판 표시를 넣는다. 정식판은 소소숲(/hangul/app)에서 원본 index.html을 그대로 쓴다.
-python3 - <<'PY'
-p='dist/index.html'; s=open(p).read()
-assert s.count('<head>')==1
-open(p,'w').write(s.replace('<head>','<head><script>window.__TRIAL__=true</script>',1))
-PY
+# 체험판 index.html은 원본에서 정식판 전용 코드(@cut trial)를 뺀 파일 — 화면 잠금만으로는 코드가 그대로 나가서(2026-10-26 보안 점검).
+# 정식판·보호자용은 소소숲으로: python3 build-variants.py sososoop "<소소숲 폴더>"
+python3 build-variants.py trial dist/index.html
 echo "dist/ 준비 완료(체험판) — 파일 $(find dist -type f | wc -l | tr -d ' ')개"
 
 if [ "${1:-}" = "--deploy" ]; then
