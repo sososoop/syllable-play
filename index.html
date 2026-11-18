@@ -137,6 +137,38 @@
   .syl-box.pop{animation:pop .16s}
   @keyframes pop{from{transform:scale(.6);opacity:.3}to{transform:scale(1);opacity:1}}
   .board .placeholder{color:var(--muted);font-size:15px;font-weight:700}
+  /* 엘코닌 칸(한글형): 초성 왼쪽 위 · ㅏㅓㅣ 오른쪽 · ㅗㅜㅡ 초성 밑 · 겹모음 모서리 · 받침 맨 아래.
+     1단계: 자모가 칸에 따로 놓임 → 치료사가 누르면 2단계: 초성+중성이 한 글자(가)로, 받침 있으면 한 번 더 눌러 가+ㄴ → 간 */
+  .ek-box{
+    --f:48px;--u:64px;
+    position:relative;width:calc(var(--u)*2);height:calc(var(--u)*3);flex:none;cursor:pointer;
+    background:var(--jung);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--soft-shadow);color:var(--ink);
+  }
+  .ek-box.on{outline:3px solid var(--blue);outline-offset:3px}
+  .ek-box .ek{position:absolute;width:var(--u);height:var(--u);display:flex;align-items:center;justify-content:center;font-weight:900;line-height:1;font-size:var(--f);box-sizing:border-box}
+  .ek-box .ek b{display:block;font-weight:inherit;transition:transform .24s ease-in,opacity .24s ease-in}
+  .ek-box .ek-cho{left:0;top:0;background:var(--cho);border-right:1px dashed var(--ink);border-bottom:1px dashed var(--ink)}
+  .ek-box .ek-jv{right:0;top:0}
+  .ek-box .ek-jh{left:0;top:var(--u)}
+  .ek-box .ek-jw{left:calc(var(--u)*.5);top:calc(var(--u)*.7)}
+  .ek-box .ek-jong{left:0;bottom:0;width:100%;background:var(--jong);border-top:2px solid var(--ink)}
+  .ek-box .ek-jong.empty{background:repeating-linear-gradient(45deg,var(--jong) 0 5px,#fff4ec 5px 9px)}   /* 받침 없음 */
+  .ek-box .ek-top{left:0;top:0;width:100%;height:calc(var(--u)*2);font-size:calc(var(--f)*1.7)}   /* 합쳐진 가 */
+  .ek-box .ek-all{left:0;top:0;width:100%;height:100%;background:var(--white);font-size:calc(var(--f)*2.3)}   /* 합쳐진 간 */
+  .ek-box .ek.pop b{animation:pop .2s}
+  /* 합칠 수 있음: 파란 점선 */
+  .ek-box.ready::after{content:"";position:absolute;inset:4px;outline:3px dashed var(--blue);pointer-events:none}
+  .ek-box.ready.r1::after{bottom:calc(var(--u) + 4px)}
+  /* 모이는 움직임 */
+  .ek-box.m1 .ek-cho b{transform:translate(calc(var(--u)*.5),calc(var(--u)*.5)) scale(.6);opacity:.15}
+  .ek-box.m1 .ek-jv b{transform:translate(calc(var(--u)*-.5),calc(var(--u)*.5)) scale(.6);opacity:.15}
+  .ek-box.m1 .ek-jh b{transform:translate(calc(var(--u)*.5),calc(var(--u)*-.5)) scale(.6);opacity:.15}
+  .ek-box.m1 .ek-jw b{transform:translate(0,calc(var(--u)*-.2)) scale(.6);opacity:.15}
+  .ek-box.m2 .ek-top b{transform:translateY(calc(var(--u)*.5)) scale(.7);opacity:.15}
+  .ek-box.m2 .ek-jong b{transform:translateY(calc(var(--u)*-1)) scale(.6);opacity:.15}
+  .board.mode-glyph{gap:10px}
+  .board-mode{margin-left:auto}
+  .board-mode .seg-btn{padding:6px 10px;font-size:12px}
   .verdict{text-align:center;font-size:15px;font-weight:850;min-height:26px;margin:8px 0 2px}
   .verdict.real{color:var(--good)}
   .verdict.nonsense{color:var(--serious)}
@@ -158,6 +190,19 @@
   .btn-save .ic{color:#fff!important}
   .rand-label{align-self:center;font-size:13px;font-weight:800;color:var(--ink-2);display:inline-flex;gap:6px;align-items:center}
 
+  /* PC: 보드와 자모 판 나란히 */
+  @media(min-width:860px){
+    .play-split{display:grid;grid-template-columns:minmax(430px,520px) minmax(0,1fr);gap:18px;align-items:start;margin-bottom:18px}
+    .play-split>.card{margin:0}
+    .play-split>.play-board{position:sticky;top:72px}
+    .play-split .board{min-height:300px;align-items:center}
+  }
+  @media(min-width:860px) and (max-width:1099px){
+    .play-split{grid-template-columns:440px minmax(0,1fr)}
+    .play-split .ek-box{--u:54px;--f:40px}
+    .play-split .buildbtns{gap:6px}
+    .play-split .buildbtns button{padding-left:10px;padding-right:10px}
+  }
   /* 자모 존 */
   .zone{margin-top:14px}
   .zone:first-child{margin-top:0}
@@ -269,6 +314,100 @@
   @keyframes splash{to{opacity:0;background:var(--crit-soft)}}
   .rain-pause{display:none;position:absolute;inset:0;z-index:9;background:rgba(255,253,247,.92);align-items:center;justify-content:center;text-align:center;font-size:26px;font-weight:900;color:var(--ink)}
   .rain-pause span{display:block;margin-top:8px;font-size:14px;font-weight:700;color:var(--muted)}
+  /* 단어 가챠: 뽑기 기계 → 캡슐 → 단어 카드 → 선생님이 ⭕/🔁 판정 → 도감 */
+  .gacha-stage{display:grid;grid-template-columns:240px minmax(0,1fr);gap:14px;margin-bottom:14px}
+  /* 상자형 뽑기 기계: 위 SOSOSOOP 간판 · 가운데 유리창(가챠볼) · 아래 왼쪽 돌리는 손잡이 · 오른쪽 볼 나오는 곳 */
+  .gacha-machine{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .gm-box{position:relative;width:224px;padding:0 10px 10px;background:var(--blue);border:3px solid var(--ink);border-radius:16px 16px 6px 6px;box-shadow:5px 5px 0 var(--ink)}
+  .gm-head{height:44px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:21px;font-weight:900;letter-spacing:.16em;text-shadow:2px 2px 0 var(--ink)}
+  .gm-window{position:relative;height:156px;border:3px solid var(--ink);border-radius:6px;overflow:hidden;background:linear-gradient(165deg,#fff 0%,var(--info-soft) 70%)}
+  .gm-window::after{content:"";position:absolute;left:10px;top:9px;width:13px;height:96px;border-radius:8px;background:#fff;opacity:.8;transform:skewX(-8deg);pointer-events:none;z-index:2}
+  .gm-ball{position:absolute;width:52px;height:52px;margin:-26px 0 0 -26px;border:2.5px solid var(--ink);border-radius:50%;
+    background:linear-gradient(var(--c) 47%,var(--ink) 47% 53%,#fff 53%);transform:rotate(var(--rot,0deg))}
+  .gm-window.shake .gm-ball{animation:gmBall .9s ease-in-out}
+  @keyframes gmBall{
+    20%{transform:translate(4px,-24px) rotate(calc(var(--rot,0deg) + 80deg))}
+    45%{transform:translate(-5px,-8px) rotate(calc(var(--rot,0deg) + 170deg))}
+    70%{transform:translate(3px,-16px) rotate(calc(var(--rot,0deg) + 260deg))}
+    100%{transform:rotate(calc(var(--rot,0deg) + 360deg))}}
+  .gm-base{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:12px;background:var(--blue-dark);border:3px solid var(--ink);border-radius:6px}
+  .gm-knob{position:relative;width:80px;height:80px;padding:0;flex:none;border:3px solid var(--ink);border-radius:50%;background:#fff;box-shadow:3px 3px 0 var(--ink);cursor:pointer;touch-action:manipulation}
+  .gm-knob:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .gm-knob:disabled{cursor:default}
+  .gm-knob.idle::after{content:"";position:absolute;inset:-9px;border:3px solid #ffd43b;border-radius:50%;animation:knobCall 1.6s ease-out infinite;pointer-events:none}
+  @keyframes knobCall{from{transform:scale(.88);opacity:1}to{transform:scale(1.12);opacity:0}}
+  .gm-dial{position:absolute;inset:7px;border-radius:50%;background:var(--info-soft);transform:rotate(var(--turn,0deg));transition:transform .9s cubic-bezier(.45,.05,.3,1)}
+  .gm-handle{position:absolute;left:50%;top:50%;width:56px;height:18px;margin:-9px 0 0 -28px;background:var(--teal);border:3px solid var(--ink);border-radius:5px}
+  .gm-out{position:relative;width:86px;height:86px;flex:none;border:3px solid var(--ink);border-radius:6px;background:#23263a;box-shadow:inset 0 10px 0 #0007}
+  .gm-flap{position:absolute;left:0;right:0;top:0;height:44%;background:#ffffff55;border-bottom:3px solid var(--ink);transform-origin:top;transition:transform .2s;z-index:3;pointer-events:none}
+  .gm-out.pop .gm-flap{transform:perspective(160px) rotateX(75deg)}
+  .gm-prize{position:absolute;left:50%;bottom:6px;width:58px;height:58px;margin-left:-29px;padding:0;z-index:2;border:2.5px solid var(--ink);border-radius:50%;cursor:pointer;
+    background:linear-gradient(var(--c) 46%,var(--ink) 46% 54%,#fff 54%);animation:prizeIn .6s cubic-bezier(.3,1.6,.5,1),prizeWiggle 1.4s ease-in-out .7s infinite}
+  .gm-prize.r2{box-shadow:0 0 12px 3px #3b5bdb99}
+  .gm-prize.r3{box-shadow:0 0 0 3px #ffd43b,0 0 18px 6px #ffd43bcc}
+  .gm-prize.taken{animation:prizeTake .3s ease-in forwards}
+  @keyframes prizeIn{0%{transform:translateY(-64px) scale(.3) rotate(-140deg);opacity:0}50%{opacity:1}100%{transform:none}}
+  @keyframes prizeWiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+  @keyframes prizeTake{to{transform:translate(40px,-30px) scale(.4);opacity:0}}
+  .gm-spark{position:absolute;left:50%;top:60%;z-index:4;font-size:17px;font-weight:900;line-height:1;color:var(--c,#ffd43b);text-shadow:1px 1px 0 var(--ink);pointer-events:none;animation:gmSpark .75s ease-out forwards}
+  @keyframes gmSpark{from{transform:translate(-50%,-50%) scale(.3);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.15) rotate(90deg);opacity:0}}
+  .gm-caption{font-size:15px;font-weight:900;color:var(--ink);text-align:center;min-height:22px}
+  .gm-odds{font-size:11px;font-weight:700;color:var(--muted);text-align:center;line-height:1.5}
+  .gacha-show{position:relative;border:var(--border);min-height:340px;overflow:hidden;padding:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px}
+  .gacha-show.legend::before{content:"";position:absolute;left:50%;top:44%;width:640px;height:640px;margin:-320px 0 0 -320px;background:repeating-conic-gradient(#ffd43b55 0 12deg,transparent 12deg 24deg);animation:gRays 6s linear infinite;pointer-events:none}
+  @keyframes gRays{to{transform:rotate(360deg)}}
+  .gacha-wait{width:110px;height:110px;border:3px dashed var(--line-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:var(--line-2)}
+  /* 나온 캡슐: 눌러서 열기(실제 가챠처럼) */
+  .gacha-capsule{position:relative;z-index:1;width:124px;height:124px;padding:0;border:3px solid var(--ink);border-radius:50%;cursor:pointer;touch-action:manipulation;
+    background:linear-gradient(var(--c) 46%,var(--ink) 46% 54%,#fff 54%);box-shadow:4px 4px 0 var(--soft-shadow);
+    animation:capIn .5s cubic-bezier(.3,1.5,.6,1),capWobble 1.4s ease-in-out .5s infinite}
+  .gacha-capsule.r2{box-shadow:4px 4px 0 var(--soft-shadow),0 0 22px 6px #3b5bdb66}
+  .gacha-capsule.r3{box-shadow:4px 4px 0 var(--soft-shadow),0 0 0 4px #ffd43b,0 0 30px 10px #ffd43bbb}
+  .gacha-capsule.open{animation:capOpen .3s forwards}
+  @keyframes capIn{from{transform:translate(-140px,60px) scale(.3) rotate(-220deg);opacity:0}to{transform:none;opacity:1}}
+  @keyframes capWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+  @keyframes capOpen{to{transform:scale(1.5);opacity:0}}
+  .gacha-card{position:relative;z-index:1;min-width:230px;max-width:100%;padding:36px 30px 24px;border:3px solid var(--ink);background:var(--white);box-shadow:6px 6px 0 var(--ink);text-align:center;animation:cardIn .45s cubic-bezier(.2,1.3,.5,1)}
+  .gacha-card.r2{background:var(--cho)}
+  .gacha-card.r3{background:var(--tint4);outline:5px solid #ffd43b;outline-offset:3px}
+  .gacha-card.wrong{animation:shake .3s}
+  .gacha-card.got{animation:cardGot .45s ease-in forwards}
+  @keyframes cardIn{from{transform:rotateY(90deg) scale(.6);opacity:0}to{transform:none;opacity:1}}
+  @keyframes cardGot{to{transform:translateY(160px) scale(.25);opacity:0}}
+  .gc-rar{position:absolute;top:8px;left:12px;font-size:13px;font-weight:900;color:var(--ink-2)}
+  .gc-new{position:absolute;top:-13px;right:-13px;background:var(--crit);color:#fff;font-size:12px;font-weight:900;padding:3px 8px;border:2px solid var(--ink);transform:rotate(8deg)}
+  .gc-word{display:flex;justify-content:center;gap:.08em;font-size:76px;font-weight:900;line-height:1.1}
+  .gacha-prompt{position:relative;z-index:1;margin:0;font-size:17px;font-weight:850;color:var(--ink-2);text-align:center;min-height:26px}
+  .gacha-judge{position:relative;z-index:1;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .gacha-judge button{min-height:58px;padding:8px 22px;border:var(--border);font-size:19px;font-weight:900;box-shadow:3px 3px 0 var(--ink);cursor:pointer;touch-action:manipulation}
+  .gacha-judge button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .gj-ok{background:var(--teal);color:#fff}
+  .gj-again{background:var(--white);color:var(--ink)}
+  .gj-skip{background:var(--surface-2);color:var(--ink-2);font-size:15px!important}
+  .gacha-book{border:var(--border);background:var(--white);padding:12px 14px 14px}
+  .gacha-book-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:900;font-size:15px;margin-bottom:10px}
+  .gacha-book-head span{font-size:13px;font-weight:700;color:var(--muted)}
+  .gacha-book-head .mini-btn{margin-left:auto}
+  .gacha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px}
+  .gb-card{border:2px solid var(--ink);padding:9px 4px 6px;text-align:center;font-size:21px;font-weight:900;line-height:1.2;background:var(--white)}
+  .gb-card.r2{background:var(--cho)}
+  .gb-card.r3{background:var(--tint4);box-shadow:inset 0 0 0 3px #ffd43b}
+  .gb-card small{display:block;margin-top:3px;font-size:10px;font-weight:700;color:var(--muted)}
+  .gb-card.fresh{animation:pop .35s}
+  .gacha-empty{grid-column:1/-1;color:var(--muted);font-size:13px;margin:0}
+  @media(max-width:700px){
+    .gacha-stage{grid-template-columns:1fr}
+    .gm-box{width:208px}
+    .gm-window{height:128px}
+    .gm-ball{width:44px;height:44px;margin:-22px 0 0 -22px}
+    .gacha-show{min-height:300px}
+    .gc-word{font-size:58px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .gm-window.shake .gm-ball,.gm-knob.idle::after,.gm-prize,.gm-spark,.gacha-capsule,.gacha-card,.gacha-show.legend::before{animation:none}
+    .gm-dial,.gm-flap{transition:none}
+  }
 
   /* ---------- 바닥글 ---------- */
   footer{max-width:var(--wrap);margin:0 auto;padding:0 32px 30px}
@@ -299,6 +438,9 @@
   }
   @media(max-width:560px){
     .masthead-inner,main{padding-left:16px;padding-right:16px}
+    .ek-box{--f:32px;--u:42px}
+    .board{gap:8px;padding:14px 6px}
+    .card>h2{flex-wrap:wrap}
     footer{padding:0 16px 24px}
     .masthead-inner{gap:10px}
     .brand>span{display:none}
@@ -401,10 +543,14 @@
       <h1>소리를 모아 <em>글자</em>를 만들어요</h1>
       <p>초성·중성·종성을 차례로 눌러 글자를 만들고, 소리 내어 읽어 보세요.</p>
     </div>
-    <div class="card">
-      <h2><svg class="ic"><use href="#i-play"/></svg>블렌딩 보드</h2>
+    <div class="play-split">
+    <div class="card play-board">
+      <h2><svg class="ic"><use href="#i-play"/></svg>블렌딩 보드
+        <span class="seg board-mode" id="boardModeSeg">
+          <button class="seg-btn" data-bm="box" onclick="setBoardMode('box')">엘코닌 칸</button><button class="seg-btn" data-bm="glyph" onclick="setBoardMode('glyph')">글자만</button>
+        </span></h2>
       <div class="board" id="board">
-        <span class="placeholder">아래 자모를 눌러보세요</span>
+        <span class="placeholder">자모 판에서 자모를 눌러 보세요</span>
       </div>
       <div class="verdict" id="verdict"></div>
       <div class="buildbtns">
@@ -435,6 +581,7 @@
         <div class="zone-tiles" id="zoneJong"></div>
       </div>
     </div>
+    </div>
 
     <div class="card">
       <h2><svg class="ic"><use href="#i-star"/></svg>담은 단어 <span id="collectedCount" class="card-sub"></span>
@@ -457,6 +604,7 @@
       <div class="game-picker">
         <button class="gp-btn on" data-game="brick" onclick="selectGame('brick')"><svg class="ic"><use href="#i-brick"/></svg>벽돌깨기</button>
         <button class="gp-btn" data-game="rain" onclick="selectGame('rain')"><svg class="ic"><use href="#i-rain"/></svg>글자잡기</button>
+        <button class="gp-btn" data-game="gacha" onclick="selectGame('gacha')"><svg class="ic"><use href="#i-spark"/></svg>단어 가챠</button>
       </div>
       <p class="hint" id="gameHint">벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 벽돌을 깨요! 진도에서 켠 음소로 만든 글자만 나와요. 시간제한은 없으니 <b>천천히 소리 내어 읽고</b> 쳐보세요.</p>
       <div class="segrow" id="rainSpeedRow" style="display:none;margin:0 0 14px">
@@ -480,7 +628,7 @@
           <span id="bestStat" style="display:none">최고 <b id="gBest">0</b></span>
         </div>
       </div>
-      <p class="hint" style="margin:0 0 12px"><b>한 글자·두 글자·세 글자</b>는 나오는 낱말의 글자 수예요. 두·세 글자는 <b>진도 설정</b>에서 켠 글자를 조합해 만들어서, 실제 낱말이 아닐 수도 있어요.</p>
+      <p class="hint" id="diffHint" style="margin:0 0 12px"><b>한 글자·두 글자·세 글자</b>는 나오는 낱말의 글자 수예요. 두·세 글자는 <b>진도 설정</b>에서 켠 글자를 조합해 만들어서, 실제 낱말이 아닐 수도 있어요.</p>
 
       <div id="brickGame">
         <div class="arena" id="gameArena">
@@ -494,6 +642,27 @@
           <div class="rain-ground"></div>
           <div class="rain-lives" id="rainLives"></div>
           <div class="rain-pause" id="rainPause"><div>⏸️ 일시정지<br><span>“▶️ 계속하기”를 누르면 이어서 해요</span></div></div>
+        </div>
+      </div>
+      <div id="gachaGame" style="display:none">
+        <div class="gacha-stage">
+          <div class="gacha-machine">
+            <div class="gm-box">
+              <div class="gm-head" aria-hidden="true">SOSOSOOP</div>
+              <div class="gm-window" id="gachaDome"></div>
+              <div class="gm-base">
+                <button class="gm-knob idle" id="gachaLever" onclick="gachaDraw()" aria-label="손잡이를 돌려 뽑기"><span class="gm-dial" id="gachaDial"><span class="gm-handle"></span></span></button>
+                <div class="gm-out" id="gachaOut"><span class="gm-flap"></span></div>
+              </div>
+            </div>
+            <div class="gm-caption" id="gachaCaption" aria-live="polite">손잡이를 눌러 돌려요!</div>
+            <div class="gm-odds">★ 일반 · ★★ 반짝(점수 2배)<br>★★★ 전설(점수 3배)</div>
+          </div>
+          <div class="gacha-show" id="gachaShow"></div>
+        </div>
+        <div class="gacha-book">
+          <div class="gacha-book-head">📒 단어 도감 <span id="gachaBookCount"></span><button class="mini-btn" onclick="gachaClearBook()">도감 비우기</button></div>
+          <div class="gacha-grid" id="gachaGrid"></div>
         </div>
       </div>
 
@@ -749,15 +918,21 @@ const TRIAL=!!window.__TRIAL__;
 const TRIAL_MAX={real:10, nonsense:10, pair:3, sentence:3};   // 자료 유형별 최대 개수
 const TRIAL_RAND_MAX=20;                                        // 블렌딩 보드 🎲 랜덤 글자: 하루 횟수
 const TRIAL_RAND_KEY='sp.trialRand.v1';
+const TRIAL_GACHA_MAX=10;                                       // 게임 🎰 단어 가챠: 하루 뽑기 횟수
+const TRIAL_GACHA_KEY='sp.trialGacha.v1';
 function trialMax(type){ return TRIAL_MAX[type]||TRIAL_MAX.real; }
-function trialRandLeft(){
-  try{ const t=JSON.parse(localStorage.getItem(TRIAL_RAND_KEY)||'null'); const d=new Date().toDateString(); return TRIAL_RAND_MAX-((t&&t.d===d)?t.n:0); }catch(e){ return TRIAL_RAND_MAX; }
+// 하루 횟수 세기(기기 기준, 날짜가 바뀌면 다시 0) — 랜덤 글자·단어 가챠 공용
+function trialDayLeft(key,max){
+  try{ const t=JSON.parse(localStorage.getItem(key)||'null'); const d=new Date().toDateString(); return max-((t&&t.d===d)?t.n:0); }catch(e){ return max; }
 }
-function useTrialRand(){
-  const left=trialRandLeft(); if(left<=0) return false;
-  try{ localStorage.setItem(TRIAL_RAND_KEY, JSON.stringify({d:new Date().toDateString(), n:TRIAL_RAND_MAX-left+1})); }catch(e){}
+function trialDayUse(key,max){
+  const left=trialDayLeft(key,max); if(left<=0) return false;
+  try{ localStorage.setItem(key, JSON.stringify({d:new Date().toDateString(), n:max-left+1})); }catch(e){}
   return true;
 }
+function trialRandLeft(){ return trialDayLeft(TRIAL_RAND_KEY, TRIAL_RAND_MAX); }
+function useTrialRand(){ return trialDayUse(TRIAL_RAND_KEY, TRIAL_RAND_MAX); }
+function trialGachaLeft(){ return trialDayLeft(TRIAL_GACHA_KEY, TRIAL_GACHA_MAX); }
 function renderTrialRand(){
   const el=document.getElementById('randLabel'); if(!el || !TRIAL) return;
   el.textContent='랜덤 글자 (체험판 오늘 '+Math.max(0,trialRandLeft())+'번 남음)';
@@ -765,11 +940,14 @@ function renderTrialRand(){
 function trialRandDone(){
   openInfo('오늘의 무료 체험 '+TRIAL_RAND_MAX+'회를 모두 사용했어요!', '한글놀이가 선생님의 읽기 중재에 도움이 될 것 같으신가요?<br>내일 다시 무료로 이용하실 수 있어요.<br><br>더 다양한 음절 수준에서 제한 없이 연습하고 싶으시다면 전체 이용권을 이용해 보세요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" >전체 이용권 살펴보기 →</a>');
 }
+function trialGachaDone(){
+  openInfo('오늘의 무료 뽑기 '+TRIAL_GACHA_MAX+'번을 모두 사용했어요!', '내일 다시 무료로 뽑을 수 있어요.<br><br>정식판에서는 단어 가챠를 <b>횟수 제한 없이</b>, 두 글자·세 글자 낱말까지 쓸 수 있고 아이별 <b>단어 도감</b>도 따로 모을 수 있어요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" >전체 이용권 살펴보기 →</a>');
+}
 function trialGameLock(){
   openInfo('2~3음절 읽기 게임도 활용해 보세요!', '정식판에서는 아동의 읽기 수준에 맞춰 1~3음절 게임을 자유롭게 사용할 수 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" >정식판 기능 살펴보기 →</a>');
 }
 function trialLock(what){
-  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 자료를 개수 제한 없이 만들기(최대 100개) · 넓은 단어 범위 · 두 글자·세 글자 게임 · 랜덤 글자 무제한 · 글씨연습장 인쇄 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" >한글놀이 정식판 보기 →</a>');
+  openInfo('🔒 정식판 기능이에요', '<b>'+what+'</b>은(는) 정식판에서 쓸 수 있어요.<br><br>정식판에는 자료를 개수 제한 없이 만들기(최대 100개) · 넓은 단어 범위 · 두 글자·세 글자 게임 · 랜덤 글자·단어 가챠 무제한 · 글씨연습장 인쇄 · 아동별 프로필 · 가정과제 링크가 모두 들어 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" >한글놀이 정식판 보기 →</a>');
 }
 function applyTrialUI(){
   if(!TRIAL) return;
@@ -817,7 +995,7 @@ function enabledSet(kind){   // 생성·문장 필터가 글자마다 부르므�
 function onProgressChanged(){
   progVersion++;
   syllables.forEach(s=>{ if(s.cho!=null && !enabledSet('cho').has(s.cho)) s.cho=null; if(s.jung!=null && !enabledSet('jung').has(s.jung)) s.jung=null; if(s.jong && !enabledSet('jong').has(s.jong)) s.jong=0; });
-  gBricks=[]; gGen++; stopRain();
+  gBricks=[]; gGen++; stopRain(); gachaCur=null; gachaCap=null; gachaBusy=false;
 }
 
 function newProfile(name){
@@ -1068,13 +1246,15 @@ function deleteProfile(){
   if(profiles.length<=1){ openInfo('삭제 불가','프로필이 하나뿐이라 삭제할 수 없어요. 새 프로필을 먼저 만들어 주세요.'); return; }
   const p=activeProfile(); if(!p) return;
   openConfirm('프로필 삭제', '“'+esc(p.name)+'” 프로필을 삭제할까요? 되돌릴 수 없어요.', ()=>{
+    if(typeof gachaForget==='function') gachaForget(p.id);   // 그 아이의 단어 도감도 같이 지움
     profiles=profiles.filter(x=>x.id!==p.id); switchProfile(profiles[0].id);
   });
 }
 function exportProfiles(){
   if(TRIAL){ trialLock('프로필 내보내기'); return; }
 /*@cut trial*/
-  const data=JSON.stringify({app:'hangul-blending-board', v:1, exportedAt:nowTs(), profiles}, null, 2);
+  const gacha=(typeof gachaBooksFor==='function') ? gachaBooksFor(profiles.map(p=>p.id)) : {};   // 단어 가챠 도감 {프로필id: 도감}
+  const data=JSON.stringify({app:'hangul-blending-board', v:1, exportedAt:nowTs(), profiles, gacha}, null, 2);
   const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a'); a.href=url; a.download='한글놀이_프로필.json'; a.click();
@@ -1093,13 +1273,16 @@ function importProfiles(file){
       const list=Array.isArray(obj)?obj:(obj&&Array.isArray(obj.profiles)?obj.profiles:null);
       if(!list||!list.length) throw 0;
       const existing=new Set(profiles.map(p=>p.id));
-      let added=0;
+      const books=(obj && !Array.isArray(obj) && obj.gacha && typeof obj.gacha==='object') ? obj.gacha : {};
+      let added=0, cards=0;
       list.forEach(raw=>{
         const p=sanitizeProfile(raw); if(!p) return;
+        const fromId=raw && typeof raw.id==='string' ? raw.id : null;
         if(existing.has(p.id)) p.id=uid();      // id 충돌 → 새 UUID
         existing.add(p.id); profiles.push(p); added++;
+        if(fromId && Object.prototype.hasOwnProperty.call(books, fromId) && typeof gachaImportBook==='function') cards+=gachaImportBook(p.id, books[fromId]);
       });
-      if(added){ saveProfiles(); renderProgress(); openInfo('가져오기 완료', added+'개 프로필을 불러왔어요.'); }
+      if(added){ saveProfiles(); renderProgress(); openInfo('가져오기 완료', added+'개 프로필을 불러왔어요.'+(cards?' (단어 도감 카드 '+cards+'장 포함)':'')); }
       else openInfo('가져오기 실패','유효한 프로필이 없어요.');
     }catch(e){ openInfo('가져오기 실패','파일 형식을 읽을 수 없어요. 내보낸 JSON 파일인지 확인해 주세요.'); }
   };
@@ -1156,27 +1339,85 @@ function markSelectedTiles(){
   const jel=document.getElementById('zoneJong');
   if(jel){ const list=enabled('jong'); [...jel.children].forEach((t,n)=>{ t.classList.toggle('sel', list[n]===(s.jong||0)); }); }
 }
-function setCho(i){ const s=syllables[activeIndex]; s.cho = (s.cho===i?null:i); afterEdit(true); }
-function setJung(i){ const s=syllables[activeIndex]; s.jung = (s.jung===i?null:i); afterEdit(true); }
-function setJong(i){ const s=syllables[activeIndex]; s.jong = ((s.jong||0)===i?0:i); afterEdit(true); }
+function setCho(i){ const s=syllables[activeIndex]; s.cho = (s.cho===i?null:i); s.stage=0; afterEdit('cho'); }
+function setJung(i){ const s=syllables[activeIndex]; s.jung = (s.jung===i?null:i); s.stage=0; afterEdit('jung'); }
+function setJong(i){ const s=syllables[activeIndex]; s.jong = ((s.jong||0)===i?0:i); s.stage=Math.min(s.stage||0,1); afterEdit('jong'); }
 
 function afterEdit(pop){
   renderBoard(pop); markSelectedTiles();
   const v=document.getElementById('verdict'); v.textContent=''; v.className='verdict';   // 판별 문구 없음 — 읽기 연습용
 }
 
+// 보기 모드: box=엘코닌 칸(누르면 합쳐짐) · glyph=합쳐진 글자만(예전 보드)
+const BOARD_MODE_KEY='hangul-board-mode-v2';
+let boardMode=(()=>{ try{ return localStorage.getItem(BOARD_MODE_KEY)==='glyph'?'glyph':'box'; }catch(e){ return 'box'; } })();
+function setBoardMode(m){
+  boardMode=m; try{ localStorage.setItem(BOARD_MODE_KEY,m); }catch(e){}
+  renderBoard();
+}
+const H_VOWELS='ㅗㅛㅜㅠㅡ', W_VOWELS='ㅘㅙㅚㅝㅞㅟㅢ';
+function vowelSlot(v){ return H_VOWELS.includes(v)?'jh':W_VOWELS.includes(v)?'jw':'jv'; }
+// 합침 단계: 0 따로 · 1 초성+중성(가) · 2 받침까지(간). 받침이 없으면 1이 끝
+function maxStage(s){ return (s.cho!=null && s.jung!=null) ? (s.jong?2:1) : 0; }
+let mergeBusy=false;
+function tapEk(i){
+  if(mergeBusy) return;
+  if(i!==activeIndex){ activeIndex=i; renderBoard(); markSelectedTiles(); return; }   // 다른 글자는 먼저 고르기만
+  const s=syllables[i], st=s.stage||0, mx=maxStage(s);
+  if(!mx) return;
+  if(st>=mx){ s.stage=0; renderBoard('split'); return; }   // 다 합친 걸 누르면 다시 나눔
+  const box=document.querySelectorAll('#board .ek-box')[i];
+  box.classList.remove('ready'); box.classList.add(st===0?'m1':'m2');
+  mergeBusy=true;
+  setTimeout(()=>{ mergeBusy=false; s.stage=st+1; renderBoard('merge'); },240);
+}
 function renderBoard(pop){
+  // pop: true면 음절 전체, 'cho'|'jung'|'jong'이면 방금 바뀐 칸, 'merge'면 합쳐진 글자
   const board=document.getElementById('board');
   board.innerHTML='';
+  board.className='board mode-'+boardMode;
+  document.querySelectorAll('#boardModeSeg .seg-btn').forEach(b=>b.classList.toggle('on', b.dataset.bm===boardMode));
   const anyContent=syllables.some(s=>s.cho!=null||s.jung!=null||s.jong);
-  if(!anyContent){ board.innerHTML='<span class="placeholder">아래 자모를 눌러보세요</span>'; updateNextBtn(); return; }
+  if(boardMode==='glyph'){
+    if(!anyContent){ board.innerHTML='<span class="placeholder">자모 판에서 자모를 눌러 보세요</span>'; updateNextBtn(); return; }
+    syllables.forEach((s,i)=>{
+      const box=document.createElement('div');
+      box.className='syl-box '+(i===activeIndex?'active':'locked')+(pop&&i===activeIndex?' pop':'');
+      box.textContent=syllChar(s)||'·';
+      box.onclick=()=>{ activeIndex=i; renderBoard(); markSelectedTiles(); };
+      board.appendChild(box);
+    });
+    updateNextBtn(); return;
+  }
+  let anyReady=false;
   syllables.forEach((s,i)=>{
+    const on=i===activeIndex, mx=maxStage(s);
+    const st=Math.min(s.stage||0,mx);
     const box=document.createElement('div');
-    box.className='syl-box '+(i===activeIndex?'active':'locked')+(pop&&i===activeIndex?' pop':'');
-    box.textContent=syllChar(s)||'·';
-    box.onclick=()=>{ activeIndex=i; renderBoard(); markSelectedTiles(); };
+    box.className='ek-box'+(on?' on':'');
+    const cell=(cls,ch,popIt)=>{
+      const d=document.createElement('span');
+      d.className='ek ek-'+cls+(ch?'':' empty')+(on&&popIt?' pop':'');
+      const b=document.createElement('b'); b.textContent=ch||''; d.appendChild(b);
+      box.appendChild(d);
+    };
+    if(st===2){
+      cell('all',composeSyl(s.cho,s.jung,s.jong),pop==='merge');
+    } else {
+      if(st===1) cell('top',composeSyl(s.cho,s.jung,0),pop==='merge');
+      else {
+        cell('cho',s.cho!=null?CHO[s.cho]:'',pop===true||pop==='cho');
+        if(s.jung!=null){ const v=JUNG[s.jung]; cell(vowelSlot(v),v,pop===true||pop==='jung'); }
+      }
+      cell('jong',s.jong?JONG[s.jong]:'',pop===true||pop==='jong');
+    }
+    if(on && mx && st<mx){ box.classList.add('ready', st===0?'r1':'r2'); anyReady=true; }
+    box.setAttribute('aria-label', syllChar(s)||'빈 칸');
+    box.onclick=()=>tapEk(i);
     board.appendChild(box);
   });
+  if(!anyContent) board.insertAdjacentHTML('beforeend','<span class="placeholder" style="flex-basis:100%;text-align:center">자모 판에서 자모를 눌러 보세요</span>');
+  else if(anyReady) board.insertAdjacentHTML('beforeend','<span class="placeholder" style="flex-basis:100%;text-align:center;font-size:13px">소리 내어 읽은 뒤 칸을 누르면 합쳐져요</span>');
   updateNextBtn();
 }
 function updateNextBtn(){
@@ -1192,8 +1433,8 @@ function nextSyl(){
 }
 function delLast(){
   const s=syllables[activeIndex];
-  if(s.jong){ s.jong=0; }
-  else if(s.jung!=null){ s.jung=null; }
+  if(s.jong){ s.jong=0; s.stage=Math.min(s.stage||0,1); }
+  else if(s.jung!=null){ s.jung=null; s.stage=0; }
   else if(s.cho!=null){ s.cho=null; }
   else if(activeIndex>0){ syllables.splice(activeIndex,1); activeIndex--; }
   afterEdit(false);
@@ -1752,7 +1993,7 @@ function newStage(){
 function renderGStats(){
   document.getElementById('gScore').textContent=gScore;
   document.getElementById('gCombo').textContent=gCombo;
-  document.getElementById('gStage').textContent = currentGame==='rain' ? rainLives : gStage;
+  document.getElementById('gStage').textContent = currentGame==='rain' ? rainLives : currentGame==='gacha' ? Object.keys(gachaBook()).length : gStage;
 }
 function parkBall(){
   const arena=document.getElementById('gameArena'), ball=document.getElementById('gameBall');
@@ -1793,6 +2034,7 @@ function handleBrick(composing){
   if(!isPrefix){ gCombo=0; renderGStats(); flashWrong(); sfxWrong(); gi.value=''; }
 }
 function startGameTab(){
+  if(currentGame==='gacha'){ renderGStats(); gachaRenderShow(); gachaRenderBook(); return; }
   if(currentGame==='rain'){ if(!rainActive) startRain(); else focusInput(); }
   else if(!gBricks.length || gBricks.every(b=>b.broken)){ newStage(); }
   else { requestAnimationFrame(parkBall); focusInput(); }
@@ -1824,24 +2066,32 @@ function selectGame(g){
   document.querySelectorAll('.gp-btn').forEach(b=>b.classList.toggle('on', b.dataset.game===g));
   document.getElementById('brickGame').style.display = g==='brick'?'':'none';
   document.getElementById('rainGame').style.display  = g==='rain'?'':'none';
+  document.getElementById('gachaGame').style.display = g==='gacha'?'':'none';
   document.getElementById('pauseBtn').style.display   = g==='rain'?'':'none';
   document.getElementById('bestStat').style.display   = g==='rain'?'':'none';
   document.getElementById('rainSpeedRow').style.display = g==='rain'?'':'none';
-  document.getElementById('gThirdLabel').textContent = g==='brick'?'깬 판':'생명';
-  // 글자잡기: 모바일(터치)에선 타자 입력창 숨김+글자 터치, PC에선 타자
-  document.getElementById('gameInput').style.display = (g==='rain' && IS_TOUCH) ? 'none' : '';
-  document.getElementById('gameHint').innerHTML = g==='brick'
+  document.getElementById('gThirdLabel').textContent = g==='brick'?'깬 판':g==='gacha'?'모은 카드':'생명';
+  // 글자잡기: 모바일(터치)에선 타자 입력창 숨김+글자 터치, PC에선 타자 · 가챠는 소리 내어 읽기라 입력창 없음
+  document.getElementById('gameInput').style.display = ((g==='rain' && IS_TOUCH) || g==='gacha') ? 'none' : '';
+  document.getElementById('diffHint').innerHTML = g==='gacha'
+    ? '<b>한 글자·두 글자·세 글자</b>는 뽑히는 낱말의 글자 수예요. 가챠에는 <b>진도에서 켠 글자로만 된 실제 낱말</b>만 나와요.'
+    : '<b>한 글자·두 글자·세 글자</b>는 나오는 낱말의 글자 수예요. 두·세 글자는 <b>진도 설정</b>에서 켠 글자를 조합해 만들어서, 실제 낱말이 아닐 수도 있어요.';
+  document.getElementById('gameHint').innerHTML = g==='gacha'
+    ? '<b>🎰 뽑기!</b>를 누르면 캡슐에서 단어 카드가 나와요. 아이가 <b>소리 내어 또박또박 읽으면</b> 선생님이 <b>⭕ 맞았어요</b>를 눌러 주세요. 맞힌 카드는 도감에 모여요!'
+    : g==='brick'
     ? '벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 벽돌을 깨요! 시간제한은 없으니 <b>천천히 소리 내어 읽고</b> 쳐보세요.'
     : (IS_TOUCH
         ? '떨어지는 <b>글자를 정확히 읽고 손가락으로 톡!</b> 눌러 잡아요. 바닥에 닿기 전에! 놓쳐도 괜찮아요 — 생명은 하트로 표시돼요.'
         : '위에서 <b>떨어지는 글자</b>를 바닥에 닿기 전에 <b>타자로 쳐서</b> 없애요! <b>마우스로 글자를 클릭해도</b> 없앨 수 있어요. 놓쳐도 괜찮아요 — 생명은 하트로 표시돼요.');
   gGen++; gScore=0; gCombo=0; gStage=0; document.getElementById('gameMsg').textContent='';
-  if(g==='brick'){ stopRain(); renderGStats(); newStage(); }
+  if(g==='gacha'){ stopRain(); gachaReset(); }
+  else if(g==='brick'){ stopRain(); renderGStats(); newStage(); }
   else { rainLives=3; startRain(); }
 }
 function restartGame(){
   gGen++; gScore=0; gCombo=0; gStage=0; document.getElementById('gameMsg').textContent='';
-  if(currentGame==='brick'){ renderGStats(); newStage(); }
+  if(currentGame==='gacha'){ gachaReset(); }
+  else if(currentGame==='brick'){ renderGStats(); newStage(); }
   else { rainLives=3; startRain(); }
 }
 function renderRainLives(){ const el=document.getElementById('rainLives'); if(!el) return; const n=Math.max(0,rainLives); el.textContent='❤️'.repeat(n)+'🤍'.repeat(Math.max(0,3-n)); }
@@ -1912,6 +2162,245 @@ function handleRain(composing){
   const isPrefix=rainItems.some(it=>!it.dead && it.text.startsWith(v));
   if(!isPrefix){ gCombo=0; renderGStats(); flashWrong(); sfxWrong(); gi.value=''; }
 }
+/* =========================================================
+   단어 가챠 — 진도에서 켠 글자로만 된 실제 낱말을 캡슐로 뽑고,
+   아이가 소리 내어 읽으면 선생님이 ⭕/🔁로 판정. 맞힌 카드는 프로필별 도감(localStorage)에 모인다.
+   상태는 var — onProgressChanged가 이 코드보다 먼저(프로필 불러올 때) 불릴 수 있어서
+   ========================================================= */
+const GACHA_KEY='sp.gacha.v1';   // {프로필id: {낱말: {r:최고등급, n:맞힌 횟수, t:마지막 시각}}}
+const GACHA_RAR=[null,
+  {name:'일반', star:'★',   w:70, pts:1, cap:'var(--jung)'},
+  {name:'반짝', star:'★★',  w:22, pts:2, cap:'var(--blue)'},
+  {name:'전설', star:'★★★', w:8,  pts:3, cap:'#ffd43b'}];
+const GACHA_BALLS=['--cho','--jung','--jong','--tint4','--crit-soft','--info-soft','--cho','--jong'];
+var gachaCur=null, gachaCap=null, gachaBusy=false, gachaRecent=[], gachaTurn=0;
+
+function gachaAll(){ try{ return JSON.parse(localStorage.getItem(GACHA_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function gachaBook(){ const p=activeProfile(); return (p && gachaAll()[p.id]) || {}; }
+function gachaSaveBook(book){
+  const p=activeProfile(); if(!p) return;
+  const all=gachaAll(); all[p.id]=book; gachaWrite(all);
+}
+function gachaWrite(all){ try{ localStorage.setItem(GACHA_KEY, JSON.stringify(all)); }catch(e){} }
+/* 프로필 내보내기·가져오기·삭제용 */
+function gachaBooksFor(ids){
+  const all=gachaAll(), out={};
+  ids.forEach(id=>{ if(all[id] && Object.keys(all[id]).length) out[id]=all[id]; });
+  return out;
+}
+function gachaCleanBook(raw){   // 파일에서 온 도감은 형식을 다시 확인 (한글 1~3글자 낱말 · 등급 1~3)
+  const out={};
+  if(!raw || typeof raw!=='object' || Array.isArray(raw)) return out;
+  let k=0;
+  for(const [w,e] of Object.entries(raw)){
+    if(k>=5000) break;
+    if(!/^[가-힣]{1,3}$/.test(w) || !e || typeof e!=='object') continue;
+    const t=Number(e.t);
+    out[w]={r:Math.min(3,Math.max(1,Math.floor(Number(e.r))||1)), n:Math.min(9999,Math.max(1,Math.floor(Number(e.n))||1)), t:Number.isFinite(t)?t:0};
+    k++;
+  }
+  return out;
+}
+function gachaImportBook(id, raw){
+  const book=gachaCleanBook(raw), n=Object.keys(book).length;
+  if(!n) return 0;
+  const all=gachaAll(); all[id]=book; gachaWrite(all);
+  return n;
+}
+function gachaForget(id){ const all=gachaAll(); if(!Object.prototype.hasOwnProperty.call(all,id)) return; delete all[id]; gachaWrite(all); }
+function gachaLen(){ return gDiff==='word3'?3 : gDiff==='word2'?2 : 1; }
+function gachaPool(){ const n=gachaLen(); return nSylWords(n).filter(w=>w.length===n); }   // 실제 낱말만 (무의미 조합 없음)
+function gachaRarity(){ let r=Math.random()*100; for(let i=1;i<=3;i++){ r-=GACHA_RAR[i].w; if(r<0) return i; } return 1; }
+function gachaPick(pool){
+  const book=gachaBook();
+  let cand=pool.filter(w=>!gachaRecent.includes(w)); if(!cand.length) cand=pool;
+  const fresh=cand.filter(w=>!book[w]);
+  if(fresh.length && Math.random()<0.7) cand=fresh;   // 아직 없는 카드가 더 자주 나오게
+  return cand[Math.floor(Math.random()*cand.length)];
+}
+function gachaPrompt(html){ const el=document.getElementById('gachaPrompt'); if(el) el.innerHTML=html; }
+function gachaCaption(t){ const el=document.getElementById('gachaCaption'); if(el) el.textContent=t; }
+/* 손잡이: 뽑을 수 있을 때만 눌림 + 노란 고리로 '눌러 봐요' 신호 */
+function gachaLever(on){
+  const b=document.getElementById('gachaLever'); if(!b) return;
+  const left=TRIAL ? trialGachaLeft() : Infinity;   // 체험판: 하루 뽑기 횟수
+  b.disabled=!on; b.classList.toggle('idle', on && left>0);
+  gachaCaption(!on ? (gachaCap ? '캡슐을 눌러 열어요!' : gachaCur ? '소리 내어 읽어요' : '드르륵…')
+    : left<=0 ? '오늘 체험 뽑기를 다 썼어요'
+    : TRIAL ? '손잡이를 눌러 돌려요! (오늘 '+left+'번 남음)' : '손잡이를 눌러 돌려요!');
+}
+function gachaBuildDome(){
+  const d=document.getElementById('gachaDome'); if(!d || d.childElementCount) return;
+  // 유리창 안에 쌓인 가챠볼 (가운데 좌표 %, 반쪽 경계선 기울기)
+  const spots=[[17,79,-35],[45,82,20],[73,79,-60],[31,50,70],[59,52,-15],[86,48,30],[47,22,-50]];
+  spots.forEach(([x,y,rot],i)=>{
+    const b=document.createElement('span'); b.className='gm-ball';
+    b.style.left=x+'%'; b.style.top=y+'%';
+    b.style.setProperty('--c','var('+GACHA_BALLS[i%GACHA_BALLS.length]+')');
+    b.style.setProperty('--rot',rot+'deg');
+    b.style.animationDelay=(i*0.05)+'s';
+    d.appendChild(b);
+  });
+}
+/* 볼 나오는 곳: 캡슐이 기다리는 동안만 볼이 들어 있다 */
+function gachaOutlet(cap){
+  const out=document.getElementById('gachaOut'); if(!out) return;
+  const old=out.querySelector('.gm-prize');
+  if(!cap){ if(old) old.remove(); out.classList.remove('pop'); return; }
+  if(old && old.dataset.w===cap.word) return;
+  if(old) old.remove();
+  const b=document.createElement('button');
+  b.className='gm-prize r'+cap.r; b.dataset.w=cap.word;
+  b.style.setProperty('--c', GACHA_RAR[cap.r].cap);
+  b.setAttribute('aria-label','나온 캡슐 열기');
+  b.onclick=gachaOpen;
+  out.appendChild(b); out.classList.add('pop');
+}
+function gachaSparkle(color){
+  const out=document.getElementById('gachaOut'); if(!out) return;
+  const marks=['★','✦','★','✦','★','✦','★','✦'];
+  marks.forEach((m,i)=>{
+    const s=document.createElement('span'); s.className='gm-spark'; s.textContent=m;
+    const a=(i/marks.length)*Math.PI*2 - Math.PI/2, r=52+Math.random()*16;
+    s.style.setProperty('--dx',(Math.cos(a)*r).toFixed(1)+'px'); s.style.setProperty('--dy',(Math.sin(a)*r).toFixed(1)+'px');
+    s.style.setProperty('--c', i%2 ? '#ffd43b' : color);
+    s.style.animationDelay=(i%2*0.06)+'s';
+    out.appendChild(s); setTimeout(()=>s.remove(), 900);
+  });
+}
+function gachaCardHtml(c){
+  const R=GACHA_RAR[c.r];
+  return '<div class="gacha-card r'+c.r+'"><span class="gc-rar">'+R.star+' '+R.name+'</span>'
+    +(c.isNew?'<span class="gc-new">NEW!</span>':'')
+    +'<span class="gc-word">'+[...c.word].map(ch=>'<span>'+esc(ch)+'</span>').join('')+'</span></div>';
+}
+function gachaJudgeHtml(c){
+  return '<div class="gacha-judge"><button class="gj-ok" onclick="gachaJudge(true)">⭕ 맞았어요</button>'
+    +'<button class="gj-again" onclick="gachaJudge(false)">🔁 다시 읽기</button>'
+    +(c.tries>=2?'<button class="gj-skip" onclick="gachaSkip()">넘기기</button>':'')+'</div>';
+}
+/* 가운데 화면: 뽑기 전(빈 자리) · 나온 캡슐(눌러서 열기) · 판정 기다리는 카드 */
+function gachaRenderShow(msg){
+  gachaBuildDome();
+  gachaOutlet(gachaCap);
+  const show=document.getElementById('gachaShow'); if(!show) return;
+  show.classList.toggle('legend', !!(gachaCur && gachaCur.r===3));
+  if(gachaCur){
+    show.innerHTML=gachaCardHtml(gachaCur)+'<p class="gacha-prompt" id="gachaPrompt"></p>'+gachaJudgeHtml(gachaCur);
+    gachaPrompt(msg||'소리 내어 <b>또박또박</b> 읽어 보세요!');
+    gachaLever(false);
+  }else if(gachaCap){
+    const R=GACHA_RAR[gachaCap.r];
+    show.innerHTML='<button class="gacha-capsule r'+gachaCap.r+'" style="--c:'+R.cap+'" onclick="gachaOpen()" aria-label="캡슐 열기"></button><p class="gacha-prompt" id="gachaPrompt"></p>';
+    gachaPrompt(msg||'캡슐을 <b>눌러서</b> 열어 보세요!');
+    gachaLever(false);
+  }else{
+    show.innerHTML='<div class="gacha-wait">?</div><p class="gacha-prompt" id="gachaPrompt"></p>';
+    gachaPrompt(msg||'기계의 <b>손잡이</b>를 눌러 돌려 보세요');
+    gachaLever(!gachaBusy);
+  }
+}
+function gachaReset(){ gachaCur=null; gachaCap=null; gachaBusy=false; gachaRecent=[]; renderGStats(); gachaRenderShow(); gachaRenderBook(); }
+// 손잡이 드르륵(톱니) · 뾰로롱(볼 나옴) · 전설 팡파르
+function sfxCrank(){ for(let i=0;i<8;i++) tone(i%2?150:210, 0.045, 'square', 0.07, i*0.105); }
+function sfxPrize(){ [784,988,1175,1568].forEach((f,i)=>tone(f,0.14,'triangle',0.14,i*0.06)); tone(2093,0.3,'sine',0.07,0.26); }
+function sfxLegend(){ [523,659,784,1046,1318].forEach((f,i)=>tone(f,0.2,'triangle',0.16,i*0.08)); }
+
+async function gachaDraw(){
+  if(gachaBusy || gachaCur || gachaCap) return;
+  gachaBusy=true; gachaLever(false);
+  const gen=gGen;
+  let pool=gachaPool();
+  if(!pool.length){ await loadDict(); if(gen!==gGen) return; pool=gachaPool(); }   // 사전 파일이 아직 안 왔을 수 있음
+  if(!pool.length){
+    gachaBusy=false;
+    gachaRenderShow('⚙️ 켠 글자로 만들 수 있는 '+gachaLen()+'글자 낱말이 아직 없어요.<br>진도에서 글자를 더 켜거나 글자 수를 바꿔 보세요.');
+    return;
+  }
+  if(TRIAL && !trialDayUse(TRIAL_GACHA_KEY, TRIAL_GACHA_MAX)){
+    gachaBusy=false;
+    gachaRenderShow('오늘 체험판 뽑기 '+TRIAL_GACHA_MAX+'번을 다 썼어요. 내일 다시 만나요!');
+    trialGachaDone(); return;
+  }
+  const word=gachaPick(pool), r=gachaRarity();
+  const next={word, r, isNew:!gachaBook()[word], tries:0};
+  gachaRecent=[word, ...gachaRecent].slice(0, Math.min(6, Math.floor(pool.length/2)));
+  // 1) 손잡이가 한 바퀴 돌고 유리창 속 볼이 들썩
+  gachaTurn+=360;
+  const dial=document.getElementById('gachaDial'); if(dial) dial.style.setProperty('--turn', gachaTurn+'deg');
+  const dome=document.getElementById('gachaDome');
+  dome.classList.remove('shake'); void dome.offsetWidth; dome.classList.add('shake'); sfxCrank();
+  const show=document.getElementById('gachaShow');
+  show.classList.remove('legend');
+  show.innerHTML='<div class="gacha-wait">?</div><p class="gacha-prompt" id="gachaPrompt">드르륵… 두근두근…</p>';
+  // 2) 볼 나오는 곳으로 뾰로롱
+  setTimeout(()=>{
+    if(gen!==gGen) return;
+    gachaCap=next; gachaBusy=false;
+    gachaRenderShow(r===3?'✨ <b>전설 캡슐!</b> 눌러서 열어 보세요!' : r===2?'💎 반짝 캡슐! 눌러서 열어 보세요!' : '뾰로롱! 캡슐을 <b>눌러서</b> 열어 보세요!');
+    gachaSparkle(GACHA_RAR[r].cap); sfxPrize();
+  }, 950);
+}
+/* 3) 캡슐 열기 → 단어 카드 */
+function gachaOpen(){
+  if(!gachaCap || gachaBusy) return;
+  const c=gachaCap; gachaBusy=true;
+  const gen=gGen, show=document.getElementById('gachaShow');
+  show.querySelector('.gacha-capsule')?.classList.add('open');
+  document.querySelector('#gachaOut .gm-prize')?.classList.add('taken');
+  sfxPop();
+  setTimeout(()=>{
+    if(gen!==gGen) return;
+    gachaCap=null; gachaCur=c; gachaBusy=false;
+    gachaRenderShow(c.r===3?'✨ <b>전설 카드!</b> 소리 내어 또박또박 읽어 보세요!' : c.r===2?'💎 반짝 카드! 소리 내어 또박또박 읽어 보세요!' : null);
+    if(c.r===3) sfxLegend();
+  }, 300);
+}
+function gachaJudge(ok){
+  if(!gachaCur || gachaBusy) return;
+  const show=document.getElementById('gachaShow'), card=show.querySelector('.gacha-card');
+  if(ok){
+    const c=gachaCur, pts=sylCount(c.word)*GACHA_RAR[c.r].pts;
+    gScore+=pts; gCombo++;
+    const book=gachaBook(), e=book[c.word]||{r:0,n:0};
+    e.n++; e.r=Math.max(e.r,c.r); e.t=Date.now(); book[c.word]=e; gachaSaveBook(book);
+    renderGStats(); sfxPop();
+    const a=show.getBoundingClientRect(), b=card.getBoundingClientRect();
+    burst(show, b.left-a.left+b.width/2, b.top-a.top+b.height/2, c.r===3?'--tint4':c.r===2?'--cho':'--jung');
+    card.classList.add('got');
+    const jd=show.querySelector('.gacha-judge'); if(jd) jd.remove();
+    const cheers=['잘 읽었어요!','정확해요!','멋져요!','최고예요!','또박또박 잘했어요!'];
+    gachaPrompt('🎉 '+cheers[Math.floor(Math.random()*cheers.length)]+' <b>+'+pts+'점</b>'+(gCombo>=3?' · 🔥 '+gCombo+'연속':''));
+    gachaCur=null; gachaBusy=true;
+    const gen=gGen;
+    setTimeout(()=>{ if(gen!==gGen) return; gachaBusy=false; gachaRenderBook(c.word); show.classList.remove('legend'); show.querySelector('.gacha-card')?.remove(); show.insertAdjacentHTML('afterbegin','<div class="gacha-wait">?</div>'); gachaLever(true); }, 480);
+  }else{
+    gachaCur.tries++; gCombo=0; renderGStats(); sfxWrong();
+    gachaRenderShow(gachaCur.tries===1 ? '괜찮아요! 한 글자씩 <b>천천히</b> 다시 읽어 볼까요?' : '글자를 <b>손가락으로 짚으며</b> 읽어 봐요. 어려우면 넘겨도 괜찮아요.');
+    const nc=show.querySelector('.gacha-card'); if(nc){ nc.style.animation='none'; void nc.offsetWidth; nc.style.animation=''; nc.classList.add('wrong'); }
+  }
+}
+function gachaSkip(){
+  if(!gachaCur || gachaBusy) return;
+  gachaCur=null; gCombo=0; renderGStats();
+  gachaRenderShow('다음 단어를 뽑아 볼까요? 넘긴 카드는 나중에 또 나와요.');
+}
+function gachaRenderBook(freshWord){
+  const grid=document.getElementById('gachaGrid'), cnt=document.getElementById('gachaBookCount'); if(!grid) return;
+  const book=gachaBook(), words=Object.keys(book).sort((a,b)=>(book[b].t||0)-(book[a].t||0));
+  const pool=gachaPool(), have=pool.filter(w=>book[w]).length;
+  cnt.textContent = pool.length ? gachaLen()+'글자 낱말 '+have+' / '+pool.length+'장 · 전체 '+words.length+'장' : '전체 '+words.length+'장';
+  grid.innerHTML = words.length
+    ? words.map(w=>'<div class="gb-card r'+book[w].r+(w===freshWord?' fresh':'')+'">'+esc(w)+'<small>'+GACHA_RAR[book[w].r].star+(book[w].n>1?' · '+book[w].n+'번':'')+'</small></div>').join('')
+    : '<p class="gacha-empty">아직 모은 카드가 없어요. 뽑은 단어를 정확하게 읽으면 여기에 모여요.</p>';
+  renderGStats();
+}
+function gachaClearBook(){
+  const p=activeProfile(); if(!p) return;
+  if(!confirm('「'+p.name+'」의 단어 도감을 모두 비울까요? 되돌릴 수 없어요.')) return;
+  gachaSaveBook({}); gachaRenderBook();
+}
+
 (function bindGame(){
   const gi=document.getElementById('gameInput'); if(!gi) return;
   gi.addEventListener('input', e=>handleGame(e.isComposing));
