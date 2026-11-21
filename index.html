@@ -3296,6 +3296,8 @@ if(!hwLocked && window.__HW_ONLY__){
   renderCollected();
   renderTargets();
   syncGenFields();
+  // 주소 끝이 #dex면 그림 도감부터 연다(옛 dino.sososoop.com이 여기로 넘어옴, 2026-11-22)
+  if(/^#dex\b/.test(location.hash)) switchMode('dex');
 /*@end*/
 }
 </script>
