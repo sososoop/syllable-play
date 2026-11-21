@@ -409,6 +409,152 @@
     .gm-dial,.gm-flap{transition:none}
   }
 
+  /*@cut home*/
+  /* ---------- 05 그림 도감 (dx-) ---------- */
+  @font-face{font-family:'SchoolSafeDictation';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimBadasseugiTTF-L.woff2') format('woff2');font-weight:normal;font-display:swap}
+  .dx-word{font-family:'SchoolSafeDictation',var(--font);font-weight:bold;letter-spacing:0}
+  .dx-topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+  .dx-topic{position:relative;text-align:left;border:var(--border);background:var(--white);box-shadow:3px 3px 0 var(--soft-shadow);padding:0;display:flex;flex-direction:column;color:var(--ink);transition:transform .15s,box-shadow .15s}
+  .dx-topic:hover:not(.soon){transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+  .dx-topic .cov{aspect-ratio:4/3;display:grid;place-items:center;border-bottom:1px solid var(--hair);font-size:64px;background-color:var(--surface-2);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px}
+  .dx-topic .cov img{width:78%;height:88%;object-fit:contain}
+  .dx-topic .tt{padding:10px 14px 12px}
+  .dx-topic .tt b{display:block;font-size:18px;font-weight:900;letter-spacing:-.04em}
+  .dx-topic .tt small{display:block;font-size:12px;color:var(--muted);font-weight:700;line-height:1.5}
+  .dx-topic .tag{position:absolute;top:8px;right:8px;font-size:11px;font-weight:800;border:1px dashed var(--ink);background:var(--white);padding:0 7px}
+  .dx-topic.soon{cursor:default}
+  .dx-topic.soon .cov{filter:grayscale(1);opacity:.55}
+  .dx-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:10px 0}
+  .dx-row>.lbl{min-width:130px;font-size:13px;font-weight:800}
+  .dx-cntlbl{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:750}
+  .dx-cnt{width:64px;min-height:36px;border:var(--border);border-radius:0;text-align:center;font-weight:800;font-size:14px;background:var(--white)}
+  .dx-cnt.on{background:var(--teal);color:#fff}
+  .dx-top{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding-bottom:12px;border-bottom:2px solid var(--ink)}
+  .dx-top h2{margin:0;font-size:21px;font-weight:900;letter-spacing:-.05em;flex:1;min-width:0}
+  .dx-pill{display:inline-flex;align-items:center;gap:6px;border:var(--border);background:var(--white);padding:5px 12px;font-size:13px;font-weight:800;white-space:nowrap}
+  .dx-sum{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border:var(--border);background:var(--white);box-shadow:3px 3px 0 var(--soft-shadow);padding:11px 16px;margin:0 0 16px;font-size:14px}
+  .dx-modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+  .dx-mode{text-align:left;background:var(--white);border:var(--border);box-shadow:3px 3px 0 var(--soft-shadow);padding:16px 18px;display:flex;gap:14px;align-items:flex-start;color:var(--ink);transition:transform .15s,box-shadow .15s}
+  .dx-mode:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+  .dx-mode .num{flex:none;width:46px;height:46px;border:var(--border);display:grid;place-items:center;font-size:22px;font-weight:800;color:#fff}
+  .dx-mode h3{margin:0 0 4px;font-size:18px;font-weight:850;letter-spacing:-.04em}
+  .dx-mode p{margin:0;color:var(--text);font-size:13px;line-height:1.55;word-break:keep-all}
+  /* 놀이 진행 */
+  .dx-dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:0 0 14px}
+  .dx-dots i{width:14px;height:14px;border:2px solid var(--ink);background:var(--white)}
+  .dx-dots i.done{background:var(--teal)}
+  .dx-dots i.cur{background:var(--blue)}
+  .dx-stage{background:var(--white);border:var(--border);box-shadow:4px 4px 0 var(--soft-shadow);padding:24px 18px 28px;min-height:62vh;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+  .dx-hint{margin:0;color:var(--text);font-size:17px;font-weight:650;word-break:keep-all}
+  .dx-done{margin:10px 0 0;font-size:34px;font-weight:900}
+  .dx-pic{width:min(240px,56vw);aspect-ratio:1;border:var(--border);display:grid;place-items:center;overflow:hidden;background-color:var(--surface-2);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px}
+  .dx-pic img{width:92%;height:92%;object-fit:contain}
+  .dx-pic .q{font-size:90px;font-weight:900;color:#c9c6b8}
+  .dx-pic.reveal img{animation:dxPop .5s cubic-bezier(.3,1.6,.5,1)}
+  .dx-pic.small{width:min(170px,42vw)}
+  .dx-big{font-size:clamp(56px,12vw,120px);line-height:1.15;letter-spacing:.06em;display:flex;justify-content:center;flex-wrap:wrap}
+  .dx-mid{font-size:clamp(40px,8vw,72px);display:flex;justify-content:center;flex-wrap:wrap}
+  .dx-syl{display:inline-block;padding:0 .04em}
+  .dx-syl.n{color:#e8590c}
+  .dx-syl.hl{background:var(--mint)}
+  .dx-syl.target{outline:4px dashed var(--blue);outline-offset:2px;color:var(--blue)}
+  .dx-syl.pop{animation:dxPop .45s cubic-bezier(.3,1.6,.5,1)}
+  .dx-syl.ok{color:var(--good)}
+  .dx-syl.no{color:var(--crit);text-decoration:underline wavy}
+  @keyframes dxPop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+  @keyframes dxShake{0%,100%{transform:none}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+  .dx-stage .shake{animation:dxShake .35s}
+  .dx-ntile{width:110px;height:110px;border:3px solid var(--ink);background:#e8590c;color:#fff;font-size:72px;font-weight:900;box-shadow:4px 4px 0 var(--ink);font-family:'SchoolSafeDictation',var(--font)}
+  .dx-ntile:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+  .dx-judge{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .dx-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:var(--border);padding:13px 22px;font-size:19px;font-weight:800;background:var(--white);color:var(--ink);box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .dx-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+  .dx-btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .dx-btn.ok{background:var(--teal);color:#fff}
+  .dx-btn.again{background:var(--warn-soft)}
+  .dx-btn.blue{background:var(--blue);color:#fff}
+  .dx-btn.sound{font-size:20px;padding:10px 20px}
+  .dx-btn.peek{background:var(--paper);padding:4px 22px;border-style:dashed;box-shadow:none}
+  .dx-btn.peek:hover,.dx-btn.peek:active{transform:none;box-shadow:none}
+  .dx-btn.peek .dx-word{pointer-events:none}
+  .dx-caught{font-size:20px;font-weight:800;color:var(--good);margin:0}
+  .dx-msg{min-height:28px;font-size:19px;font-weight:700;margin:0}
+  .dx-msg.bad{color:var(--crit)}.dx-msg.good{color:var(--good)}
+  .dx-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;width:min(640px,100%)}
+  .dx-choice{border:var(--border);background:var(--white);padding:14px 6px;font-size:clamp(28px,6vw,46px);box-shadow:3px 3px 0 var(--ink);font-family:'SchoolSafeDictation',var(--font);font-weight:bold;color:var(--ink)}
+  .dx-choice.right{background:var(--good-soft);border-color:var(--teal-dark);box-shadow:3px 3px 0 var(--teal-dark)}
+  .dx-choice.wrong{opacity:.35;box-shadow:none}
+  .dx-bins{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+  .dx-bin{border:var(--border);background:var(--surface-2);min-height:200px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink)}
+  .dx-bin.ready{background:var(--mint);outline:3px dashed var(--blue);outline-offset:3px}
+  .dx-bin .tag{font-size:44px;background:var(--white);border:var(--border);padding:0 16px}
+  .dx-bin .in{font-size:22px;background:var(--white);padding:2px 10px;border:2px solid var(--teal)}
+  .dx-cards{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .dx-card{border:var(--border);background:var(--white);padding:8px 16px;font-size:clamp(26px,5vw,40px);box-shadow:3px 3px 0 var(--ink);font-family:'SchoolSafeDictation',var(--font);font-weight:bold;color:var(--ink)}
+  .dx-card.sel{background:var(--blue);color:#fff}
+  .dx-card.sel .dx-syl.n{color:#ffd8c2}
+  .dx-dict{font-size:clamp(40px,9vw,72px);width:min(520px,100%);text-align:center;border:3px solid var(--ink);border-radius:0;padding:6px 10px;font-family:'SchoolSafeDictation',var(--font);font-weight:bold;background:var(--paper);color:var(--ink)}
+  .dx-dict:focus{outline:4px solid var(--teal);outline-offset:2px}
+  .dx-compare{display:flex;flex-direction:column;gap:6px;align-items:center}
+  .dx-compare .lbl{font-size:13px;color:var(--muted);font-weight:750}
+  .dx-sentence{font-size:clamp(32px,6.5vw,58px);line-height:1.6;max-width:820px}
+  .dx-sentence .w{display:inline-block;margin:0 .22em}
+  .dx-stars{font-size:46px;letter-spacing:4px}
+  .dx-thumbs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .dx-thumb{width:92px;text-align:center;font-size:17px}
+  .dx-thumb img{width:92px;height:92px;object-fit:contain;background:var(--surface-2);border:2px solid var(--ink)}
+  /* 모은 도감 */
+  .dx-progress{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;border:var(--border);background:var(--white);box-shadow:3px 3px 0 var(--soft-shadow);padding:12px 16px;margin:0 0 14px}
+  .dx-bar{flex:1 1 160px;height:16px;border:var(--border);background:var(--surface-2);overflow:hidden}
+  .dx-bar i{display:block;height:100%;background:var(--teal)}
+  .dx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+  .dx-cell{background:var(--white);border:var(--border);box-shadow:3px 3px 0 var(--soft-shadow);padding:8px 6px 6px;text-align:center;transition:transform .15s,box-shadow .15s}
+  .dx-cell:not(.no){cursor:pointer}
+  .dx-cell:not(.no):hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+  .dx-cell img{width:100%;aspect-ratio:1;object-fit:contain}
+  .dx-cell.no{background:var(--surface-2);box-shadow:none;border-style:dashed}
+  .dx-cell.no img{filter:brightness(0);opacity:.12}
+  .dx-cell .nm{min-height:30px;flex-wrap:nowrap;white-space:nowrap;align-items:center;display:flex;justify-content:center}
+  .dx-cell .no-nm{color:var(--muted);font-weight:800;font-size:18px;min-height:30px}
+  .dx-cell small{display:block;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.06em;border-top:1px solid var(--hair);margin-top:4px;padding-top:4px}
+  .dx-namecard{text-align:center}
+  .dx-namecard img{width:180px;height:180px;object-fit:contain;display:block;margin:0 auto 6px}
+  /* 스티커 출력 */
+  .dx-pgrid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:22px;align-items:start}
+  .dx-pside h3{margin:16px 0 8px;font-size:14px;font-weight:850;padding-bottom:6px;border-bottom:1px solid var(--hair)}
+  .dx-pside h3:first-child{margin-top:0}
+  .mini-btn.dx-on{background:var(--blue);color:#fff}
+  .dx-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+  .dx-pickcell{border:1px solid var(--ink);background:var(--white);padding:4px;display:flex;flex-direction:column;align-items:center;font-weight:750;font-size:12px;opacity:.45;color:var(--ink)}
+  .dx-pickcell.on{opacity:1;background:var(--mint)}
+  .dx-pickcell img{width:64px;height:64px;object-fit:contain}
+  .dx-sel{width:100%;padding:8px 10px;min-height:40px;border:var(--border);border-radius:0;font-size:13px;font-weight:700;background:var(--white);color:var(--ink)}
+  .dx-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-top:8px}
+  .dx-fields label{font-size:12px;font-weight:750;display:flex;flex-direction:column;gap:2px}
+  .dx-fields input{border:1px solid var(--ink);border-radius:0;padding:5px 7px;width:100%;background:var(--white)}
+  .dx-check{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin-top:8px}
+  .dx-startmap{display:grid;gap:4px}
+  .dx-sc{width:30px;height:30px;border:1px solid var(--ink);background:var(--white);font-size:12px;font-weight:750;padding:0;color:var(--ink)}
+  .dx-sc.used{background:var(--surface-3);color:var(--muted);text-decoration:line-through}
+  .dx-sc.cur{background:var(--blue);border-color:var(--blue);color:#fff}
+  #dxSheetWrap{overflow:hidden}
+  #dxSheets{--z:.5;zoom:var(--z);display:flex;flex-direction:column;gap:16px}
+  .dx-sheet{width:210mm;height:297mm;background:#fff;position:relative;box-shadow:0 0 0 2px var(--ink),6px 6px 0 var(--soft-shadow);overflow:hidden;flex:none}
+  .dx-lbl{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:1mm;outline:1px dashed #c8c8c8}
+  .dx-lbl.round{border-radius:50%}
+  .dx-lbl.round img{width:74%;height:74%}  /* 동그라미 안에 그림이 잘리지 않게 */
+  .dx-lbl img{width:88%;height:88%;object-fit:contain}
+  .dx-lbl.skip{background:repeating-linear-gradient(45deg,#eee 0 6px,#fff 6px 12px)}
+  .dx-lbl.test{outline:.3mm solid #000;font:700 14pt var(--font);color:#999}
+  .dx-toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:100;color:#fff;background:#1a1a1a;border:1px solid #fff;padding:13px 20px;font-size:14px;font-weight:700;box-shadow:4px 4px 0 var(--teal);max-width:calc(100vw - 32px);width:max-content;opacity:0;transition:opacity .25s;pointer-events:none}
+  .dx-toast.on{opacity:1}
+  @media(max-width:820px){.dx-pgrid{grid-template-columns:1fr}}
+  @media(max-width:560px){.dx-bins{grid-template-columns:1fr}.dx-bin{min-height:auto}.dx-choices{grid-template-columns:1fr}.dx-row>.lbl{min-width:100%}.dx-top h2{font-size:18px}}
+  @media(prefers-reduced-motion:reduce){.dx-pic.reveal img,.dx-syl.pop,.dx-stage .shake{animation:none}}
+  /*@end*/
+
   /* ---------- 바닥글 ---------- */
   footer{max-width:var(--wrap);margin:0 auto;padding:0 32px 30px}
   .foot-inner{border-top:2px solid var(--ink);padding-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;font-size:11px;color:var(--muted);line-height:1.7}
@@ -463,6 +609,23 @@
     #printSrc{display:block !important}
   }
   #printTitle{display:none;text-align:center;font-size:22px;font-weight:900;margin-bottom:10px}
+  /*@cut home*/
+  /* 그림 도감 스티커 인쇄: doPrint()가 인쇄하는 동안만 body.dx-printing + @page 여백 0 */
+  @media print{
+    body.dx-printing main>*:not(#dexPanel),body.dx-printing #dexPanel>*:not(#dxRoot),body.dx-printing #dxRoot>*:not(.dx-pgrid),
+    body.dx-printing .dx-pside,body.dx-printing #dxPCount,.dx-toast{display:none!important}
+    body.dx-printing main{padding:0!important;max-width:none!important}
+    body.dx-printing #dexPanel{display:block!important;animation:none!important}
+    body.dx-printing .dx-pgrid{display:block}
+    body.dx-printing #dxSheetWrap{overflow:visible}
+    body.dx-printing #dxSheets{zoom:1!important;gap:0}
+    .dx-sheet{box-shadow:none;page-break-after:always;break-after:page}
+    .dx-sheet:last-child{page-break-after:auto;break-after:auto}
+    .dx-lbl{outline:none}
+    .dx-lbl.skip{background:none}
+    .dx-lbl.test{outline:.3mm solid #000}
+  }
+  /*@end*/
 </style>
 </head>
 <body>
@@ -489,6 +652,7 @@
 <!--@cut home-->
     <button id="tabGame" onclick="switchMode('game')"><span class="nav-num">03</span><svg class="ic"><use href="#i-game"/></svg>게임</button>
     <button id="tabGen" onclick="switchMode('gen')"><span class="nav-num">04</span><svg class="ic"><use href="#i-print"/></svg>자료 만들기</button>
+    <button id="tabDex" onclick="switchMode('dex')"><span class="nav-num">05</span><svg class="ic"><use href="#i-book"/></svg>그림 도감</button>
 <!--@end-->
   </nav>
 </div>
@@ -661,7 +825,7 @@
           <div class="gacha-show" id="gachaShow"></div>
         </div>
         <div class="gacha-book">
-          <div class="gacha-book-head">📒 단어 도감 <span id="gachaBookCount"></span><button class="mini-btn" onclick="gachaClearBook()">도감 비우기</button></div>
+          <div class="gacha-book-head">📒 단어 카드 모음 <span id="gachaBookCount"></span><button class="mini-btn" onclick="gachaClearBook()">모음 비우기</button></div>
           <div class="gacha-grid" id="gachaGrid"></div>
         </div>
       </div>
@@ -773,6 +937,11 @@
       <div class="result-list" id="resultList"><div class="result-empty">조건을 정하고 “생성”을 눌러주세요.</div></div>
       <p id="printSrc" style="display:none;font-size:11px;color:#666;margin:10px 0 0">의미 단어·예문 출처: 국립국어원 「한국어기초사전」·「표준국어대사전」 (CC BY-SA 2.0 KR · creativecommons.org/licenses/by-sa/2.0/kr) · 소소숲 : 지혜의 기록소 「한글놀이」로 만듦<span id="printTrial"></span></p>
     </div>
+  </section>
+
+  <!-- ================= 그림 도감 (화면은 DEX가 그림) ================= -->
+  <section id="dexPanel" class="panel">
+    <div id="dxRoot"></div>
   </section>
 <!--@end-->
 </main>
@@ -941,7 +1110,7 @@ function trialRandDone(){
   openInfo('오늘의 무료 체험 '+TRIAL_RAND_MAX+'회를 모두 사용했어요!', '한글놀이가 선생님의 읽기 중재에 도움이 될 것 같으신가요?<br>내일 다시 무료로 이용하실 수 있어요.<br><br>더 다양한 음절 수준에서 제한 없이 연습하고 싶으시다면 전체 이용권을 이용해 보세요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" >전체 이용권 살펴보기 →</a>');
 }
 function trialGachaDone(){
-  openInfo('오늘의 무료 뽑기 '+TRIAL_GACHA_MAX+'번을 모두 사용했어요!', '내일 다시 무료로 뽑을 수 있어요.<br><br>정식판에서는 단어 가챠를 <b>횟수 제한 없이</b>, 두 글자·세 글자 낱말까지 쓸 수 있고 아이별 <b>단어 도감</b>도 따로 모을 수 있어요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" >전체 이용권 살펴보기 →</a>');
+  openInfo('오늘의 무료 뽑기 '+TRIAL_GACHA_MAX+'번을 모두 사용했어요!', '내일 다시 무료로 뽑을 수 있어요.<br><br>정식판에서는 단어 가챠를 <b>횟수 제한 없이</b>, 두 글자·세 글자 낱말까지 쓸 수 있고 아이별 <b>단어 카드 모음</b>도 따로 모을 수 있어요.<br><br><a href="https://sososoop.com/hangul#plans" target="_blank" rel="noopener" >전체 이용권 살펴보기 →</a>');
 }
 function trialGameLock(){
   openInfo('2~3음절 읽기 게임도 활용해 보세요!', '정식판에서는 아동의 읽기 수준에 맞춰 1~3음절 게임을 자유롭게 사용할 수 있어요.<br><br><a href="https://sososoop.com/hangul" target="_blank" rel="noopener" >정식판 기능 살펴보기 →</a>');
@@ -1132,6 +1301,7 @@ function switchMode(m){
   if(m==='game'){ gamePanel.classList.add('on'); tabGame.classList.add('on'); startGameTab(); }
   if(m==='gen'){ genPanel.classList.add('on'); tabGen.classList.add('on'); renderTargets(); }
   if(m==='prog'){ progPanel.classList.add('on'); tabProg.classList.add('on'); renderProgress(); }
+  if(m==='dex'){ dexPanel.classList.add('on'); tabDex.classList.add('on'); DEX.open(); }
 /*@end*/
 }
 
@@ -1246,15 +1416,17 @@ function deleteProfile(){
   if(profiles.length<=1){ openInfo('삭제 불가','프로필이 하나뿐이라 삭제할 수 없어요. 새 프로필을 먼저 만들어 주세요.'); return; }
   const p=activeProfile(); if(!p) return;
   openConfirm('프로필 삭제', '“'+esc(p.name)+'” 프로필을 삭제할까요? 되돌릴 수 없어요.', ()=>{
-    if(typeof gachaForget==='function') gachaForget(p.id);   // 그 아이의 단어 도감도 같이 지움
+    if(typeof gachaForget==='function') gachaForget(p.id);   // 그 아이의 단어 카드 모음도 같이 지움
+    if(typeof DEX!=='undefined') DEX.forget(p.id);            // 그림 도감도
     profiles=profiles.filter(x=>x.id!==p.id); switchProfile(profiles[0].id);
   });
 }
 function exportProfiles(){
   if(TRIAL){ trialLock('프로필 내보내기'); return; }
 /*@cut trial*/
-  const gacha=(typeof gachaBooksFor==='function') ? gachaBooksFor(profiles.map(p=>p.id)) : {};   // 단어 가챠 도감 {프로필id: 도감}
-  const data=JSON.stringify({app:'hangul-blending-board', v:1, exportedAt:nowTs(), profiles, gacha}, null, 2);
+  const gacha=(typeof gachaBooksFor==='function') ? gachaBooksFor(profiles.map(p=>p.id)) : {};   // 단어 카드 모음 {프로필id: 카드}
+  const dex=(typeof DEX!=='undefined') ? DEX.booksFor(profiles.map(p=>p.id)) : {};               // 그림 도감 {프로필id: 기록}
+  const data=JSON.stringify({app:'hangul-blending-board', v:1, exportedAt:nowTs(), profiles, gacha, dex}, null, 2);
   const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a'); a.href=url; a.download='한글놀이_프로필.json'; a.click();
@@ -1274,15 +1446,17 @@ function importProfiles(file){
       if(!list||!list.length) throw 0;
       const existing=new Set(profiles.map(p=>p.id));
       const books=(obj && !Array.isArray(obj) && obj.gacha && typeof obj.gacha==='object') ? obj.gacha : {};
-      let added=0, cards=0;
+      const dexBooks=(obj && !Array.isArray(obj) && obj.dex && typeof obj.dex==='object') ? obj.dex : {};
+      let added=0, cards=0, pics=0;
       list.forEach(raw=>{
         const p=sanitizeProfile(raw); if(!p) return;
         const fromId=raw && typeof raw.id==='string' ? raw.id : null;
         if(existing.has(p.id)) p.id=uid();      // id 충돌 → 새 UUID
         existing.add(p.id); profiles.push(p); added++;
         if(fromId && Object.prototype.hasOwnProperty.call(books, fromId) && typeof gachaImportBook==='function') cards+=gachaImportBook(p.id, books[fromId]);
+        if(fromId && Object.prototype.hasOwnProperty.call(dexBooks, fromId) && typeof DEX!=='undefined') pics+=DEX.importBook(p.id, dexBooks[fromId]);
       });
-      if(added){ saveProfiles(); renderProgress(); openInfo('가져오기 완료', added+'개 프로필을 불러왔어요.'+(cards?' (단어 도감 카드 '+cards+'장 포함)':'')); }
+      if(added){ saveProfiles(); renderProgress(); openInfo('가져오기 완료', added+'개 프로필을 불러왔어요.'+(cards?' (단어 카드 '+cards+'장 포함)':'')+(pics?' (그림 도감 '+pics+'장 포함)':'')); }
       else openInfo('가져오기 실패','유효한 프로필이 없어요.');
     }catch(e){ openInfo('가져오기 실패','파일 형식을 읽을 수 없어요. 내보낸 JSON 파일인지 확인해 주세요.'); }
   };
@@ -2077,7 +2251,7 @@ function selectGame(g){
     ? '<b>한 글자·두 글자·세 글자</b>는 뽑히는 낱말의 글자 수예요. 가챠에는 <b>진도에서 켠 글자로만 된 실제 낱말</b>만 나와요.'
     : '<b>한 글자·두 글자·세 글자</b>는 나오는 낱말의 글자 수예요. 두·세 글자는 <b>진도 설정</b>에서 켠 글자를 조합해 만들어서, 실제 낱말이 아닐 수도 있어요.';
   document.getElementById('gameHint').innerHTML = g==='gacha'
-    ? '<b>🎰 뽑기!</b>를 누르면 캡슐에서 단어 카드가 나와요. 아이가 <b>소리 내어 또박또박 읽으면</b> 선생님이 <b>⭕ 맞았어요</b>를 눌러 주세요. 맞힌 카드는 도감에 모여요!'
+    ? '<b>🎰 뽑기!</b>를 누르면 캡슐에서 단어 카드가 나와요. 아이가 <b>소리 내어 또박또박 읽으면</b> 선생님이 <b>⭕ 맞았어요</b>를 눌러 주세요. 맞힌 카드는 단어 카드 모음에 모여요!'
     : g==='brick'
     ? '벽돌에 적힌 글자를 <b>타자로 치면</b> 공이 날아가 벽돌을 깨요! 시간제한은 없으니 <b>천천히 소리 내어 읽고</b> 쳐보세요.'
     : (IS_TOUCH
@@ -2397,7 +2571,7 @@ function gachaRenderBook(freshWord){
 }
 function gachaClearBook(){
   const p=activeProfile(); if(!p) return;
-  if(!confirm('「'+p.name+'」의 단어 도감을 모두 비울까요? 되돌릴 수 없어요.')) return;
+  if(!confirm('「'+p.name+'」의 단어 카드 모음을 모두 비울까요? 되돌릴 수 없어요.')) return;
   gachaSaveBook({}); gachaRenderBook();
 }
 
@@ -2406,6 +2580,698 @@ function gachaClearBook(){
   gi.addEventListener('input', e=>handleGame(e.isComposing));
   gi.addEventListener('compositionend', ()=>handleGame(false));
   gi.addEventListener('keydown', e=>{ if(e.key==='Escape' && currentGame==='rain'){ e.preventDefault(); togglePause(); } });
+})();
+
+/* =========================================================
+   05 그림 도감 — 주제(공룡·동물…)별로 이름을 읽고 모으는 도감 (2026-11-20, 공룡 한글 도감을 옮겨 옴)
+   · 진도 설정에서 켠 음소로만 읽을 수 있는 이름이 나온다(wordAllowed). 아이 프로필도 한글놀이 것을 그대로 쓴다.
+   · 놀이 6종을 거쳐 받아쓰기에서 맞힌 것만 도감에 들어간다.
+   · 기계 음성 없음 — 선생님이 「살짝 보기」로 이름을 보고 직접 불러 준다.
+   · 기록: sp.dex.v1 = {프로필id: {ac: 소리 바뀌는 이름 허용, t: {주제: {dex:{번호:맞힌 횟수}, byDate:{날짜:[번호]}, met:{날짜:[번호]}}}}}
+   · 새 주제: 아래 DEX_THEMES에 {id, name, icon, items, templates} 한 줄 + 그림 /hangul-dex/<id>/0001.webp …
+     정식판 전용 주제는 빌드 표시(cut trial)로 감싸서 체험판 파일에 이름 목록이 아예 안 들어가게 한다.
+   ========================================================= */
+const DEX_KEY='sp.dex.v1', DEX_SET_KEY='sp.dexSettings.v1', DEX_LABEL_KEY='sp.dexLabel.v1';
+const DEX_IMG='/hangul-dex/';
+const DEX_DINO=[[1,"티라노사우루스","육식"],[2,"타르보사우루스","육식"],[3,"알로사우루스","육식"],[4,"스피노사우루스","육식"],[5,"기가노토사우루스","육식"],[6,"카르노타우루스","육식"],[7,"알베르토사우루스","육식"],[8,"다스플레토사우루스","육식"],[9,"바리오닉스","육식"],[10,"케라토사우루스","육식"],[11,"딜로포사우루스","육식"],[12,"메갈로사우루스","육식"],[13,"수코미무스","육식"],[14,"크리올로포사우루스","육식"],[15,"유티라누스","육식"],[16,"벨로키랍토르","작은 육식·깃털"],[17,"데이노니쿠스","작은 육식·깃털"],[18,"콤프소그나투스","작은 육식·깃털"],[19,"오비랍토르","작은 육식·깃털"],[20,"미크로랍토르","작은 육식·깃털"],[21,"시노사우롭테릭스","작은 육식·깃털"],[22,"코엘로피시스","작은 육식·깃털"],[23,"에오랍토르","작은 육식·깃털"],[24,"헤레라사우루스","작은 육식·깃털"],[25,"갈리미무스","작은 육식·깃털"],[26,"오르니토미무스","작은 육식·깃털"],[27,"테리지노사우루스","작은 육식·깃털"],[28,"데이노케이루스","작은 육식·깃털"],[29,"시조새","작은 육식·깃털"],[30,"트리케라톱스","뿔·머리"],[31,"프로토케라톱스","뿔·머리"],[32,"스티라코사우루스","뿔·머리"],[33,"펜타케라톱스","뿔·머리"],[34,"카스모사우루스","뿔·머리"],[35,"토로사우루스","뿔·머리"],[36,"파키케팔로사우루스","뿔·머리"],[37,"프시타코사우루스","뿔·머리"],[38,"스테고사우루스","갑옷·골판"],[39,"안킬로사우루스","갑옷·골판"],[40,"켄트로사우루스","갑옷·골판"],[41,"에우오플로케팔루스","갑옷·골판"],[42,"노도사우루스","갑옷·골판"],[43,"투오지앙고사우루스","갑옷·골판"],[44,"브라키오사우루스","목 긴 공룡"],[45,"디플로도쿠스","목 긴 공룡"],[46,"아파토사우루스","목 긴 공룡"],[47,"브론토사우루스","목 긴 공룡"],[48,"마멘키사우루스","목 긴 공룡"],[49,"아르헨티노사우루스","목 긴 공룡"],[50,"플라테오사우루스","목 긴 공룡"],[51,"디크라이오사우루스","목 긴 공룡"],[52,"이구아노돈","오리주둥이·초식"],[53,"파라사우롤로푸스","오리주둥이·초식"],[54,"마이아사우라","오리주둥이·초식"],[55,"코리토사우루스","오리주둥이·초식"],[56,"람베오사우루스","오리주둥이·초식"],[57,"에드몬토사우루스","오리주둥이·초식"],[58,"하드로사우루스","오리주둥이·초식"],[59,"사우롤로푸스","오리주둥이·초식"],[60,"친타오사우루스","오리주둥이·초식"],[61,"오우라노사우루스","오리주둥이·초식"],[62,"레소토사우루스","오리주둥이·초식"],[63,"코리아노사우루스","우리나라 공룡"],[64,"부경고사우루스","우리나라 공룡"],[65,"코리아케라톱스","우리나라 공룡"]];
+// 문장 틀: {N가}처럼 쓰면 이름 끝 받침에 따라 가/이, 는/은, 와/과로 바뀐다
+const DEX_DINO_SENT=[
+  '{N} 나와라!','{N}, 가자!','{N}, 다시 해 보자!','{N}, 이리 와!',
+  '{N가} 바다에 간다.','{N가} 나무 아래로 간다.','{N가} 저기로 간다.','{N는} 아주 크다.',
+  '{N가} 크게 운다.','{N가} 저기 서 있다.','{N가} 바위 위에 서 있다.','{N는} 친구와 논다.',
+  '{N가} 그대로 잔다.','{N가} 다리로 찬다.','{N와} 나는 친구다.','{N가} 나뭇잎을 먹는다.',
+  '{N가} 모래 아래에 산다.','{N가} 쿨쿨 잔다.','{N가} 공을 찬다.','{N가} 밥을 먹는다.',
+  '{N는} 힘이 세다.','{N가} 집으로 간다.','{N가} 노래를 부른다.','{N가} 꼬리를 흔든다.',
+  '{N는} 이빨이 크다.','{N가} 물을 마신다.','{N가} 숲에서 쉰다.','{N는} 정말 빠르다.',
+  '오늘은 {N와} 논다.','{N가} 쿵쿵 걷는다.','{N는} 키가 작다.','{N가} 알을 낳는다.',
+  '{N가} 눈을 감는다.','{N가} 풀을 먹는다.','{N가} 사과를 좋아한다.','{N가} 크게 소리친다.',
+  '{N가} 비를 맞는다.','{N는} 꼬리가 길다.','{N가} 우유를 마신다.','{N가} 아기 공룡을 지킨다.'
+];
+// 받침 없는 쉬운 문장 틀(2026-11-21) — 받침을 아직 안 배운 아이도 문장 읽기를 할 수 있게. 공룡·동물 같이 쓴다.
+// 앞 10개는 처음 진도(자음 10·모음 6)만으로 읽히고, 뒤 5개는 ㅛ·ㅐ 같은 모음을 배우면 나온다.
+const DEX_EASY_SENT=[
+  '{N}, 이리 오너라!','{N}, 어서 오너라!','{N}, 나오너라!','{N}, 거기 서라!','{N}, 어서 가자!',
+  '{N}, 어디 가니?','{N가} 어디 가니?','{N는} 어디 사니?','{N가} 저기로 가니?','{N가} 자니?',
+  '{N가} 가요.','{N가} 자요.','{N가} 나무 아래로 가요.','{N가} 노래해요.','{N는} 귀여워요.'
+];
+/*@cut trial*/
+// 동물 140마리(2026-11-21 확정, 목록: 공룡_한글도감/동물_목록_초안.md) — 그림 /hangul-dex/animal/0001.webp …
+const DEX_ANIMAL=[[1,"강아지","집·농장"],[2,"고양이","집·농장"],[3,"토끼","집·농장"],[4,"햄스터","집·농장"],[5,"소","집·농장"],[6,"돼지","집·농장"],[7,"말","집·농장"],[8,"양","집·농장"],[9,"염소","집·농장"],[10,"닭","집·농장"],[11,"오리","집·농장"],[12,"거위","집·농장"],[13,"곰","숲·산"],[14,"여우","숲·산"],[15,"늑대","숲·산"],[16,"다람쥐","숲·산"],[17,"사슴","숲·산"],[18,"멧돼지","숲·산"],[19,"너구리","숲·산"],[20,"고슴도치","숲·산"],[21,"두더지","숲·산"],[22,"북극곰","추운 곳"],[23,"순록","추운 곳"],[24,"펭귄","추운 곳"],[25,"사자","초원·사막"],[26,"호랑이","초원·사막"],[27,"표범","초원·사막"],[28,"치타","초원·사막"],[29,"코끼리","초원·사막"],[30,"기린","초원·사막"],[31,"얼룩말","초원·사막"],[32,"하마","초원·사막"],[33,"코뿔소","초원·사막"],[34,"낙타","초원·사막"],[35,"캥거루","초원·사막"],[36,"코알라","초원·사막"],[37,"원숭이","정글"],[38,"고릴라","정글"],[39,"판다","정글"],[40,"나무늘보","정글"],[41,"독수리","새"],[42,"부엉이","새"],[43,"참새","새"],[44,"까치","새"],[45,"앵무새","새"],[46,"공작","새"],[47,"홍학","새"],[48,"타조","새"],[49,"악어","파충류·개구리"],[50,"뱀","파충류·개구리"],[51,"도마뱀","파충류·개구리"],[52,"카멜레온","파충류·개구리"],[53,"개구리","파충류·개구리"],[54,"흰수염고래","고래·바다 포유류"],[55,"혹등고래","고래·바다 포유류"],[56,"향유고래","고래·바다 포유류"],[57,"범고래","고래·바다 포유류"],[58,"돌고래","고래·바다 포유류"],[59,"일각고래","고래·바다 포유류"],[60,"벨루가","고래·바다 포유류"],[61,"바다코끼리","고래·바다 포유류"],[62,"바다사자","고래·바다 포유류"],[63,"물범","고래·바다 포유류"],[64,"물개","고래·바다 포유류"],[65,"해달","고래·바다 포유류"],[66,"백상아리","상어·가오리"],[67,"귀상어","상어·가오리"],[68,"고래상어","상어·가오리"],[69,"톱상어","상어·가오리"],[70,"가오리","상어·가오리"],[71,"흰동가리","물고기"],[72,"나비고기","물고기"],[73,"복어","물고기"],[74,"청새치","물고기"],[75,"돛새치","물고기"],[76,"해마","물고기"],[77,"참치","물고기"],[78,"오징어","오징어·문어"],[79,"대왕오징어","오징어·문어"],[80,"문어","오징어·문어"],[81,"낙지","오징어·문어"],[82,"게","게·새우"],[83,"소라게","게·새우"],[84,"투구게","게·새우"],[85,"바닷가재","게·새우"],[86,"새우","게·새우"],[87,"따개비","게·새우"],[88,"해파리","바닷속 친구"],[89,"불가사리","바닷속 친구"],[90,"성게","바닷속 친구"],[91,"해삼","바닷속 친구"],[92,"멍게","바닷속 친구"],[93,"말미잘","바닷속 친구"],[94,"산호","바닷속 친구"],[95,"조개","조개"],[96,"전복","조개"],[97,"소라","조개"],[98,"가리비","조개"],[99,"고둥","조개"],[100,"바다거북","바다거북"],[101,"사막여우","작고 귀여운 동물"],[102,"미어캣","작고 귀여운 동물"],[103,"수달","작고 귀여운 동물"],[104,"비버","작고 귀여운 동물"],[105,"카피바라","작고 귀여운 동물"],[106,"친칠라","작고 귀여운 동물"],[107,"기니피그","작고 귀여운 동물"],[108,"청설모","작고 귀여운 동물"],[109,"날다람쥐","작고 귀여운 동물"],[110,"족제비","작고 귀여운 동물"],[111,"스컹크","작고 귀여운 동물"],[112,"개미핥기","신기한 동물"],[113,"아르마딜로","신기한 동물"],[114,"오리너구리","신기한 동물"],[115,"알파카","신기한 동물"],[116,"박쥐","신기한 동물"],[117,"우파루파","신기한 동물"],[118,"하이에나","숲·초원"],[119,"재규어","숲·초원"],[120,"들소","숲·초원"],[121,"북극여우","숲·초원"],[122,"고라니","숲·초원"],[123,"노루","숲·초원"],[124,"올빼미","새"],[125,"펠리컨","새"],[126,"백조","새"],[127,"두루미","새"],[128,"황새","새"],[129,"큰부리새","새"],[130,"벌새","새"],[131,"딱따구리","새"],[132,"비둘기","새"],[133,"갈매기","새"],[134,"제비","새"],[135,"까마귀","새"],[136,"거북이","파충류·양서류"],[137,"이구아나","파충류·양서류"],[138,"코모도왕도마뱀","파충류·양서류"],[139,"도롱뇽","파충류·양서류"],[140,"두꺼비","파충류·양서류"]];
+// 동물 문장 틀: 물고기·조개·새까지 두루 맞는 말만
+const DEX_ANIMAL_SENT=[
+  '{N} 나와라!','{N}, 안녕!','{N}, 이리 와!','{N}, 어디 있니?',
+  '{N가} 저기 있다.','{N가} 여기 있다.','{N가} 저기로 간다.','{N가} 나무 아래로 간다.',
+  '{N가} 그대로 잔다.','{N가} 쿨쿨 잔다.','{N가} 조용히 쉰다.','{N가} 나를 본다.',
+  '{N가} 밥을 먹는다.','{N가} 물을 마신다.','{N가} 숨어 있다.','{N가} 집으로 간다.',
+  '{N는} 귀엽다.','{N는} 정말 멋지다.','{N는} 동물이다.','{N와} 나는 친구다.',
+  '오늘은 {N와} 논다.','나는 {N가} 좋다.','{N가} 그림책에 나온다.','{N가} 하품을 한다.'
+];
+/*@end*/
+// hide: 규칙이 못 잡는 소리 변화(늘 '소리 바뀜'으로) · show: 규칙은 잡지만 표준발음이 그대로인 이름
+const DEX_THEMES=[
+  {id:'dino', name:'공룡', icon:'🦖', unit:'마리', cover:1, items:DEX_DINO, templates:[...DEX_DINO_SENT, ...DEX_EASY_SENT], hide:[], show:[]},
+/*@cut trial*/
+  {id:'animal', name:'동물', icon:'🐾', unit:'마리', cover:1, items:DEX_ANIMAL, templates:[...DEX_ANIMAL_SENT, ...DEX_EASY_SENT],
+   hide:["코뿔소", "흰수염고래", "물개", "흰동가리", "개미핥기", "들소", "벌새"], show:["홍학", "산호"]},
+/*@end*/
+];
+// 체험판: 동물 도감은 이름 목록 없이 '정식판' 자리만 보인다
+if(TRIAL) DEX_THEMES.push({id:'animal', name:'동물', icon:'🐾', unit:'마리', locked:true});
+
+const DEX=(function(){
+  /* ---------- 한글 도구 (decompose는 한글놀이 것) ---------- */
+  const jm = ch => { const d=decompose(ch); return d ? [d.ci,d.mi,d.ji] : [0,0,0]; };
+  const isSyl = ch => !!decompose(ch);
+  const coda = ch => isSyl(ch) ? jm(ch)[2] : 0;
+  const hasCoda = ch => coda(ch) > 0;
+  const dropCoda = ch => String.fromCharCode(ch.charCodeAt(0) - coda(ch));
+  const aeE = s => [...s].map(ch => { if(!isSyl(ch)) return ch; let [c,v,t]=jm(ch); if(v===5) v=1; if(v===7) v=3; return composeSyl(c,v,t); }).join('');   // ㅐ↔ㅔ, ㅒ↔ㅖ
+  // 한 낱말 안에서 글자와 소리가 달라지는 곳(규칙 이름 목록)
+  const OBS=[1,2,3,9,24, 7,19,20,22,23,25, 14,17,18,26];   // 장애음 받침(ㄱ·ㄷ·ㅂ 소리)
+  const H_CODA=[6,15,27];                                     // ㄶ·ㅀ·ㅎ
+  function soundChanges(word){
+    const s=[...word].filter(isSyl), out=new Set();
+    for(let i=0;i<s.length;i++){
+      const t=jm(s[i])[2];
+      if(H_CODA.includes(t)) out.add('ㅎ받침');
+      if(i===s.length-1 || !t) continue;
+      const n=jm(s[i+1])[0];
+      if(n===11){ if(t!==21) out.add('연음'); continue; }
+      if(n===18){ out.add(OBS.includes(t)?'거센소리되기':'ㅎ약화'); continue; }
+      if(OBS.includes(t) && (n===2||n===6)) out.add('비음화');
+      if((t===16||t===21) && n===5) out.add('비음화');
+      if((t===4&&n===5) || ([8,12,13].includes(t)&&n===2)) out.add('유음화');
+      if(OBS.includes(t) && [0,3,7,9,12].includes(n)) out.add('된소리되기');
+    }
+    return [...out];
+  }
+
+  /* ---------- 주제 자료 ---------- */
+  const pad4 = n => String(n).padStart(4,'0');
+  DEX_THEMES.forEach(t=>{
+    if(!t.items) return;
+    const hide=new Set(t.hide||[]), show=new Set(t.show||[]);
+    t.all=t.items.map(([id,name,grp])=>{
+      const ch=show.has(name)?[]:soundChanges(name);
+      if(hide.has(name) && !ch.length) ch.push('소리 바뀜');
+      return {id, name, grp, theme:t.id, key:t.id+':'+id, img:DEX_IMG+t.id+'/'+pad4(id)+'.webp', changes:ch};
+    });
+    t.byId=new Map(t.all.map(m=>[m.id,m]));
+    t.byName=new Map(t.all.map(m=>[m.name,m]));
+  });
+  const ready = t => !!t.all;
+  const themeOf = id => DEX_THEMES.find(t=>t.id===id);
+
+  /* ---------- 저장 ---------- */
+  const rd=(k,d)=>{ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } };
+  const wr=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
+  const S=Object.assign({lens:[2,3,4,5], count:8, colorN:true, dict:'key'}, rd(DEX_SET_KEY,{}));
+  const L=Object.assign({preset:'LS-3640', cols:3, rows:4, w:63, h:63, left:6.5, top:15, px:67, py:67.6, dx:0, dy:0, round:true}, rd(DEX_LABEL_KEY,{}));
+  const saveS=()=>wr(DEX_SET_KEY,S), saveL=()=>wr(DEX_LABEL_KEY,L);
+  const today=()=>{ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+
+  let R=null, profId=null;   // 지금 아이의 도감 기록
+  function loadRec(){
+    const p=activeProfile(); profId=p?p.id:null;
+    const all=rd(DEX_KEY,{});
+    R=(profId && all[profId]) || {ac:false, t:{}};
+    const cut=new Date(Date.now()-14*864e5).toISOString().slice(0,10);   // 14일 지난 연습 기록 정리
+    Object.values(R.t).forEach(tr=>{ if(tr.met) Object.keys(tr.met).forEach(d=>{ if(d<cut) delete tr.met[d]; }); });
+  }
+  function saveRec(){ if(!profId) return; const all=rd(DEX_KEY,{}); all[profId]=R; wr(DEX_KEY,all); }
+  const tRec = id => (R.t[id] = R.t[id] || {dex:{}, byDate:{}, met:{}});
+
+  /* ---------- 지금 진도로 읽을 수 있는 이름 ---------- */
+  const fits = m => wordAllowed(m.name) && (R.ac || !m.changes.length);
+  const poolOf = t => ready(t) ? t.all.filter(fits) : [];
+  const lenB = n => n<=2 ? 2 : Math.min(n,5);   // 글자 수 묶음: 2글자 이하 · 3 · 4 · 5글자 이상
+  function gamePool(t){ const p=poolOf(t).filter(m=>S.lens.includes(lenB(m.name.length))); return p.length ? p : poolOf(t); }
+  const hiddenCount = t => ready(t) ? t.all.filter(m=>wordAllowed(m.name) && m.changes.length).length : 0;
+  // 지금 아이의 진도 한 줄(도감이 어느 진도를 따르는지 보이게)
+  function progLine(){
+    const p=activeProfile(); if(!p) return '';
+    const j=p.jong.filter(x=>x).map(x=>JONG[x]);
+    return `${p.name} · 초성 ${p.cho.length}개 · 모음 ${p.jung.length}개 · 받침 ${j.length? j.join(' ') : '없음'}`;
+  }
+  const progBar = () => el('div',{class:'dx-sum'},
+    el('div',{}, el('b',{},'👧 '+progLine()), el('span',{class:'card-sub'},' (01 진도 설정을 따라요)')),
+    el('button',{class:'mini-btn', onclick:()=>switchMode('prog')},'진도 바꾸기'));
+
+  /* ---------- DOM 도구 ---------- */
+  const root=()=>document.getElementById('dxRoot');
+  function el(tag, attrs={}, ...kids){
+    const e=document.createElement(tag);
+    for(const [k,v] of Object.entries(attrs)){
+      if(v==null) continue;
+      if(k==='class') e.className=v; else if(k.startsWith('on')) e[k]=v; else e.setAttribute(k,v);
+    }
+    for(const k of kids) if(k!=null) e.append(k);
+    return e;
+  }
+  const pick = a => a[Math.floor(Math.random()*a.length)];
+  const take = (a,n) => shuffle(a).slice(0,n);
+  let toastT;
+  function toast(t){
+    let e=document.getElementById('dxToast');
+    if(!e){ e=el('div',{class:'dx-toast',id:'dxToast',role:'status'}); document.body.append(e); }
+    e.textContent=t; e.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.remove('on'),2000);
+  }
+  const good=()=>{ try{ sfxPop(); }catch(e){} }, bad=()=>{ try{ sfxWrong(); }catch(e){} }, win=()=>{ try{ sfxWin(); }catch(e){} };
+  // 이름을 음절 단위 span으로(받침 글자 색칠)
+  function wordEl(name, cls='dx-big', opt={}){
+    const w=el('div',{class:'dx-word '+cls});
+    [...name].forEach(ch=>{ const s=el('span',{class:'dx-syl'},ch); if(S.colorN && hasCoda(ch) && !opt.noColor) s.classList.add('n'); w.append(s); });
+    return w;
+  }
+  function picEl(m, hidden){
+    const p=el('div',{class:'dx-pic'});
+    if(hidden) p.append(el('div',{class:'q'},'?')); else p.append(el('img',{src:m.img, alt:''}));
+    p.reveal=()=>{ p.textContent=''; p.classList.add('reveal'); p.append(el('img',{src:m.img, alt:''})); };
+    return p;
+  }
+  // 선생님이 보고 불러 줄 수 있게 이름을 잠깐 보여 주는 버튼(누르면 보이고, 다시 누르면 가려짐)
+  function peekBtn(name, label){
+    const open=el('button',{class:'dx-btn sound'},label);
+    const shown=el('button',{class:'dx-btn peek', title:'누르면 다시 가려요'}, wordEl(name,'dx-mid'));
+    open.onclick=()=>open.replaceWith(shown);
+    shown.onclick=()=>shown.replaceWith(open);
+    return open;
+  }
+  function seg(opts, isOn, onPick){
+    const box=el('div',{class:'seg'});
+    opts.forEach(([v,label])=>box.append(el('button',{class:'seg-btn'+(isOn(v)?' on':''), onclick:()=>onPick(v)},label)));
+    return box;
+  }
+  function top(backLabel, onBack, title, right){
+    return el('div',{class:'dx-top'}, el('button',{class:'mini-btn', onclick:onBack}, backLabel), el('h2',{},title), right||null);
+  }
+
+  /* ---------- 화면 상태 ---------- */
+  let view='topics', themeId=null, tab='play', game=null, scope='pool';
+  function go(v){ view=v; render(); window.scrollTo(0,0); }
+  function render(){
+    const r=root(); if(!r) return; r.textContent='';
+    if(view==='topics') renderTopics(r);
+    else if(view==='theme') renderTheme(r);
+    else if(view==='game') renderGame(r);
+    else if(view==='print') renderPrint(r);
+  }
+  // 05 메뉴를 열 때 — 아이가 바뀌었으면 처음 화면으로
+  function open(){
+    const p=activeProfile(); const pid=p?p.id:null;
+    if(!R || pid!==profId){ loadRec(); view='topics'; game=null; }
+    if(view==='game' && !game) view='theme';
+    render();
+  }
+
+  /* ---------- 주제 고르기 + 선생님 설정 ---------- */
+  function renderTopics(r){
+    r.append(el('div',{class:'page-heading'},
+      el('span',{class:'eyebrow'},'05 / PICTURE DEX'),
+      (()=>{ const h=el('h1'); h.innerHTML='좋아하는 <em>그림</em>으로 이름을 모아요'; return h; })(),
+      el('p',{},'진도 설정에서 켠 글자로 읽을 수 있는 이름만 나와요. 받아쓰기에서 이름을 맞게 쓰면 도감에 들어가요.')));
+    const p=activeProfile();
+    r.append(progBar());
+    const card=el('div',{class:'card'});
+    const h2=el('h2',{},'주제 고르기 ', el('span',{class:'card-sub'}, (p?p.name:'')+'의 도감'));
+    h2.append(el('button',{class:'mini-btn', style:'margin-left:auto', onclick:()=>go('print')},'🖨️ 스티커 출력'));
+    card.append(h2);
+    const grid=el('div',{class:'dx-topics'});
+    DEX_THEMES.forEach(t=>{
+      const ok=ready(t);
+      const b=el('button',{class:'dx-topic'+(ok?'':' soon')});
+      const cov=el('div',{class:'cov'});
+      if(ok) cov.append(el('img',{src:t.byId.get(t.cover||t.all[0].id).img, alt:''})); else cov.append(el('span',{},t.icon));
+      const pool=poolOf(t), got=ok?t.all.filter(m=>tRec(t.id).dex[m.id]).length:0;
+      b.append(cov, el('div',{class:'tt'}, el('b',{},t.icon+' '+t.name),
+        el('small',{}, ok ? `지금 읽을 수 있는 ${pool.length}${t.unit} · 모은 ${got} / ${t.all.length}` : t.locked ? '정식판에서 만나요' : '준비 중이에요')));
+      if(!ok) b.append(el('span',{class:'tag'}, t.locked ? '정식판' : '준비 중'));
+      b.onclick=()=>{ if(t.locked){ trialLock(t.name+' 도감'); return; } if(!ok){ toast(t.name+' 도감은 준비 중이에요'); return; } themeId=t.id; tab='play'; go('theme'); };
+      grid.append(b);
+    });
+    card.append(grid);
+    r.append(card);
+
+    const set=el('div',{class:'card'}, el('h2',{},'⚙️ 선생님 설정 ', el('span',{class:'card-sub'},'모든 주제에 같이 써요')));
+    const row=(label, ...kids)=>el('div',{class:'dx-row'}, el('span',{class:'lbl'},label), ...kids);
+    const re=()=>{ saveS(); render(); };
+    set.append(row('글자 수', seg([[2,'2글자 이하'],[3,'3글자'],[4,'4글자'],[5,'5글자 이상']], v=>S.lens.includes(v),
+      v=>{ S.lens=S.lens.includes(v)?S.lens.filter(x=>x!==v):[...S.lens,v]; if(!S.lens.length) S.lens=[v]; re(); })));
+    const cnt=el('input',{type:'number', min:'1', max:'60', class:'dx-cnt'+([5,8,10].includes(S.count)?'':' on'), value:String(S.count), title:'문제 수 직접 쓰기', 'aria-label':'문제 수 직접 쓰기'});
+    cnt.addEventListener('change',()=>{ const v=Math.round(Number(cnt.value)); if(!v||v<1){ cnt.value=S.count; return; } S.count=Math.min(60,v); re(); });
+    set.append(row('문제 수', seg([[5,'5문제'],[8,'8문제'],[10,'10문제']], v=>S.count===v, v=>{ S.count=v; re(); }), el('label',{class:'dx-cntlbl'},'직접 ',cnt,' 문제')));
+    set.append(row('받침 글자 색칠', seg([[true,'켜기'],[false,'끄기']], v=>S.colorN===v, v=>{ S.colorN=v; re(); })));
+    set.append(row('받아쓰기', seg([['key','⌨️ 화면에 쓰기'],['paper','📒 공책에 쓰기']], v=>S.dict===v, v=>{ S.dict=v; re(); })));
+    set.append(row('소리가 바뀌는 이름', seg([[false,'빼기'],[true,'넣기']], v=>!!R.ac===v, v=>{ R.ac=v; saveRec(); render(); }),
+      el('span',{class:'card-sub'},'연음·비음화·유음화·된소리되기·ㅎ 소리 변화 · 아이마다 따로')));
+    set.append(el('p',{class:'hint', style:'margin:12px 0 0'},'기계 음성은 없어요. 놀이 중에 「👀 살짝 보기」를 눌러 이름을 확인하고 선생님이 불러 주세요. 도감 기록은 아이마다 따로, 이 기기의 이 브라우저에만 저장돼요.'));
+    set.append(el('div',{class:'dx-row'}, el('button',{class:'mini-btn warn', onclick:()=>{
+      const pp=activeProfile(); if(!pp) return;
+      openConfirm('그림 도감 비우기','「'+esc(pp.name)+'」의 그림 도감(모든 주제)과 날짜별 스티커 기록을 지울까요? 되돌릴 수 없어요.',()=>{ R.t={}; saveRec(); render(); toast('도감을 비웠어요'); });
+    }},'도감 비우기')));
+    r.append(set);
+  }
+
+  /* ---------- 주제 안: 놀이 고르기 / 모은 도감 ---------- */
+  function renderTheme(r){
+    const t=themeOf(themeId); if(!t||!ready(t)){ view='topics'; return render(); }
+    const pool=poolOf(t), rec=tRec(t.id), got=pool.filter(m=>rec.dex[m.id]).length;
+    r.append(top('← 주제', ()=>go('topics'), t.icon+' '+t.name+' 도감', el('span',{class:'dx-pill'},`모은 ${got} / ${pool.length}`)));
+    const picker=el('div',{class:'game-picker'});
+    [['play','🎲 놀이'],['dex','📖 모은 도감']].forEach(([k,label])=>picker.append(el('button',{class:'gp-btn'+(tab===k?' on':''), onclick:()=>{ tab=k; render(); }},label)));
+    r.append(picker);
+    if(tab==='play'){
+      const hid=hiddenCount(t);
+      r.append(el('div',{class:'dx-sum'},
+        el('div',{}, el('b',{},`지금 진도로 읽을 수 있는 ${t.name} ${pool.length}${t.unit}`),
+          !R.ac && hid ? el('span',{class:'card-sub'},` (소리가 바뀌는 이름 ${hid}${t.unit} 뺌)`) : null,
+          el('div',{class:'card-sub'},'👧 '+progLine())),
+        el('button',{class:'mini-btn', onclick:()=>switchMode('prog')},'진도 바꾸기')));
+      const box=el('div',{class:'dx-modes'});
+      Object.entries(MODES).forEach(([k,M])=>box.append(el('button',{class:'dx-mode', onclick:()=>startMode(k)},
+        el('div',{class:'num', style:'background:'+M.color},M.icon), el('div',{}, el('h3',{},M.title), el('p',{},M.desc)))));
+      r.append(box);
+    } else renderDexGrid(r,t);
+  }
+  function renderDexGrid(r,t){
+    const rec=tRec(t.id), pool=poolOf(t);
+    const pn=pool.filter(m=>rec.dex[m.id]).length, all=t.all.filter(m=>rec.dex[m.id]).length;
+    const bar=el('div',{class:'dx-bar'}, el('i',{style:'width:'+(pool.length?pn/pool.length*100:0)+'%'}));
+    r.append(el('div',{class:'dx-progress'}, el('b',{},'지금 진도 범위'), bar, el('b',{},`${pn} / ${pool.length}`),
+      all>pn ? el('span',{class:'card-sub'},`(전체 도감 ${all}${t.unit})`) : null));
+    const list=scope==='pool'?pool : scope==='got'?t.all.filter(m=>rec.dex[m.id]) : t.all;
+    r.append(el('div',{class:'dx-row', style:'margin:0 0 14px'},
+      seg([['pool','지금 진도 범위'],['got','모은 것만'],['all',`전체 ${t.all.length}${t.unit}`]], v=>scope===v, v=>{ scope=v; render(); }),
+      el('span',{class:'card-sub', style:'margin-left:auto'},`이 목록 ${list.filter(m=>rec.dex[m.id]).length} / ${list.length}`)));
+    r.append(el('p',{class:'hint'},'받아쓰기에서 이름을 맞게 쓴 것만 도감에 들어와요. 모은 그림을 누르면 이름이 크게 나와요.'));
+    const g=el('div',{class:'dx-grid'});
+    list.forEach(m=>{
+      const has=!!rec.dex[m.id];
+      const n=m.name.length;
+      const c=el('div',{class:'dx-cell'+(has?'':' no')},
+        el('img',{src:m.img, alt:'', loading:'lazy'}),
+        has ? Object.assign(wordEl(m.name,'nm',{noColor:true}),{style:`font-size:${n<=4?22:n<=6?17:14}px`}) : el('div',{class:'no-nm'},'???'),
+        el('small',{},'No.'+pad4(m.id)));
+      if(has){ c.tabIndex=0; c.setAttribute('role','button'); c.onclick=()=>showName(m);
+        c.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); showName(m); } }; }
+      g.append(c);
+    });
+    if(!list.length) g.append(el('p',{class:'hint'}, scope==='got'?'아직 모은 그림이 없어요. 받아쓰기에서 이름을 맞혀 보세요.':'지금 진도로 읽을 수 있는 이름이 없어요. 01 진도 설정에서 음소를 더 켜 주세요.'));
+    r.append(g);
+  }
+  // 모은 그림: 이름을 크게 보여 줘서 아이가 읽게
+  function showName(m){
+    openInfo('이름을 읽어 봐요', '<div class="dx-namecard"><img src="'+esc(m.img)+'" alt=""><div class="dx-word dx-mid">'+esc(m.name)+'</div></div>');
+  }
+
+  /* ---------- 놀이 진행 ---------- */
+  function startMode(key){
+    const t=themeOf(themeId), M=MODES[key];
+    const qs=M.make(t);
+    if(!qs.length) return toast(M.empty || '지금 진도로는 문제를 만들 수 없어요. 01 진도 설정에서 음소를 더 켜 주세요');
+    game={key, t, qs, i:0, stars:0, caught:[]};
+    go('game');
+  }
+  function renderGame(r){
+    if(!game){ view='theme'; return render(); }
+    const M=MODES[game.key];
+    const stars=el('span',{class:'dx-pill', id:'dxStars'},'⭐ '+game.stars);
+    r.append(top('← 놀이', ()=>{ game=null; tab='play'; go('theme'); }, M.title, stars));
+    const d=el('div',{class:'dx-dots', id:'dxDots'});
+    r.append(d, el('div',{class:'dx-stage', id:'dxStage'}));
+    renderQ();
+  }
+  const stage=()=>document.getElementById('dxStage');
+  function renderQ(){
+    const d=document.getElementById('dxDots'); d.textContent='';
+    game.qs.forEach((_,i)=>d.append(el('i',{class:i<game.i?'done':i===game.i?'cur':''})));
+    document.getElementById('dxStars').textContent='⭐ '+game.stars;
+    const st=stage(); st.textContent='';
+    MODES[game.key].render(game.qs[game.i], st);
+  }
+  function next(){ game.i++; if(game.i>=game.qs.length) finish(); else renderQ(); }
+  function addStar(){ game.stars++; const s=document.getElementById('dxStars'); if(s) s.textContent='⭐ '+game.stars; }
+  // 맞힘 처리: 받아쓰기만 도감에 넣고, 나머지 놀이는 '오늘 연습함'으로 표시(받아쓰기에 먼저 나옴)
+  function award(m, firstTry){
+    if(firstTry) addStar();
+    const rec=tRec(game.t.id), d=today();
+    if(!game.caught.includes(m)) game.caught.push(m);
+    if(game.key!=='dict'){
+      rec.met[d]=rec.met[d]||[];
+      if(!rec.met[d].includes(m.id)){ rec.met[d].push(m.id); saveRec(); }
+      return false;
+    }
+    const isNew=!rec.dex[m.id];
+    rec.dex[m.id]=(rec.dex[m.id]||0)+1;
+    rec.byDate[d]=rec.byDate[d]||[];
+    if(!rec.byDate[d].includes(m.id)) rec.byDate[d].push(m.id);
+    saveRec();
+    return isNew;
+  }
+  const nextBtn=()=>el('button',{class:'dx-btn blue', onclick:next}, game.i+1<game.qs.length?'다음 ▶':'끝! ▶');
+  // 선생님 판정(⭕/🔁)
+  function judgeRow(onOk, onAgain){
+    const r=el('div',{class:'dx-judge'},
+      el('button',{class:'dx-btn ok', onclick:()=>{ r.remove(); onOk(); }},'⭕ 잘 읽었어'),
+      el('button',{class:'dx-btn again', onclick:onAgain},'🔁 한 번 더'));
+    return r;
+  }
+  function caughtLine(m, isNew){
+    good();
+    if(game.key!=='dict') return el('p',{class:'dx-caught'},`⭐ 맞았어요! ${m.name}, 받아쓰기까지 하면 도감에 들어가요`);
+    const josa=hasCoda(m.name.at(-1))?'을':'를';
+    return el('p',{class:'dx-caught'}, isNew?`🎉 ${m.name}${josa} 도감에 넣었어요!`:`⭐ ${m.name} 한 번 더 모았어요!`);
+  }
+  function finish(){
+    const st=stage(); st.textContent=''; document.getElementById('dxDots').textContent='';
+    st.append(el('h2',{class:'dx-done'},'다 했어요!'));
+    st.append(el('div',{class:'dx-stars'}, '⭐'.repeat(Math.min(game.stars,12)) || '💪'));
+    st.append(el('p',{class:'dx-hint'},`한 번에 맞힌 것 ${game.stars}개`));
+    if(game.caught.length){
+      st.append(el('p',{class:'dx-hint'}, game.key==='dict'?'이번에 도감에 넣은 그림':'이번에 만난 그림 (받아쓰기에서 맞히면 도감에 들어가요)'));
+      const th=el('div',{class:'dx-thumbs'});
+      game.caught.forEach(m=>th.append(el('div',{class:'dx-thumb'}, el('img',{src:m.img, alt:''}), wordEl(m.name,'',{noColor:true}))));
+      st.append(th);
+    }
+    st.append(el('div',{class:'dx-judge'},
+      el('button',{class:'dx-btn blue', onclick:()=>startMode(game.key)},'🔄 한 판 더'),
+      game.key==='dict' && game.caught.length ? el('button',{class:'dx-btn', onclick:()=>{ printDate=today(); printPick={}; go('print'); }},'🖨️ 스티커') : null,
+      el('button',{class:'dx-btn', onclick:()=>{ game=null; tab='play'; go('theme'); }},'◀ 놀이 고르기')));
+    win();
+  }
+
+  /* ---------- 놀이 6종 ---------- */
+  function fillTemplate(tpl, name){
+    const b=hasCoda(name.at(-1));
+    return tpl.replace('{N가}',name+(b?'이':'가')).replace('{N는}',name+(b?'은':'는')).replace('{N와}',name+(b?'과':'와')).replace('{N}',name);
+  }
+  function sentenceOK(text){
+    return text.replace(/[.,!?]/g,'').split(' ').filter(Boolean).every(w=>wordAllowed(w) && (R.ac || !soundChanges(w).length));
+  }
+  // 듣고 찾기 보기: 정답 + (받침 뺀 가짜 이름) + 비슷한 이름(같은 진도 범위 안에서)
+  function makeChoices(t, m){
+    const a=[...m.name];
+    const scored=poolOf(t).filter(x=>x!==m).map(x=>{
+      const b=[...x.name]; let s=0;
+      s+= a.length===b.length ? 3 : -2*Math.abs(a.length-b.length);
+      for(let i=0;i<Math.min(a.length,b.length);i++){
+        if(a[i]===b[i]) s+=4;
+        else { const p=jm(a[i]), q=jm(b[i]); if(p[0]===q[0]) s+=1; if(p[1]===q[1]) s+=1; }
+      }
+      b.forEach(c=>{ if(a.includes(c)) s+=1; });
+      if(a.at(-1)===b.at(-1)) s+=2;
+      return {n:x.name, s:s+Math.random()*2.5};
+    }).sort((x,y)=>y.s-x.s);
+    const opts=[m.name];
+    if(Math.random()<0.6){
+      const idx=a.map((c,i)=>hasCoda(c)?i:-1).filter(i=>i>=0);
+      if(idx.length){ const i=pick(idx); const fake=a.map((c,j)=>j===i?dropCoda(c):c).join(''); if(!t.byName.has(fake)) opts.push(fake); }
+    }
+    for(const o of scored){ if(opts.length>=4) break; if(!opts.includes(o.n)) opts.push(o.n); }
+    return shuffle(opts);
+  }
+  // 음절별 맞음/틀림 표시
+  function diffWord(shown, ref, aeOnly){
+    const w=el('div',{class:'dx-word dx-mid'}), A=[...shown], B=[...ref];
+    A.forEach((ch,i)=>{ const s=el('span',{class:'dx-syl'},ch); if(aeOnly){ if(ch!==B[i]) s.classList.add('n'); } else s.classList.add(ch===B[i]?'ok':'no'); w.append(s); });
+    if(!aeOnly && A.length<B.length) for(let i=A.length;i<B.length;i++) w.append(el('span',{class:'dx-syl no'},'□'));
+    return w;
+  }
+
+  const MODES={
+    // ① 받침 붙이기: 푸리 → 푸린
+    attach:{ icon:'＋', color:'#e8590c', title:'① 받침 붙이기',
+      desc:'받침 없는 글자를 먼저 읽고, 받침을 붙여 다시 읽어요. (토로 → 토론)',
+      empty:'받침 있는 이름이 없어요. 01 진도 설정에서 받침을 켜 주세요',
+      make(t){ return take(gamePool(t).filter(m=>[...m.name].some(hasCoda)), S.count).map(m=>{
+        const idx=[...m.name].map((c,i)=>hasCoda(c)?i:-1).filter(i=>i>=0); return {m, idx:pick(idx), tries:0}; }); },
+      render(q, st){
+        const chars=[...q.m.name], pic=picEl(q.m,true), w=el('div',{class:'dx-word dx-big'});
+        const spans=chars.map((ch,i)=>{ const s=el('span',{class:'dx-syl'}, i===q.idx?dropCoda(ch):ch);
+          if(i===q.idx) s.classList.add('target'); else if(S.colorN && hasCoda(ch)) s.classList.add('n'); w.append(s); return s; });
+        const hint=el('p',{class:'dx-hint'},'① 파란 글자를 넣어 먼저 읽어요');
+        const J=JONG[coda(chars[q.idx])];
+        const tile=el('button',{class:'dx-ntile', 'aria-label':J+' 붙이기'},J);
+        const msg=el('p',{class:'dx-msg'}), area=el('div',{class:'dx-judge'},tile);
+        tile.onclick=()=>{
+          const s=spans[q.idx]; s.textContent=chars[q.idx]; s.classList.remove('target'); s.classList.add('pop'); if(S.colorN) s.classList.add('n');
+          good(); hint.textContent='② 받침 '+J+' 붙였어요! 이제 이름을 읽어요';
+          area.replaceChildren(judgeRow(()=>{ pic.reveal(); const isNew=award(q.m, q.tries===0); msg.replaceWith(caughtLine(q.m,isNew)); st.append(nextBtn()); },
+            ()=>{ q.tries++; msg.className='dx-msg'; msg.textContent='한 글자씩 손가락으로 짚으며 천천히!'; }));
+        };
+        st.append(pic, hint, w, area, msg);
+      } },
+    // ② 이름 읽기
+    read:{ icon:'📖', color:'#3b5bdb', title:'② 이름 읽기',
+      desc:'이름을 읽어요. 맞게 읽으면 누구인지 그림이 나타나요.',
+      make(t){ return take(gamePool(t), S.count).map(m=>({m, tries:0})); },
+      render(q, st){
+        const pic=picEl(q.m,true), w=wordEl(q.m.name), msg=el('p',{class:'dx-msg'});
+        let f=-1;
+        const step=el('button',{class:'dx-btn', onclick:()=>{ const ss=w.querySelectorAll('.dx-syl'); ss.forEach(s=>s.classList.remove('hl')); f=(f+1)%ss.length; ss[f].classList.add('hl'); }},'👆 한 글자씩');
+        const row=judgeRow(()=>{ pic.reveal(); step.remove(); const isNew=award(q.m, q.tries===0); msg.replaceWith(caughtLine(q.m,isNew)); st.append(nextBtn()); },
+          ()=>{ q.tries++; msg.textContent='‘한 글자씩’을 눌러 짚으며 읽어 봐요'; });
+        st.append(pic, el('p',{class:'dx-hint'},'누구일까? 이름을 읽어요'), w, row, step, msg);
+      } },
+    // ③ 듣고 찾기 — 선생님이 불러 주고 아이가 고른다
+    listen:{ icon:'👂', color:'#12b5a5', title:'③ 듣고 이름 찾기',
+      desc:'선생님이 불러 주는 이름을, 비슷한 이름들 사이에서 찾아요.',
+      make(t){ return take(gamePool(t), S.count).map(m=>({m, tries:0, opts:makeChoices(t,m)})); },
+      render(q, st){
+        const pic=picEl(q.m,true), msg=el('p',{class:'dx-msg'}), grid=el('div',{class:'dx-choices'});
+        let done=false;
+        q.opts.forEach(o=>{
+          const b=el('button',{class:'dx-choice'}); b.append(...wordEl(o,'').childNodes);
+          b.onclick=()=>{
+            if(done) return;
+            if(o===q.m.name){ done=true; b.classList.add('right'); pic.reveal(); const isNew=award(q.m, q.tries===0); msg.replaceWith(caughtLine(q.m,isNew)); st.append(nextBtn()); }
+            else { q.tries++; bad(); b.classList.add('wrong','shake'); b.disabled=true; msg.className='dx-msg bad'; msg.textContent='다시 들어 볼까? 선생님이 한 번 더 불러 주세요'; }
+          };
+          grid.append(b);
+        });
+        st.append(pic, el('p',{class:'dx-hint'},'선생님이 이름을 불러 주면, 맞는 이름을 찾아요'), peekBtn(q.m.name,'👀 선생님만 보기'), grid, msg);
+      } },
+    // ④ 첫 글자 모으기
+    sort:{ icon:'🧺', color:'#141e10', title:'④ 첫 글자 모으기',
+      desc:'이름을 읽고, 첫 글자가 같은 바구니에 넣어요.',
+      empty:'첫 글자가 같은 이름이 모자라요. 01 진도 설정에서 음소를 더 켜 주세요',
+      make(t){
+        const groups={}; poolOf(t).forEach(m=>{ const f=[...m.name][0]; (groups[f]=groups[f]||[]).push(m); });
+        const keys=Object.keys(groups).filter(k=>groups[k].length>=2);
+        if(keys.length<3) return [];
+        return Array.from({length:Math.max(2,Math.round(S.count/3))},()=>{
+          const ks=take(keys,3);
+          return {ks, cards:shuffle(ks.flatMap(k=>take(groups[k],Math.min(3,groups[k].length)).map(m=>({m,k}))))};
+        });
+      },
+      render(q, st){
+        let sel=null, left=q.cards.length;
+        const msg=el('p',{class:'dx-msg'}), cards=el('div',{class:'dx-cards'}), bins=el('div',{class:'dx-bins'}), binEls={};
+        q.ks.forEach(k=>{
+          const b=el('button',{class:'dx-bin'}, el('div',{class:'tag dx-word'},k));
+          b.onclick=()=>{
+            if(!sel){ msg.className='dx-msg'; msg.textContent='먼저 이름 카드를 골라요'; return; }
+            if(sel.data.k===k){
+              good(); if(!sel.data.miss) addStar();
+              b.append(el('div',{class:'in dx-word'},sel.data.m.name));
+              sel.btn.remove(); sel=null; left--;
+              Object.values(binEls).forEach(x=>x.classList.remove('ready'));
+              msg.className='dx-msg good'; msg.textContent='좋아요!';
+              if(!left){ msg.textContent='바구니를 다 채웠어요!'; st.append(nextBtn()); }
+            } else {
+              bad(); sel.data.miss=true; sel.btn.classList.add('shake'); const sb=sel.btn; setTimeout(()=>sb.classList.remove('shake'),400);
+              msg.className='dx-msg bad'; msg.textContent='첫 글자를 다시 읽어 봐요';
+            }
+          };
+          binEls[k]=b; bins.append(b);
+        });
+        q.cards.forEach(data=>{
+          const btn=el('button',{class:'dx-card'}); btn.append(...wordEl(data.m.name,'').childNodes);
+          btn.onclick=()=>{ cards.querySelectorAll('.dx-card').forEach(c=>c.classList.remove('sel')); sel={btn,data}; btn.classList.add('sel');
+            Object.values(binEls).forEach(x=>x.classList.add('ready')); msg.className='dx-msg'; msg.textContent='소리 내어 읽고, 바구니를 눌러요'; };
+          cards.append(btn);
+        });
+        st.append(el('p',{class:'dx-hint'},'이름 카드를 누르고 → 첫 글자가 같은 바구니를 눌러요'), bins, cards, msg);
+      } },
+    // ⑤ 받아쓰기 → 도감
+    dict:{ icon:'✏️', color:'#2f49b0', title:'⑤ 받아쓰기 → 도감',
+      desc:'그림을 보고 선생님이 불러 주는 이름을 써요. 맞히면 도감에 들어가요! (오늘 연습했고 아직 없는 것부터)',
+      make(t){
+        const rec=tRec(t.id), p=gamePool(t);
+        const met=(rec.met[today()]||[]).map(id=>t.byId.get(id)).filter(m=>m && fits(m));
+        const t1=shuffle(met.filter(m=>!rec.dex[m.id]));
+        const t2=shuffle(p.filter(m=>!rec.dex[m.id] && !t1.includes(m)));
+        const t3=shuffle(p.filter(m=>rec.dex[m.id]));
+        return [...t1,...t2,...t3].slice(0,S.count).map(m=>({m, tries:0}));
+      },
+      render(q, st){
+        const msg=el('p',{class:'dx-msg'});
+        st.append(picEl(q.m,false), el('p',{class:'dx-hint'},'선생님이 이름을 불러 주면 써요'), peekBtn(q.m.name,'👀 글자 살짝 보기'));
+        const success=note=>{ const isNew=award(q.m, q.tries===0); const line=caughtLine(q.m,isNew); msg.replaceWith(line); if(note) line.after(el('p',{class:'dx-hint'},note)); st.append(nextBtn()); };
+        if(S.dict==='paper'){
+          st.append(el('p',{class:'dx-hint'},'공책에 이름을 써요. 다 쓰면 정답을 확인해요'));
+          const showBtn=el('button',{class:'dx-btn blue'},'👀 정답 보기');
+          showBtn.onclick=()=>showBtn.replaceWith(wordEl(q.m.name,'dx-mid'), judgeRow(()=>success(), ()=>{ q.tries++; msg.textContent='틀린 글자에 동그라미 하고 한 번 더 써요'; }));
+          st.append(showBtn, msg);
+          return;
+        }
+        const input=el('input',{class:'dx-dict', type:'text', autocomplete:'off', autocorrect:'off', autocapitalize:'off', spellcheck:'false', lang:'ko', placeholder:'여기에 써요', 'aria-label':'이름 쓰기'});
+        const check=el('button',{class:'dx-btn blue'},'확인'), cmp=el('div',{class:'dx-compare'});
+        let fin=false;
+        const grade=()=>{
+          if(fin) return;
+          const typed=input.value.replace(/\s/g,'').normalize('NFC'); if(!typed){ input.focus(); return; }
+          const ans=q.m.name;
+          if(typed===ans){ fin=true; input.disabled=true; check.remove(); cmp.textContent=''; return success(); }
+          if(aeE(typed)===aeE(ans)){ fin=true; input.disabled=true; check.remove();
+            cmp.replaceChildren(el('span',{class:'lbl'},'이름은 이렇게 써요'), diffWord(ans,typed,true)); return success('소리는 맞았어요! ㅐ/ㅔ만 다르게 써요'); }
+          q.tries++; bad(); input.classList.add('shake'); setTimeout(()=>input.classList.remove('shake'),400);
+          cmp.replaceChildren(el('span',{class:'lbl'},'내가 쓴 것'), diffWord(typed,ans,false));
+          if(q.tries===1){ msg.className='dx-msg bad'; msg.textContent='빨간 글자를 선생님이 한 번 더 불러 주세요'; input.select(); }
+          else { fin=true; input.disabled=true; check.remove(); cmp.append(el('span',{class:'lbl'},'정답'), wordEl(ans,'dx-mid'));
+            msg.className='dx-msg'; msg.textContent='정답을 보고 공책에 한 번 따라 써요'; st.append(nextBtn()); }
+        };
+        check.onclick=grade;
+        input.addEventListener('keydown',e=>{ if(e.key==='Enter' && !e.isComposing){ e.preventDefault(); setTimeout(grade,0); } });
+        st.append(input, check, cmp, msg);
+        setTimeout(()=>input.focus(),60);
+      } },
+    // ⑥ 문장 읽기
+    sent:{ icon:'💬', color:'#0e9488', title:'⑥ 문장 읽기',
+      desc:'이름이 나오는 짧은 문장을 읽어요. 진도에서 켠 글자로만 된 문장이 나와요.',
+      empty:'지금 진도로 만들 수 있는 문장이 없어요. 01 진도 설정에서 음소를 더 켜 주세요',
+      make(t){
+        const ok=[];
+        for(const m of shuffle(gamePool(t))){
+          const ts=shuffle(t.templates||[]).map(x=>fillTemplate(x,m.name)).filter(sentenceOK);
+          if(ts.length) ok.push({m, text:ts[0], tries:0});
+          if(ok.length>=S.count) break;
+        }
+        return ok;
+      },
+      render(q, st){
+        const pic=picEl(q.m,true); pic.classList.add('small');
+        const s=el('div',{class:'dx-word dx-sentence'});
+        q.text.split(' ').forEach(w=>s.append(el('span',{class:'w'},...wordEl(w,'').childNodes)));
+        const msg=el('p',{class:'dx-msg'});
+        const row=judgeRow(()=>{ pic.reveal(); const isNew=award(q.m, q.tries===0); msg.replaceWith(caughtLine(q.m,isNew)); st.append(nextBtn()); },
+          ()=>{ q.tries++; msg.textContent='띄어 쓴 곳에서 잠깐 쉬며 읽어요'; });
+        st.append(el('p',{class:'dx-hint'},'문장을 소리 내어 읽어요'), pic, s, row, msg);
+      } },
+  };
+
+  /* ---------- 스티커 출력 (날짜별 · 모든 주제) ---------- */
+  const PRESETS={
+    'LS-3640':{cols:3, rows:4, w:63, h:63, left:6.5, top:15, px:67, py:67.6, round:true},
+    'LS-3112':{cols:3, rows:4, w:63.5, h:70, left:7, top:7.9, px:66, py:70, round:false},
+  };
+  let printDate=null, printPick={}, startCell=0, testMode=false;
+  function fmtDate(s){ const [y,m,d]=s.split('-').map(Number); return `${m}월 ${d}일 (${'일월화수목금토'[new Date(y,m-1,d).getDay()]})`; }
+  function datesAll(){
+    const out={};
+    DEX_THEMES.forEach(t=>{ if(!ready(t)) return; const by=tRec(t.id).byDate;
+      Object.keys(by).forEach(d=>{ by[d].forEach(id=>{ const m=t.byId.get(id); if(m) (out[d]=out[d]||[]).push(m); }); }); });
+    return out;
+  }
+  function renderPrint(r){
+    const all=datesAll(), dates=Object.keys(all).filter(d=>all[d].length).sort().reverse();
+    if(!printDate || !all[printDate]) printDate=dates[0]||null;
+    r.append(top('← 주제', ()=>go('topics'), '🖨️ 스티커 출력', null));
+    const side=el('div',{class:'dx-pside card'}), main=el('div',{});
+    const h3=t=>el('h3',{},t);
+    side.append(h3('1. 날짜'));
+    const ds=el('div',{class:'dx-row', style:'margin:0'});
+    if(!dates.length) ds.append(el('p',{class:'hint'},'아직 모은 그림이 없어요. 받아쓰기에서 맞히면 그날 날짜로 모여요.'));
+    dates.forEach(d=>ds.append(el('button',{class:'mini-btn'+(d===printDate?' dx-on':''), onclick:()=>{ printDate=d; printPick={}; render(); }},`${fmtDate(d)} · ${all[d].length}장`)));
+    side.append(ds);
+    const list=printDate?all[printDate]:[];
+    list.forEach(m=>{ if(!(m.key in printPick)) printPick[m.key]=true; });
+    side.append(h3('2. 출력할 그림'));
+    const pk=el('div',{class:'dx-picks'});
+    list.forEach(m=>pk.append(el('button',{class:'dx-pickcell'+(printPick[m.key]?' on':''), onclick:()=>{ printPick[m.key]=!printPick[m.key]; render(); }},
+      el('img',{src:m.img, alt:''}), el('span',{},(printPick[m.key]?'✅ ':'⬜ ')+m.name))));
+    side.append(pk);
+    side.append(h3('3. 라벨지'));
+    const ps=el('select',{class:'dx-sel', 'aria-label':'라벨지 종류'});
+    [['LS-3640','폼텍 LS-3640 (원형 12칸, 지름 63mm)'],['LS-3112','폼텍 LS-3112 (12칸, 63.5×70mm)'],['custom','직접 입력']].forEach(([v,t])=>{ const o=el('option',{value:v},t); if(L.preset===v) o.selected=true; ps.append(o); });
+    ps.onchange=()=>{ L.preset=ps.value; if(PRESETS[L.preset]) Object.assign(L,PRESETS[L.preset]); saveL(); render(); };
+    side.append(ps);
+    const num=(k,label,step,title)=>{ const i=el('input',{type:'number', step:step||'0.1', value:String(L[k]), title:title||null});
+      i.addEventListener('change',()=>{ const v=parseFloat(i.value); if(isNaN(v)) return; L[k]=(k==='cols'||k==='rows')?Math.max(1,Math.min(10,Math.round(v))):v; if(!['dx','dy'].includes(k)) L.preset='custom'; saveL(); render(); });
+      return el('label',{},label,i); };
+    if(L.preset==='custom') side.append(el('div',{class:'dx-fields'}, num('cols','가로 칸','1'), num('rows','세로 칸','1'), num('w','칸 너비 mm'), num('h','칸 높이 mm'),
+      num('left','왼쪽 여백 mm'), num('top','위 여백 mm'), num('px','가로 간격 mm','0.1','칸 왼쪽 끝에서 다음 칸 왼쪽 끝까지'), num('py','세로 간격 mm','0.1','칸 위쪽 끝에서 다음 칸 위쪽 끝까지')));
+    side.append(el('p',{class:'hint'},'라벨지 포장에 적힌 규격을 넣으세요. 간격은 ‘칸 끝에서 다음 칸 끝까지’ 길이예요.'));
+    side.append(el('div',{class:'dx-fields'}, num('dx','밀림 보정 →','0.5'), num('dy','밀림 보정 ↓','0.5')));
+    const rb=el('input',{type:'checkbox'}); rb.checked=!!L.round; rb.onchange=()=>{ L.round=rb.checked; saveL(); render(); };
+    side.append(el('label',{class:'dx-check'}, rb, ' 동그란 라벨'));
+    side.append(h3('4. 시작 칸'), el('p',{class:'hint', style:'margin:0 0 8px'},'쓰다 남은 라벨지면 비어 있는 첫 칸을 눌러요'));
+    const cells=L.cols*L.rows; if(startCell>=cells) startCell=0;
+    const sm=el('div',{class:'dx-startmap', style:`grid-template-columns:repeat(${L.cols},30px)`});
+    for(let i=0;i<cells;i++) sm.append(el('button',{class:'dx-sc'+(i<startCell?' used':i===startCell?' cur':''), title:(i+1)+'번 칸', onclick:()=>{ startCell=i; render(); }},String(i+1)));
+    side.append(sm);
+    side.append(el('div',{class:'genbtns'},
+      el('button',{class:'btn-gen', onclick:()=>{ if(TRIAL){ trialLock('그림 도감 스티커 출력'); return; } testMode=false; if(!Object.values(printPick).some(Boolean)) return toast('출력할 그림을 골라 주세요'); doPrint(); }},'🖨️ 인쇄'+(TRIAL?' 🔒':'')),
+      el('button',{onclick:()=>{ if(TRIAL){ trialLock('그림 도감 스티커 출력'); return; } testMode=true; render(); doPrint(()=>{ testMode=false; render(); }); }},'📐 정렬 테스트'+(TRIAL?' 🔒':''))));
+    side.append(el('p',{class:'hint', style:'margin-top:12px'},'인쇄 창에서 배율 100%(실제 크기), 여백 없음, 머리글·바닥글 끄기로 맞춰 주세요. 처음에는 ‘정렬 테스트’를 보통 종이에 뽑아 라벨지에 겹쳐 보고, 어긋나면 밀림 보정에 mm를 넣어요.'));
+    const chosen=testMode?[]:list.filter(m=>printPick[m.key]);
+    const wrap=el('div',{id:'dxSheetWrap'}), sheets=el('div',{id:'dxSheets'});
+    wrap.append(sheets);
+    main.append(el('p',{class:'hint', id:'dxPCount', style:'margin:0 0 8px'}, testMode?'정렬 테스트: 칸 테두리만 인쇄해요(보통 종이에)':`${chosen.length}장 · ${startCell+1}번 칸부터`), wrap);
+    r.append(el('div',{class:'dx-pgrid'}, side, main));
+    buildSheets(sheets, chosen);
+    const pc=document.getElementById('dxPCount'); if(pc && !testMode) pc.textContent+=` · ${sheets.children.length}쪽`;
+    requestAnimationFrame(fitPreview);
+  }
+  function buildSheets(box, list){
+    const per=L.cols*L.rows, slots=testMode?per:startCell+list.length, pages=Math.max(1,Math.ceil(slots/per));
+    for(let p=0;p<pages;p++){
+      const sh=el('div',{class:'dx-sheet'});
+      for(let c=0;c<per;c++){
+        const g=p*per+c, col=c%L.cols, row=Math.floor(c/L.cols);
+        const x=L.left+col*L.px+Number(L.dx), y=L.top+row*L.py+Number(L.dy);
+        const cell=el('div',{class:'dx-lbl'+(L.round?' round':'')+(testMode?' test':''), style:`left:${x}mm;top:${y}mm;width:${L.w}mm;height:${L.h}mm`});
+        if(testMode) cell.append(el('span',{},String(c+1)));
+        else { const m=list[g-startCell]; if(g<startCell) cell.classList.add('skip'); else if(m) cell.append(el('img',{src:m.img, alt:''})); }
+        sh.append(cell);
+      }
+      box.append(sh);
+    }
+  }
+  function fitPreview(){
+    const wrap=document.getElementById('dxSheetWrap'); if(!wrap || !wrap.offsetWidth) return;
+    document.getElementById('dxSheets').style.setProperty('--z', Math.min(1,(wrap.clientWidth-4)/(210*96/25.4)));
+  }
+  window.addEventListener('resize',()=>{ if(view==='print') fitPreview(); });
+  // 스티커만 인쇄: 인쇄하는 동안만 여백 0 + 스티커 외 숨김(자료 만들기 인쇄와 섞이지 않게)
+  function doPrint(after){
+    document.body.classList.add('dx-printing');
+    const st=el('style',{id:'dxPageStyle'}); st.textContent='@page{size:A4;margin:0}'; document.head.append(st);
+    let ended=false;
+    const end=()=>{ if(ended) return; ended=true; document.body.classList.remove('dx-printing'); st.remove(); window.removeEventListener('afterprint',end); if(after) after(); };
+    window.addEventListener('afterprint',end);
+    setTimeout(()=>window.print(),150);
+  }
+
+  /* ---------- 프로필 내보내기·가져오기·삭제 ---------- */
+  function booksFor(ids){ const all=rd(DEX_KEY,{}), out={}; ids.forEach(id=>{ if(all[id]) out[id]=all[id]; }); return out; }
+  function cleanBook(raw){
+    const out={ac:false, t:{}}; if(!raw || typeof raw!=='object' || Array.isArray(raw)) return out;
+    out.ac=raw.ac===true;
+    const ids=v=>Array.isArray(v)?[...new Set(v.map(n=>Math.floor(Number(n))).filter(n=>n>=1&&n<=9999))].slice(0,500):[];
+    DEX_THEMES.forEach(t=>{
+      const s=raw.t && raw.t[t.id]; if(!s || typeof s!=='object') return;
+      const tr={dex:{}, byDate:{}, met:{}};
+      if(s.dex && typeof s.dex==='object') Object.entries(s.dex).slice(0,2000).forEach(([k,v])=>{ const n=Math.floor(Number(k)); if(n>=1&&n<=9999) tr.dex[n]=Math.min(9999,Math.max(1,Math.floor(Number(v))||1)); });
+      if(s.byDate && typeof s.byDate==='object') Object.entries(s.byDate).slice(0,2000).forEach(([d,v])=>{ if(/^\d{4}-\d{2}-\d{2}$/.test(d)) tr.byDate[d]=ids(v); });
+      out.t[t.id]=tr;
+    });
+    return out;
+  }
+  function importBook(id, raw){ const b=cleanBook(raw), all=rd(DEX_KEY,{}); all[id]=b; wr(DEX_KEY,all); return Object.values(b.t).reduce((n,tr)=>n+Object.keys(tr.dex).length,0); }
+  function forget(id){ const all=rd(DEX_KEY,{}); if(!Object.prototype.hasOwnProperty.call(all,id)) return; delete all[id]; wr(DEX_KEY,all); if(id===profId){ R=null; } }
+
+  return {open, booksFor, importBook, forget};
 })();
 /*@end*/
 

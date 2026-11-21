@@ -29,12 +29,15 @@ ANY_MARK = re.compile(r'@(?:cut|end)\b')
 
 # 빠진 게 맞는지 확인하는 표지 — 이 이름이 남아 있으면 빌드를 멈춘다
 MUST_NOT_CONTAIN = {
-    'trial': ['function encodeHw', 'exportedAt:', 'openNameModal(\'새 프로필'],
+    # DEX_ANIMAL 등: 정식판 전용 그림 도감 주제 자료(이름 목록) — 체험판에는 공룡만
+    'trial': ['function encodeHw', 'exportedAt:', 'openNameModal(\'새 프로필', 'const DEX_ANIMAL'],
     'home': ['function encodeHw', 'function generate(', 'function genPairs', 'function genSentencesOnline',
              'function newStage', 'function exportProfiles', 'function importProfiles', 'SENT_BLOCK',
-             'id="genPanel"', 'id="gamePanel"', 'id="progPanel"', 'const SENTENCES'],
+             'id="genPanel"', 'id="gamePanel"', 'id="progPanel"', 'const SENTENCES',
+             'id="dexPanel"', 'const DEX=', 'const DEX_DINO'],
 }
 MUST_CONTAIN = {
+    'trial': ['id="dexPanel"', 'const DEX_DINO'],   # 체험판 그림 도감은 공룡 주제
     'home': ['function applyLockModeIfNeeded', 'function decodeHw', 'id="playPanel"', 'function randomWord',
              'function openHandwriting'],
 }

@@ -31,6 +31,8 @@ done
 # 예문은 단어 범위 초급·보통(1·2)만 넣는다(체험판 문장 3개용).
 # 체험판 index.html은 원본에서 정식판 전용 코드(@cut trial)를 뺀 파일 — 화면 잠금만으로는 코드가 그대로 나가서(2026-10-26 보안 점검).
 # 정식판·보호자용은 소소숲으로: python3 build-variants.py sososoop "<소소숲 폴더>"
+# 그림 도감 그림: 체험판은 공룡 주제만(다른 주제 그림은 올리지 않는다)
+mkdir -p dist/hangul-dex && cp -R hangul-dex/dino dist/hangul-dex/ && echo "  + hangul-dex/dino"
 python3 build-variants.py trial dist/index.html
 echo "dist/ 준비 완료(체험판) — 파일 $(find dist -type f | wc -l | tr -d ' ')개"
 
